@@ -7,19 +7,23 @@ public class Main {
         // Genero le istanze di due utenti a scopo di test. Quella di un'utente generico e quella di un amministratore
         // Cosi posso verificare senza difficoltà che non ci siano errori anche richiamando i vari metodi
 
-        UtenteGenerico utente = new UtenteGenerico(
+        UtenteGenerico utente1 = new UtenteGenerico(
                 "giancarloMinecraft@gmail.com",
                 "gianmine10",
                 "Giancarlo10!"
         );  // Utente -> Utente Generico
 
-        Amministratore amministratore = new Amministratore(
+        Amministratore admin1 = new Amministratore(
                 "andreamontella@capodichino.eu",
                 "admin-AndreaMontella",
                 "!MyAmazingPassword_3!"
         );  // Utente -> Amministratore
 
-        amministratore.inserimentoVolo();           // Metodo accessibile dal solo Amministratore
-        utente.prenotaVolo();                       // Metodo accessibile dal solo Utente
+        // Richiamiamo il metodo toString per simulare il ritorno dei dati quali: email, username, password
+        System.out.println(utente1.toString());
+        System.out.println(admin1.toString());
+
+        admin1.inserimentoVolo();           // Metodo accessibile dal solo Amministratore
+        utente1.prenotaVolo();                       // Metodo accessibile dal solo Utente
     }
 }
