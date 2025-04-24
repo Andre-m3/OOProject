@@ -4,8 +4,8 @@ import model.UtenteGenerico;
 public class Main {
     public static void main(String[] args) {
 
-        // Genero le istanze di due utenti a scopo di test. Quella di un'utente generico e quella di un amministratore
-        // Cosi posso verificare senza difficoltà che non ci siano errori anche richiamando i vari metodi
+        // Genero le istanze di due utenti a scopo di test. Quella di un'utente generico e quella di un'utente amministratore
+        // Cosi potrmo verificare senza difficoltà la presenza o meno di eventuali errori di base
 
         UtenteGenerico utente1 = new UtenteGenerico(
                 "giancarloMinecraft@gmail.com",
