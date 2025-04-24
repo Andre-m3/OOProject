@@ -10,8 +10,9 @@ public class UtenteGenerico extends Utente {
         System.out.println("Prenota volo: ");
     }
 
-    public void cercaPrenotazioneVolo() {
+    public void cercaPrenotazioneVolo(String numVolo) {
         System.out.println("Cerca prenotazione volo: ");
+
     }
 
     public void cercaPrenotazioneNome(String username) {

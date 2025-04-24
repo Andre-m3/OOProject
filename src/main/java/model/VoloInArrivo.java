@@ -1,17 +1,17 @@
 package model;
 
 public class VoloInArrivo {
-    private String origine;
+    private String aeroportoOrigine;
 
-    public VoloInArrivo(String origine) {
-        this.origine = origine;
+    public VoloInArrivo(String aeroportoOrigine) {
+        this.aeroportoOrigine = aeroportoOrigine;
     }
 
-    public String getOrigine() {
-        return origine;
+    public String getAeroportoOrigine() {
+        return aeroportoOrigine;
     }
 
-    public void setOrigine(String origine) {
-        this.origine = origine;
+    public void setAeroportoOrigine(String aeroportoOrigine) {
+        this.aeroportoOrigine = aeroportoOrigine;
     }
 }

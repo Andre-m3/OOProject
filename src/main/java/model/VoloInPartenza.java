@@ -2,11 +2,11 @@ package model;
 
 public class VoloInPartenza {
     private int gateImbarco;
-    private String destinazione;
+    private String aeroportoDestinazione;
 
-    public VoloInPartenza(int gateImbarco, String destinazione) {
+    public VoloInPartenza(int gateImbarco, String aeroportoDestinazione) {
         this.gateImbarco = gateImbarco;
-        this.destinazione = destinazione;
+        this.aeroportoDestinazione = aeroportoDestinazione;
     }
 
     public int getGateImbarco() {
@@ -17,11 +17,11 @@ public class VoloInPartenza {
         this.gateImbarco = gateImbarco;
     }
 
-    public String getDestinazione() {
-        return destinazione;
+    public String getAeroportoDestinazione() {
+        return aeroportoDestinazione;
     }
 
-    public void setDestinazione(String destinazione) {
-        this.destinazione = destinazione;
+    public void setAeroportoDestinazione(String aeroportoDestinazione) {
+        this.aeroportoDestinazione = aeroportoDestinazione;
     }
 }

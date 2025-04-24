@@ -6,7 +6,9 @@ import model.UtenteGenerico;
 public class Main {
     public static void main(String[] args) {
 
-        // Genero le istanze di due utenti a scopo di test. Cosi posso verificare senza difficoltà i vari metodi qui nel main
+        // Genero le istanze di due utenti a scopo di test. Quella di un'utente generico e quella di un amministratore
+        // Cosi posso verificare senza difficoltà che non ci siano errori anche richiamando i vari metodi
+
         UtenteGenerico utente = new UtenteGenerico(
                 "giancarloMinecraft@gmail.com",
                 "gianmine10",
@@ -19,7 +21,7 @@ public class Main {
                 "!MyAmazingPassword_3!"
         );  // Utente -> Amministratore
 
-        amministratore.inserimentoVolo();           //Metodo accessibile dal solo Amministratore
-        utente.prenotaVolo();                       //Metodo accessibile dal solo Utente
+        amministratore.inserimentoVolo();           // Metodo accessibile dal solo Amministratore
+        utente.prenotaVolo();                       // Metodo accessibile dal solo Utente
     }
 }

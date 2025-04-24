@@ -3,20 +3,16 @@ package model;
 public class Volo {
     private int numeroVolo;
     private String compagniaAerea;
-    private String origine;
-    private String destinazione;
-    private String orarioPartenza;
-    private String dataPartenza;
+    private String orarioPrevisto;
+    private String data;
     private String ritardo;
     private String stato;
 
-    public Volo(int numeroVolo, String compagniaAerea, String origine, String destinazione, String orarioPartenza, String dataPartenza, String ritardo, String stato) {
+    public Volo(int numeroVolo, String compagniaAerea, String orarioPrevisto, String data, String ritardo, String stato) {
         this.numeroVolo = numeroVolo;
         this.compagniaAerea = compagniaAerea;
-        this.origine = origine;
-        this.destinazione = destinazione;
-        this.orarioPartenza = orarioPartenza;
-        this.dataPartenza = dataPartenza;
+        this.orarioPrevisto = orarioPrevisto;
+        this.data = data;
         this.ritardo = ritardo;
         this.stato = stato;
     }
@@ -37,36 +33,20 @@ public class Volo {
         this.compagniaAerea = compagniaAerea;
     }
 
-    public String getOrigine() {
-        return origine;
+    public String getOrarioPrevisto() {
+        return orarioPrevisto;
     }
 
-    public void setOrigine(String origine) {
-        this.origine = origine;
+    public void setOrarioPrevisto(String orarioPrevisto) {
+        this.orarioPrevisto = orarioPrevisto;
     }
 
-    public String getDestinazione() {
-        return destinazione;
+    public String getData() {
+        return data;
     }
 
-    public void setDestinazione(String destinazione) {
-        this.destinazione = destinazione;
-    }
-
-    public String getOrarioPartenza() {
-        return orarioPartenza;
-    }
-
-    public void setOrarioPartenza(String orarioPartenza) {
-        this.orarioPartenza = orarioPartenza;
-    }
-
-    public String getDataPartenza() {
-        return dataPartenza;
-    }
-
-    public void setDataPartenza(String dataPartenza) {
-        this.dataPartenza = dataPartenza;
+    public void setDataa(String data) {
+        this.data = data;
     }
 
     public String getRitardo() {
