@@ -1,17 +1,17 @@
 package model;
 
 public class Gate {
-    private int numeroGate;
+    private short numeroGate;
 
-    public Gate(int numeroGate) {
+    public Gate(short numeroGate) {
         this.numeroGate = numeroGate;
     }
 
-    public int getNumeroGate() {
+    public short getNumeroGate() {
         return numeroGate;
     }
 
-    public void setNumeroGate(int numeroGate) {
+    public void setNumeroGate(short numeroGate) {
         this.numeroGate = numeroGate;
     }
 }

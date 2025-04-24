@@ -1,9 +1,14 @@
 package model;
 
+import java.util.ArrayList;
+
 public class UtenteGenerico extends Utente {
+
+    private ArrayList<Prenotazione> listaPrenotazioni;
 
     public UtenteGenerico(String email, String username, String password) {
         super(email, username, password);
+        this.listaPrenotazioni = new ArrayList<Prenotazione>();
     }
 
     public void prenotaVolo() {

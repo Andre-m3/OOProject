@@ -1,10 +1,10 @@
 package model;
 
 public class VoloInPartenza {
-    private int gateImbarco;
+    private short gateImbarco;
     private String aeroportoDestinazione;
 
-    public VoloInPartenza(int gateImbarco, String aeroportoDestinazione) {
+    public VoloInPartenza(short gateImbarco, String aeroportoDestinazione) {
         this.gateImbarco = gateImbarco;
         this.aeroportoDestinazione = aeroportoDestinazione;
     }
@@ -13,7 +13,7 @@ public class VoloInPartenza {
         return gateImbarco;
     }
 
-    public void setGateImbarco(int gateImbarco) {
+    public void setGateImbarco(short gateImbarco) {
         this.gateImbarco = gateImbarco;
     }
 
