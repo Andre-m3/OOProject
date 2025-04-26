@@ -19,11 +19,9 @@ public class Main {
                 "!MyAmazingPassword_3!"
         );  // Utente -> Amministratore
 
-        // Richiamiamo il metodo toString per simulare il ritorno dei dati quali: email, username, password
-        System.out.println(utente1.toString());
-        System.out.println(admin1.toString());
-
-        admin1.inserimentoVolo();           // Metodo accessibile dal solo Amministratore
-        utente1.prenotaVolo();                       // Metodo accessibile dal solo Utente
+        admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
+        admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
+        admin1.visualizzaVoli();                    // Metodo accessibile da chiunque
+        // utente1.prenotaVolo();                       // Metodo accessibile dal solo Utente
     }
 }

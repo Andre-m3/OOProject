@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Utente {
     private String email;
     private String username;
@@ -36,14 +38,20 @@ public class Utente {
     public void setPassword(String password) {
         this.password = password;
     }
-    // Seppur i livelli di sicurezza non siano stati affrontati, non è opportuno aggiungere il metodo getPassword
-    // Questa volta solo ed esclusivamente per mostrare in output i vari valori, utilizzeremo il metodo "toString".
-    // Verrà abbandonato e di conseguenza rimosso alla prossima implementazione!
-    public String toString() {
-        return "Username: " + username + "\nEmail: " + email + "\nPassword: " + password;
+
+
+    public void visualizzaVoli() {
+        System.out.println("\n=== Elenco Voli Registrati ===");
+        ArrayList<Volo> listaVoli = Volo.getListaVoli();
+
+        if (listaVoli.isEmpty()) {
+            System.out.println("Non ci sono voli registrati nel sistema.");
+            return;         // Così terminiamo l'esecuzione del metodo. Non usiamo System.exit(0) perché terminerebbe l'intera JVM
+        }
+
+        for (Volo volo : listaVoli) {
+            System.out.println(volo.toString());
+        }
     }
 
-    public String visualizzaVoli() {
-        return "verifica richiamo metodo - temporanea...";
-    }
 }

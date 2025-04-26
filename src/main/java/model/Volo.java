@@ -1,27 +1,34 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Volo {
-    private int numeroVolo;
+    // Lista statica che conterrà tutti i voli
+    private static ArrayList<Volo> listaVoli = new ArrayList<>();
+
+    private String numeroVolo;      // Codice Alfanumerico [a-zA-Z0-9]
     private String compagniaAerea;
     private String orarioPrevisto;
     private String data;
-    private String ritardo;
+    private int ritardo;            // espresso in minuti!
     private String stato;
+    private String tipoVolo;        // partenza - arrivo
 
-    public Volo(int numeroVolo, String compagniaAerea, String orarioPrevisto, String data, String ritardo, String stato) {
+    public Volo(String numeroVolo, String compagniaAerea, String orarioPrevisto, String data, int ritardo, String stato, String tipoVolo) {
         this.numeroVolo = numeroVolo;
         this.compagniaAerea = compagniaAerea;
         this.orarioPrevisto = orarioPrevisto;
         this.data = data;
         this.ritardo = ritardo;
         this.stato = stato;
+        this.tipoVolo = tipoVolo;
     }
 
-    public int getNumeroVolo() {
+    public String getNumeroVolo() {
         return numeroVolo;
     }
 
-    public void setNumeroVolo(int numeroVolo) {
+    public void setNumeroVolo(String numeroVolo) {
         this.numeroVolo = numeroVolo;
     }
 
@@ -45,15 +52,15 @@ public class Volo {
         return data;
     }
 
-    public void setDataa(String data) {
+    public void setData(String data) {
         this.data = data;
     }
 
-    public String getRitardo() {
+    public int getRitardo() {
         return ritardo;
     }
 
-    public void setRitardo(String ritardo) {
+    public void setRitardo(int ritardo) {
         this.ritardo = ritardo;
     }
 
@@ -64,4 +71,29 @@ public class Volo {
     public void setStato(String stato) {
         this.stato = stato;
     }
+
+    public String getTipoVolo() {
+        return tipoVolo;
+    }
+    public void setTipoVolo(String tipoVolo) {
+        this.tipoVolo = tipoVolo;
+    }
+
+    // Metodo per aggiungere un volo alla lista
+    public static void aggiungiVolo(Volo volo) {
+        listaVoli.add(volo);
+    }
+
+    // Metodo per ottenere tutti i voli
+    public static ArrayList<Volo> getListaVoli() {
+        return listaVoli;
+    }
+
+    public String toString() {
+        return "VOLO [COUNT]\n" +
+                "- Volo: " + compagniaAerea + " " + numeroVolo
+                + "\n- Data: " + data
+                + "\n- Stato: " + stato;
+    }
+
 }
