@@ -1,27 +1,29 @@
 package model;
 
-import java.util.ArrayList;
-
 public class UtenteGenerico extends Utente {
 
-    private ArrayList<Prenotazione> listaPrenotazioni;
 
     public UtenteGenerico(String email, String username, String password) {
         super(email, username, password);
-        this.listaPrenotazioni = new ArrayList<Prenotazione>();
     }
 
     public void prenotaVolo() {
         System.out.println("Prenota volo: ");
     }
 
-    public void cercaPrenotazioneVolo(String numVolo) {
-        System.out.println("Cerca prenotazione volo: ");
+    public Volo cercaPrenotazione(String ricerca) {
 
-    }
+        // in base alla stringa fornita, effettueremo un check sul parametro passato
+        // la procedura devierà in base al check (se è numero volo, oppure se è username)
 
-    public void cercaPrenotazioneNome(String username) {
-        System.out.println("Cerca prenotazione nome: ");
+        /*  Potremmo utilizzare un "Overloaded Method" per gestire i due casi.
+         *  Siccome il "numVolo" tratta una stringa esadecimale, quindi non un numero intero
+         *  Avremmo avuto due metodi nominati uguale, con anche lo stesso tipo di parametro.
+         *  Questo ci obbliga a non poter utilizzare un "Overloaded Method", ma a gestire il caso interamente
+         */
+
+        System.out.println("Cerca prenotazione username/numVolo: ");
+        return null;    // nessun oggetto creato, struttura scheletrica
     }
 
     public void modificaPrenotazione() {
