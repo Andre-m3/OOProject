@@ -45,6 +45,7 @@ public class Utente {
             Volo.contatoreVoli++;
             System.out.println(volo.toString().replace("COUNT", "" + Volo.contatoreVoli));
         }
+        Volo.contatoreVoli = 0;
     }
 
 }
