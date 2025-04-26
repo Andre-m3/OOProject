@@ -17,7 +17,6 @@ public class VoloInArrivo extends Volo{
         this.aeroportoOrigine = aeroportoOrigine;
     }
 
-    // OVERRIDE TEMPORANEO - TUTTI I METODI "toString()" VERRANNO SUCCESSIVAMENTE ELIMINATI
     @Override
     public String toString() {
         return super.toString()

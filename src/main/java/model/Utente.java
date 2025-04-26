@@ -7,14 +7,7 @@ public class Utente {
     private String username;
     private String password;
 
-    /*
-     * Instantiates a new Utente.
-     *
-     * @param email the email
-     * @param username the username
-     * @param password the password
-     */
-
+    // Costruttore di Utente
     public Utente(String email, String username, String password) {
         this.email = email;
         this.username = username;
@@ -39,7 +32,6 @@ public class Utente {
         this.password = password;
     }
 
-
     public void visualizzaVoli() {
         System.out.println("\n=== Elenco Voli Registrati ===");
         ArrayList<Volo> listaVoli = Volo.getListaVoli();
@@ -50,7 +42,8 @@ public class Utente {
         }
 
         for (Volo volo : listaVoli) {
-            System.out.println(volo.toString());
+            Volo.contatoreVoli++;
+            System.out.println(volo.toString().replace("COUNT", "" + Volo.contatoreVoli));
         }
     }
 

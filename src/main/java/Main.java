@@ -22,6 +22,6 @@ public class Main {
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.visualizzaVoli();                    // Metodo accessibile da chiunque
-        // utente1.prenotaVolo();                       // Metodo accessibile dal solo Utente
+
     }
 }

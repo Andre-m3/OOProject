@@ -26,7 +26,7 @@ public class Amministratore extends Utente {
         int ritardo = 0;        // L'amministratore potrà modificarne l'eventuale valore in seguito tramite il metodo "aggiornaVolo()"
 
         // Visualizziamo gli 'stati di volo' disponibili
-        System.out.println("\nStati volo:[");
+        System.out.print("\nStati volo: [");
         for (StatoVolo stato : StatoVolo.values()) {
             System.out.print(" " + stato + " ");
         } System.out.println("]");
