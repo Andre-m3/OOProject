@@ -27,7 +27,6 @@ public class Volo {
     public String getNumeroVolo() {
         return numeroVolo;
     }
-
     public void setNumeroVolo(String numeroVolo) {
         this.numeroVolo = numeroVolo;
     }
@@ -35,7 +34,6 @@ public class Volo {
     public String getCompagniaAerea() {
         return compagniaAerea;
     }
-
     public void setCompagniaAerea(String compagniaAerea) {
         this.compagniaAerea = compagniaAerea;
     }
@@ -43,7 +41,6 @@ public class Volo {
     public String getOrarioPrevisto() {
         return orarioPrevisto;
     }
-
     public void setOrarioPrevisto(String orarioPrevisto) {
         this.orarioPrevisto = orarioPrevisto;
     }
@@ -51,7 +48,6 @@ public class Volo {
     public String getData() {
         return data;
     }
-
     public void setData(String data) {
         this.data = data;
     }
@@ -59,7 +55,6 @@ public class Volo {
     public int getRitardo() {
         return ritardo;
     }
-
     public void setRitardo(int ritardo) {
         this.ritardo = ritardo;
     }
@@ -67,7 +62,6 @@ public class Volo {
     public String getStato() {
         return stato;
     }
-
     public void setStato(String stato) {
         this.stato = stato;
     }
