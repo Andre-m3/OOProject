@@ -22,9 +22,9 @@ public class VoloInArrivo extends Volo{
     public String toString() {
         return super.toString()
                 + "\n- TipoVolo: Arrivo"
-                + "\n- Origine: " + aeroportoOrigine
-                + "\n- Orario Arrivo" + getOrarioPrevisto()
-                + "\n- Ritardo: " + getRitardo() + " minuti" + "\n";
+                + "\n- Origine: " + this.getAeroportoOrigine()
+                + "\n- Orario Arrivo" + this.getOrarioPrevisto()
+                + "\n- Ritardo: " + this.getRitardo() + " minuti" + "\n";
     }
 
 }

@@ -33,10 +33,10 @@ public class VoloInPartenza extends Volo{
     public String toString() {
         return super.toString()
                 + "\n- TipoVolo: Partenza"
-                + "\n- Destinazione: " + aeroportoDestinazione
-                + "\n- Orario Partenza" + getOrarioPrevisto()
-                + "\n- Ritardo: " + getRitardo() + " minuti"
-                + "\n- Gate Imbarco: " + gateImbarco + "\n";
+                + "\n- Destinazione: " + this.getAeroportoDestinazione()
+                + "\n- Orario Partenza" + this.getOrarioPrevisto()
+                + "\n- Ritardo: " + this.getRitardo() + " minuti"
+                + "\n- Gate Imbarco: " + this.getGateImbarco() + "\n";
     }
 
 }
