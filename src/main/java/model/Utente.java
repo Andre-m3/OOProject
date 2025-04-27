@@ -42,10 +42,10 @@ public class Utente {
         }
 
         for (Volo volo : listaVoli) {
-            Volo.contatoreVoli++;
-            System.out.println(volo.toString().replace("COUNT", "" + Volo.contatoreVoli));
+            Volo.ContatoreVoli++;
+            System.out.println(volo.toString().replace("COUNT", "" + Volo.ContatoreVoli));
         }
-        Volo.contatoreVoli = 0;
+        Volo.ContatoreVoli = 0;
     }
 
 }
