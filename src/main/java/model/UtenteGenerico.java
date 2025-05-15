@@ -8,8 +8,8 @@ public class UtenteGenerico extends Utente {
     }
 
     public void prenotaVolo() {
-        System.out.println("Prenota volo: ");
-    }
+        System.out.println("Prenota: ");
+    }                                       // DA IMPLEMENTARE
 
     public Volo cercaPrenotazione(String ricerca) {
 
@@ -24,9 +24,9 @@ public class UtenteGenerico extends Utente {
 
         System.out.println("Cerca prenotazione username/numVolo: ");
         return null;    // nessun oggetto creato, struttura scheletrica
-    }
+    }                   // DA IMPLEMENTARE
 
     public void modificaPrenotazione() {
-        System.out.println("Modifica prenotazione: ");
-    }
+        System.out.println("Modifica: ");
+    }                              // DA IMPLEMENTARE
 }

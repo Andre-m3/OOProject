@@ -10,7 +10,6 @@ public class Gate {
     public short getNumeroGate() {
         return numeroGate;
     }
-
     public void setNumeroGate(short numeroGate) {
         this.numeroGate = numeroGate;
     }

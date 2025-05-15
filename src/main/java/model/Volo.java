@@ -86,7 +86,7 @@ public class Volo {
     }
 
     public String toString() {
-        return "VOLO [COUNT]\n" +
+        return "VOLO " + ContatoreVoli + "\n" +
                 "- Volo: " + this.getCompagniaAerea() + " " + this.getNumeroVolo()
                 + "\n- Data: " + this.getData()
                 + "\n- Stato: " + this.getStato();

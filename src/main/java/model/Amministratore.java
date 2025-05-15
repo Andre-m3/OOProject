@@ -79,9 +79,9 @@ public class Amministratore extends Utente {
 
     public void aggiornaVolo() {
         System.out.println("Aggiorna volo: ");
-    }
+    }                                // DA IMPLEMENTARE
 
     public void modificaGateImbarco() {
         System.out.println("Modifica gate imbarco: ");
-    }
+    }                         // DA IMPLEMENTARE
 }

@@ -12,7 +12,6 @@ public class Prenotazione {
     public String getCodicePrenotazione() {
         return codicePrenotazione;
     }
-
     public void setCodicePrenotazione(String codicePrenotazione) {
         this.codicePrenotazione = codicePrenotazione;
     }
@@ -20,7 +19,6 @@ public class Prenotazione {
     public String getStato() {
         return stato;
     }
-
     public void setStato(String stato) {
         this.stato = stato;
     }

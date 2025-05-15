@@ -20,7 +20,6 @@ public class ticketPasseggero {
     public int getNumeroTicket() {
         return numeroTicket;
     }
-
     public void setNumeroTicket(int numeroTicket) {
         this.numeroTicket = numeroTicket;
     }
@@ -28,7 +27,6 @@ public class ticketPasseggero {
     public String getNomeCompleto() {
         return nomeCompleto;
     }
-
     public void setNomeCompleto(String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
     }
@@ -36,7 +34,6 @@ public class ticketPasseggero {
     public String getCognome() {
         return cognome;
     }
-
     public void setCognome(String cognome) {
         this.cognome = cognome;
     }
@@ -44,7 +41,6 @@ public class ticketPasseggero {
     public String getDataNascita() {
         return dataNascita;
     }
-
     public void setDataNascita(String dataNascita) {
         this.dataNascita = dataNascita;
     }
@@ -52,7 +48,6 @@ public class ticketPasseggero {
     public String getNumeroDocumento() {
         return numeroDocumento;
     }
-
     public void setNumeroDocumento(String numeroDocumento) {
         this.numeroDocumento = numeroDocumento;
     }
@@ -60,7 +55,6 @@ public class ticketPasseggero {
     public int getPostoAssegnato() {
         return postoAssegnato;
     }
-
     public void setPostoAssegnato(int postoAssegnato) {
         this.postoAssegnato = postoAssegnato;
     }

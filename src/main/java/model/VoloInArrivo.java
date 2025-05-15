@@ -12,7 +12,6 @@ public class VoloInArrivo extends Volo{
     public String getAeroportoOrigine() {
         return aeroportoOrigine;
     }
-
     public void setAeroportoOrigine(String aeroportoOrigine) {
         this.aeroportoOrigine = aeroportoOrigine;
     }
