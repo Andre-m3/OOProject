@@ -21,7 +21,7 @@ public class VoloInArrivo extends Volo{
         return super.toString()
                 + "\n- TipoVolo: Arrivo"
                 + "\n- Origine: " + this.getAeroportoOrigine()
-                + "\n- Orario Arrivo" + this.getOrarioPrevisto()
+                + "\n- Orario Arrivo: " + this.getOrarioPrevisto()
                 + "\n- Ritardo: " + this.getRitardo() + " minuti" + "\n";
     }
 

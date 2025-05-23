@@ -2,7 +2,6 @@ package model;
 
 public class UtenteGenerico extends Utente {
 
-
     public UtenteGenerico(String email, String username, String password) {
         super(email, username, password);
     }
