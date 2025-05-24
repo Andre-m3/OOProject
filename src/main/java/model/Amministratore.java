@@ -191,6 +191,73 @@ public class Amministratore extends Utente {
     }
 
     public void modificaGateImbarco() {
-        System.out.println("Modifica gate imbarco: ");
-    }                         // DA IMPLEMENTARE
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("=== Modifica Gate di Imbarco ===");
+
+        // Ottengo la lista di tutti i voli
+        ArrayList<Volo> listaVoli = Volo.getListaVoli();
+
+        // Verifico se ci sono voli in partenza
+        boolean voliInPartenzaPresenti = false;
+        System.out.println("\nElenco voli in partenza:");
+        System.out.println("---------------------------------------------------");
+        System.out.printf("%-12s %-20s %-15s%n", "Numero Volo", "Destinazione", "Orario Partenza");
+        System.out.println("---------------------------------------------------");
+
+        // Scorro la lista dei voli e visualizzo solo i voli in partenza
+        for (Volo volo : listaVoli) {
+            // Con instanceof verifico se il volo è un'istanza della classe VoloInPartenza, altrimenti non lo visualizzo!
+            if (volo instanceof VoloInPartenza voloPartenza) {
+                voliInPartenzaPresenti = true;
+                System.out.printf("%-12s %-20s %-15s%n",
+                    volo.getNumeroVolo(),
+                    voloPartenza.getAeroportoDestinazione(),
+                    volo.getOrarioPrevisto() );
+            }
+        }
+        System.out.println("---------------------------------------------------");
+
+        // Se non ci sono "voli in partenza" significa che la variabile booleana creata sarà ancora "false"!
+        if (!voliInPartenzaPresenti) {      // Quindi visualizzo un messaggio all'utente e termino il metodo con return
+            System.out.println("Non ci sono voli in partenza registrati nel sistema.");
+            return;
+        }
+
+        // Chiedo all'amministratore di inserire il numero del volo da modificare
+        System.out.print("\nInserisci il numero del volo per cui vuoi modificare il gate di imbarco: ");
+        String numeroVoloDaModificare = scanner.nextLine();
+
+        // Cerco il volo in partenza corrispondente, così da poter modificare il gate di imbarco
+        VoloInPartenza voloDaModificare = null;
+        for (Volo volo : listaVoli) {
+            if (volo instanceof VoloInPartenza && volo.getNumeroVolo().equals(numeroVoloDaModificare)) {
+                voloDaModificare = (VoloInPartenza) volo;
+                break;
+            }
+        }
+
+        // Verifico se il volo è stato trovato
+        if (voloDaModificare == null) {     // Se il numero inserito non è associato ad alcun volo in partenza, allora termino il metodo con return
+            System.out.println("Volo in partenza non trovato. Verifica il numero del volo e riprova.");
+            return;
+        }
+
+        // Mostro il gate attuale
+        System.out.println("\nDati del volo selezionato:");
+        System.out.println("- Volo: " + voloDaModificare.getCompagniaAerea() + " " + voloDaModificare.getNumeroVolo());
+        System.out.println("- Destinazione: " + voloDaModificare.getAeroportoDestinazione());
+        System.out.println("- Orario partenza: " + voloDaModificare.getOrarioPrevisto());
+        System.out.println("- Gate attuale: " + voloDaModificare.getGateImbarco());
+
+        // Chiedo di inserire il nuovo gate
+        System.out.print("\nInserisci il nuovo gate di imbarco: ");
+        try {
+            short nuovoGate = Short.parseShort(scanner.nextLine());
+            voloDaModificare.setGateImbarco(nuovoGate);
+            System.out.println("\nGate di imbarco modificato con successo!");
+            System.out.println("Nuovo gate di imbarco: " + nuovoGate);
+        } catch (NumberFormatException e) {
+            System.out.println("Formato non valido per il gate. La modifica non è stata effettuata.");
+        }
+    }                         // RIDONDANZA CON "aggiornaVolo()", VALUTARE SE EFFETTIVAMENTE NECESSARIO!
 }

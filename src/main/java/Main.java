@@ -22,6 +22,7 @@ public class Main {
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.aggiornaVolo();                      // Metodo accessibile dal solo Amministratore
+        admin1.modificaGateImbarco();               // Metodo accessibile dal solo Amministratore
         admin1.visualizzaVoli();                    // Metodo accessibile da chiunque
 
     }
