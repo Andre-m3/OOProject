@@ -113,7 +113,7 @@ public class UserDashboard {
         welcomeText.setVerticalTextPosition(3);
         topPanel.add(welcomeText, BorderLayout.CENTER);
         final JLabel label1 = new JLabel();
-        Font label1Font = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 18, label1.getFont());
+        Font label1Font = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 20, label1.getFont());
         if (label1Font != null) label1.setFont(label1Font);
         label1.setHorizontalAlignment(0);
         label1.setHorizontalTextPosition(0);
@@ -138,7 +138,7 @@ public class UserDashboard {
         panel3.setPreferredSize(new Dimension(250, 250));
         btnsPanel.add(panel3, BorderLayout.WEST);
         btnPrenotaVolo = new JButton();
-        Font btnPrenotaVoloFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, btnPrenotaVolo.getFont());
+        Font btnPrenotaVoloFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnPrenotaVolo.getFont());
         if (btnPrenotaVoloFont != null) btnPrenotaVolo.setFont(btnPrenotaVoloFont);
         btnPrenotaVolo.setHorizontalTextPosition(0);
         btnPrenotaVolo.setMargin(new Insets(0, 0, 0, 0));
@@ -148,7 +148,7 @@ public class UserDashboard {
         btnPrenotaVolo.setText("Prenota Volo");
         panel3.add(btnPrenotaVolo, BorderLayout.NORTH);
         btnAreaPersonale = new JButton();
-        Font btnAreaPersonaleFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, btnAreaPersonale.getFont());
+        Font btnAreaPersonaleFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnAreaPersonale.getFont());
         if (btnAreaPersonaleFont != null) btnAreaPersonale.setFont(btnAreaPersonaleFont);
         btnAreaPersonale.setMaximumSize(new Dimension(150, 125));
         btnAreaPersonale.setMinimumSize(new Dimension(150, 125));
@@ -162,7 +162,7 @@ public class UserDashboard {
         panel4.setPreferredSize(new Dimension(250, 250));
         btnsPanel.add(panel4, BorderLayout.CENTER);
         btnViewVoli = new JButton();
-        Font btnViewVoliFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, btnViewVoli.getFont());
+        Font btnViewVoliFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnViewVoli.getFont());
         if (btnViewVoliFont != null) btnViewVoli.setFont(btnViewVoliFont);
         btnViewVoli.setHorizontalTextPosition(0);
         btnViewVoli.setMaximumSize(new Dimension(150, 125));
@@ -171,7 +171,7 @@ public class UserDashboard {
         btnViewVoli.setText("Visualizza Voli");
         panel4.add(btnViewVoli, BorderLayout.NORTH);
         btnLogout = new JButton();
-        Font btnLogoutFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, btnLogout.getFont());
+        Font btnLogoutFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnLogout.getFont());
         if (btnLogoutFont != null) btnLogout.setFont(btnLogoutFont);
         btnLogout.setMaximumSize(new Dimension(150, 125));
         btnLogout.setMinimumSize(new Dimension(150, 125));
@@ -208,4 +208,5 @@ public class UserDashboard {
     public JComponent $$$getRootComponent$$$() {
         return panel1;
     }
+
 }
