@@ -1,8 +1,5 @@
 package GUI;
 
-import com.intellij.uiDesigner.core.GridLayoutManager;
-import controller.Controller;
-
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
@@ -15,10 +12,10 @@ public class AdminDashboard {
     private JPanel topPanel;
     private JLabel welcomeText;
     private JPanel btnsPanel;
-    private JButton button1;
-    private JButton button2;
-    private JButton button3;
-    private JButton button4;
+    private JButton btnAggiungiVolo;
+    private JButton btnAreaPersonale;
+    private JButton btnViewVoli;
+    private JButton btnLogout;
 
     public static void main(String[] args) {
         FrameAdmin = new JFrame("Dashboard Admin");
@@ -61,9 +58,9 @@ public class AdminDashboard {
         topPanel.setLayout(new BorderLayout(5, 5));
         Font topPanelFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 36, topPanel.getFont());
         if (topPanelFont != null) topPanel.setFont(topPanelFont);
-        topPanel.setMaximumSize(new Dimension(1000, 190));
-        topPanel.setMinimumSize(new Dimension(1000, 190));
-        topPanel.setPreferredSize(new Dimension(1000, 190));
+        topPanel.setMaximumSize(new Dimension(1000, 150));
+        topPanel.setMinimumSize(new Dimension(1000, 150));
+        topPanel.setPreferredSize(new Dimension(1000, 150));
         panel1.add(topPanel);
         welcomeText = new JLabel();
         Font welcomeTextFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 36, welcomeText.getFont());
@@ -81,21 +78,46 @@ public class AdminDashboard {
         label1.setHorizontalTextPosition(0);
         label1.setText("Cosa desideri fare oggi?");
         topPanel.add(label1, BorderLayout.SOUTH);
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel2.setMaximumSize(new Dimension(1000, 20));
+        panel2.setMinimumSize(new Dimension(1000, 20));
+        panel2.setPreferredSize(new Dimension(1000, 20));
+        panel1.add(panel2);
         btnsPanel = new JPanel();
-        btnsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        btnsPanel.setLayout(new BorderLayout(0, 0));
+        btnsPanel.setMaximumSize(new Dimension(1000, 270));
+        btnsPanel.setMinimumSize(new Dimension(1000, 270));
+        btnsPanel.setPreferredSize(new Dimension(1000, 270));
         panel1.add(btnsPanel);
-        button1 = new JButton();
-        button1.setText("Button");
-        btnsPanel.add(button1);
-        button2 = new JButton();
-        button2.setText("Button");
-        btnsPanel.add(button2);
-        button3 = new JButton();
-        button3.setText("Button");
-        btnsPanel.add(button3);
-        button4 = new JButton();
-        button4.setText("Button");
-        btnsPanel.add(button4);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new BorderLayout(0, 0));
+        panel3.setMinimumSize(new Dimension(500, 200));
+        panel3.setPreferredSize(new Dimension(500, 250));
+        btnsPanel.add(panel3, BorderLayout.WEST);
+        btnAggiungiVolo = new JButton();
+        btnAggiungiVolo.setHorizontalTextPosition(0);
+        btnAggiungiVolo.setText("Button");
+        panel3.add(btnAggiungiVolo, BorderLayout.NORTH);
+        btnAreaPersonale = new JButton();
+        btnAreaPersonale.setText("Button");
+        panel3.add(btnAreaPersonale, BorderLayout.CENTER);
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new BorderLayout(0, 0));
+        panel4.setMinimumSize(new Dimension(500, 200));
+        panel4.setPreferredSize(new Dimension(500, 250));
+        btnsPanel.add(panel4, BorderLayout.CENTER);
+        btnViewVoli = new JButton();
+        Font btnVoliFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, btnViewVoli.getFont());
+        if (btnVoliFont != null) btnViewVoli.setFont(btnVoliFont);
+        btnViewVoli.setHorizontalTextPosition(0);
+        btnViewVoli.setText("Voli");
+        panel4.add(btnViewVoli, BorderLayout.NORTH);
+        btnLogout = new JButton();
+        Font btnLogoutFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, btnLogout.getFont());
+        if (btnLogoutFont != null) btnLogout.setFont(btnLogoutFont);
+        btnLogout.setText("Logout");
+        panel4.add(btnLogout, BorderLayout.CENTER);
     }
 
     /**
