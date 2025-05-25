@@ -6,9 +6,13 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Locale;
 
 public class Register {
+    private JFrame FrameRegister;
+    private Controller controller;
     private JPanel panel1;
     private JPanel topPanel;
     private JLabel mainText;
@@ -25,11 +29,12 @@ public class Register {
     private JPanel usernameForm;
     private JPanel isAdminCheck;
     private JCheckBox adminCheck;
-    private static JFrame FrameRegister;
 
-    public static void main(String[] args) {
-        FrameRegister = new JFrame("Register");
-        FrameRegister.setContentPane(new Register().panel1);
+    public Register(JFrame frame) {
+        controller = Controller.getInstance();
+        FrameRegister = frame;              // Analogo -> AdminDashboard & UserDashboard
+        FrameRegister.setTitle("Register");
+        FrameRegister.setContentPane(panel1);
         FrameRegister.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FrameRegister.pack();
         FrameRegister.setLocationRelativeTo(null);         // Centra la finestra sullo schermo
@@ -37,9 +42,68 @@ public class Register {
 
         // Per impedire eventuali problemi, impediamo all'utente di ridimensionare la finestra di registrazione
         FrameRegister.setResizable(false);
+
+        setupButtons();
+
+        // Aggiungiamo un MouseListener per gestire il cambio di colore e il click
+        registerField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                // Quando il mouse passa sopra, cambia colore
+                registerField.setForeground(new Color(0, 102, 204)); // Blu più vivace
+            }
+
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                // Quando il mouse esce, ripristina il colore originale
+                registerField.setForeground(new Color(70, 70, 70));
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // Quando viene cliccato, apri la pagina di login e chiudi quella di registrazione
+                LandingPageLogin.showLoginPage();
+                FrameRegister.dispose(); // Chiudi la finestra di registrazione
+            }
+        });
+
     }
 
     public Register() {
+        controller = Controller.getInstance();
+        setupButtons();
+
+        // Aggiungiamo un MouseListener per gestire il cambio di colore e il click
+        /* Può risultare ridondante, perchè tali Listeners sono stati precedentemente aggiunti
+         *          al Costruttore precedente. Per eliminare la ridondanza avremmo potuto creare un metodo apposito,
+         *          oppure inserirli nel metodo "setupButtons()", visto che viene richiamato ambo le volte.
+         * Per rendere più chiaro il concetto, abbiamo preferito aggiungerlo qui per scopo didattico.
+         */
+
+        registerField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                // Quando il mouse passa sopra, cambia colore
+                registerField.setForeground(new Color(0, 102, 204)); // Blu più vivace
+            }
+
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                // Quando il mouse esce, ripristina il colore originale
+                registerField.setForeground(new Color(70, 70, 70));
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // Quando viene cliccato, apri la pagina di login e chiudi quella di registrazione
+                LandingPageLogin.showLoginPage();
+                FrameRegister.dispose(); // Chiudi la finestra di registrazione
+            }
+        });
+
+    }
+
+    private void setupButtons() {
         /* Come descritto dell'interfaccia Login, abbiamo copiato la personalizzazione effettuata
          * per il pulsante di Login, e l'abbiamo riutilizzata anche per il pulsante di registrazione.
          * Non è stato cambiato nessun parametro.
@@ -52,6 +116,16 @@ public class Register {
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         btnRegister.setOpaque(true);
+
+        /* Personalizziamo il testo per passare al form di registrazione.
+         * In questo caso abbiamo fatto in modo che quando il cursore passerà sopra al testo
+         *      quest'ultimo cambi colore, così facendo renderà all'utente chiara l'idea di come muoversi!
+         * A differenza di prima (in Login), la personalizzazione del testo l'abbiamo aggiunta come da procedura
+         *      nel metodo "setupButtons".
+         * Non ci sono differenze effettive, se non nella pulizia, leggibilità e ridondanza del codice.
+         */
+        registerField.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        registerField.setForeground(new Color(70, 70, 70));         // Colore del testo al passaggio del cursore
 
     }
 
@@ -244,4 +318,5 @@ public class Register {
     public JComponent $$$getRootComponent$$$() {
         return panel1;
     }
+
 }

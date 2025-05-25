@@ -8,6 +8,8 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Locale;
 
 public class LandingPageLogin {
@@ -45,22 +47,15 @@ public class LandingPageLogin {
     }
 
     public LandingPageLogin() {
-        controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!!!
+        controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!!!        // Rendiamo il testo "Registrati qui..." cliccabile
 
-        /*
-         * Quanto segue è la personalizzazione di alcuni componenti grafici della pagina di Login
-         * Nello specifico, è stato cambiato il colore del pulsante di login (e relativamente del testo Login)
-         * È stato inoltre aggiunto il bordo e ricolorato.
-         * Questa personalizzazione sarà riproposta anche nel costruttore dell'interfaccia Register !!
+        setupButtons();
+        /* Personalizziamo il testo per passare al form di registrazione.
+         * In questo caso abbiamo fatto in modo che quando il cursore passerà sopra al testo
+         *      quest'ultimo cambi colore, così facendo renderà all'utente chiara l'idea di come muoversi!
          */
-        Color sfondoLeggermenteScuro = new Color(214, 214, 214);        // Colore sfondo pulsante
-        btnLogin.setBackground(sfondoLeggermenteScuro);
-        btnLogin.setForeground(new Color(78, 78, 78));                  // Colore testo pulsante
-        btnLogin.setFocusPainted(false);
-        btnLogin.setBorder(BorderFactory.createCompoundBorder(                   // Colore, spessore e spaziatura del bordo del pulsante
-                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
-                BorderFactory.createEmptyBorder(5, 15, 5, 15)));
-        btnLogin.setOpaque(true);
+        registerField.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        registerField.setForeground(new Color(70, 70, 70));         // Colore del testo al passaggio del cursore
 
         // Listener per il pulsante di login. Effettuiamo vari controlli
         // Utilizziamo l'istanza del controller (gia creata) per effettuare le verifiche presenti in essa!
@@ -106,8 +101,47 @@ public class LandingPageLogin {
             }
         });
 
+        // Listener per il testo "...Registrati qui"
+        // Aggiungiamo un MouseListener per gestire il cambio di colore e il click
+        registerField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                // Quando il mouse passa sopra, cambia colore
+                registerField.setForeground(new Color(0, 102, 204)); // Blu più vivace
+            }
 
-        // ADD ACTION LISTENERS OR OTHER CODE
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                // Quando il mouse esce, ripristina il colore originale
+                registerField.setForeground(new Color(70, 70, 70));
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // Quando viene cliccato, apri la pagina di registrazione e chiudi quella di login
+                JFrame registerFrame = new JFrame("Registrazione");
+                new Register(registerFrame);
+                FrameLogin.dispose(); // Chiudi la finestra di login
+            }
+        });
+
+    }
+
+    private void setupButtons() {
+        /*
+         * Quanto segue è la personalizzazione di alcuni componenti grafici della pagina di Login
+         * Nello specifico, è stato cambiato il colore del pulsante di login (e relativamente del testo Login)
+         * È stato inoltre aggiunto il bordo e ricolorato.
+         * Questa personalizzazione sarà riproposta anche nel costruttore dell'interfaccia Register !!
+         */
+        Color sfondoLeggermenteScuro = new Color(214, 214, 214);        // Colore sfondo pulsante
+        btnLogin.setBackground(sfondoLeggermenteScuro);
+        btnLogin.setForeground(new Color(78, 78, 78));                  // Colore testo pulsante
+        btnLogin.setFocusPainted(false);
+        btnLogin.setBorder(BorderFactory.createCompoundBorder(                   // Colore, spessore e spaziatura del bordo del pulsante
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 15, 5, 15)));
+        btnLogin.setOpaque(true);
     }
 
 
