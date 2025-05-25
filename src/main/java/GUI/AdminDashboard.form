@@ -1,13 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.AdminDashboard">
-  <grid id="27dc6" row-count="1" column-count="1" layout-manager="GridLayoutManager">
-    <margin top="0" left="0" bottom="0" right="0"/>
+  <grid id="27dc6" binding="panel1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
-      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+      <xy x="20" y="20" width="1000" height="675"/>
     </constraints>
-    <properties/>
+    <properties>
+      <maximumSize width="1000" height="675"/>
+      <minimumSize width="1000" height="675"/>
+      <preferredSize width="1000" height="675"/>
+    </properties>
     <border type="none"/>
-    <children/>
+    <children>
+      <grid id="5f783" binding="topPanel" layout-manager="BorderLayout" hgap="5" vgap="5">
+        <constraints/>
+        <properties>
+          <font name="Droid Sans Mono" size="36" style="1"/>
+          <maximumSize width="1000" height="190"/>
+          <minimumSize width="1000" height="190"/>
+          <preferredSize width="1000" height="190"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="32c9c" class="javax.swing.JLabel" binding="welcomeText">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font name="Droid Sans Mono" size="36" style="1"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Bentornato, Admin!"/>
+              <verticalAlignment value="3"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+          <component id="19f46" class="javax.swing.JLabel">
+            <constraints border-constraint="South"/>
+            <properties>
+              <font name="Droid Sans Mono" size="18" style="0"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Cosa desideri fare oggi?"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="ae9fe" binding="btnsPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="81628" class="javax.swing.JButton" binding="button1" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Button"/>
+            </properties>
+          </component>
+          <component id="162ba" class="javax.swing.JButton" binding="button2" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Button"/>
+            </properties>
+          </component>
+          <component id="4c43b" class="javax.swing.JButton" binding="button3" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Button"/>
+            </properties>
+          </component>
+          <component id="60f2b" class="javax.swing.JButton" binding="button4" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Button"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
   </grid>
 </form>

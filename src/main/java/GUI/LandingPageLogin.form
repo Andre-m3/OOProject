@@ -38,15 +38,12 @@
           <component id="fdd61" class="javax.swing.JLabel" binding="subText">
             <constraints border-constraint="South"/>
             <properties>
-              <font name="Droid Sans" size="22" style="2"/>
+              <font name="Droid Sans" size="20" style="2"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
               <text value="Inserisci email e password per iniziare..."/>
             </properties>
           </component>
-          <vspacer id="26708">
-            <constraints border-constraint="North"/>
-          </vspacer>
         </children>
       </grid>
       <grid id="c5341" binding="midPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
@@ -80,12 +77,14 @@
               <component id="dde66" class="javax.swing.JTextField" binding="emailField">
                 <constraints border-constraint="South"/>
                 <properties>
+                  <columns value="0"/>
+                  <enabled value="true"/>
                   <font name="Droid Sans Mono" size="14" style="0"/>
                   <foreground color="-13487566"/>
                   <horizontalAlignment value="2"/>
                   <maximumSize width="50" height="40"/>
                   <minimumSize width="50" height="40"/>
-                  <preferredSize width="50" height="40"/>
+                  <preferredSize width="24" height="40"/>
                   <text value=""/>
                   <visible value="true"/>
                 </properties>
@@ -114,10 +113,12 @@
               <component id="53847" class="javax.swing.JPasswordField" binding="passwordField">
                 <constraints border-constraint="South"/>
                 <properties>
+                  <columns value="0"/>
                   <maximumSize width="50" height="40"/>
                   <minimumSize width="50" height="40"/>
                   <opaque value="false"/>
-                  <preferredSize width="50" height="40"/>
+                  <preferredSize width="61" height="40"/>
+                  <text value=""/>
                 </properties>
               </component>
             </children>

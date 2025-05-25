@@ -11,7 +11,7 @@ import java.util.Locale;
 
 public class LandingPageLogin {
     private static JFrame FrameLogin;
-    private Controller controller;
+    private Controller controller;              // Non ricordo perchè sta qui ANNOTARE ANNOTARE ANNOTARE
     private JPanel panel1;
     private JPanel topPanel;
     private JLabel mainText;
@@ -34,10 +34,29 @@ public class LandingPageLogin {
         FrameLogin.setLocationRelativeTo(null);         // Centra la finestra sullo schermo
         FrameLogin.setVisible(true);
 
+        // Per impedire eventuali problemi, impediamo all'utente di ridimensionare la finestra di Login
+        FrameLogin.setResizable(false);
+
     }
 
     public LandingPageLogin() {
-        controller = new Controller();
+        controller = new Controller();              // Dopo la modifica al controller è sempre necessario? ANNOTARE ANNOTARE ANNOTARE
+
+        /*
+         * Quanto segue è la personalizzazione di alcuni componenti grafici della pagina di Login
+         * Nello specifico, è stato cambiato il colore del pulsante di login (e relativamente del testo Login)
+         * È stato inoltre aggiunto il bordo e ricolorato.
+         * Questa personalizzazione sarà riproposta anche nel costruttore dell'interfaccia Register !!
+         */
+        Color sfondoLeggermenteScuro = new Color(214, 214, 214);        // Colore sfondo pulsante
+        btnLogin.setBackground(sfondoLeggermenteScuro);
+        btnLogin.setForeground(new Color(78, 78, 78));                  // Colore testo pulsante
+        btnLogin.setFocusPainted(false);
+        btnLogin.setBorder(BorderFactory.createCompoundBorder(                   // Colore, spessore e spaziatura del bordo del pulsante
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 15, 5, 15)));
+        btnLogin.setOpaque(true);
+
 
         // ADD ACTION LISTENERS OR OTHER CODE
     }
@@ -83,14 +102,12 @@ public class LandingPageLogin {
         mainText.setVerticalTextPosition(3);
         topPanel.add(mainText, BorderLayout.CENTER);
         subText = new JLabel();
-        Font subTextFont = this.$$$getFont$$$("Droid Sans", Font.ITALIC, 22, subText.getFont());
+        Font subTextFont = this.$$$getFont$$$("Droid Sans", Font.ITALIC, 20, subText.getFont());
         if (subTextFont != null) subText.setFont(subTextFont);
         subText.setHorizontalAlignment(0);
         subText.setHorizontalTextPosition(0);
         subText.setText("Inserisci email e password per iniziare...");
         topPanel.add(subText, BorderLayout.SOUTH);
-        final Spacer spacer1 = new Spacer();
-        topPanel.add(spacer1, BorderLayout.NORTH);
         midPanel = new JPanel();
         midPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         midPanel.setMaximumSize(new Dimension(800, 180));
@@ -112,13 +129,15 @@ public class LandingPageLogin {
         label1.setVerticalAlignment(3);
         emailForm.add(label1, BorderLayout.CENTER);
         emailField = new JTextField();
+        emailField.setColumns(0);
+        emailField.setEnabled(true);
         Font emailFieldFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, emailField.getFont());
         if (emailFieldFont != null) emailField.setFont(emailFieldFont);
         emailField.setForeground(new Color(-13487566));
         emailField.setHorizontalAlignment(2);
         emailField.setMaximumSize(new Dimension(50, 40));
         emailField.setMinimumSize(new Dimension(50, 40));
-        emailField.setPreferredSize(new Dimension(50, 40));
+        emailField.setPreferredSize(new Dimension(24, 40));
         emailField.setText("");
         emailField.setVisible(true);
         emailForm.add(emailField, BorderLayout.SOUTH);
@@ -137,10 +156,12 @@ public class LandingPageLogin {
         label2.setVerticalAlignment(3);
         passwordForm.add(label2, BorderLayout.CENTER);
         passwordField = new JPasswordField();
+        passwordField.setColumns(0);
         passwordField.setMaximumSize(new Dimension(50, 40));
         passwordField.setMinimumSize(new Dimension(50, 40));
         passwordField.setOpaque(false);
-        passwordField.setPreferredSize(new Dimension(50, 40));
+        passwordField.setPreferredSize(new Dimension(61, 40));
+        passwordField.setText("");
         passwordForm.add(passwordField, BorderLayout.SOUTH);
         loginPanel = new JPanel();
         loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));

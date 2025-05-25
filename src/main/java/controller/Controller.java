@@ -11,14 +11,9 @@ import java.util.Optional;
  */
 public class Controller {
 
-    // Singleton instance
-    private static Controller instance = null;
-
-    // Utente corrente
-    private Utente utenteLoggato;
-
-    // Lista degli utenti registrati
-    private ArrayList<Utente> utentiRegistrati;
+    private static Controller instance = null;      // Singleton instance
+    private Utente utenteLoggato;                   // Utente corrente
+    private ArrayList<Utente> utentiRegistrati;     // Lista degli utenti registrati
 
     /**
      * Costruttore privato per il pattern Singleton
@@ -92,13 +87,13 @@ public class Controller {
         // Controlla se l'utente esiste già
         for (Utente utente : utentiRegistrati) {
             if (utente.getUsername().equals(username) || utente.getEmail().equals(email)) {
-                return false;
+                return false;       // Username o Email gia utilizzati!
             }
         }
 
         // Crea il nuovo utente
         Utente nuovoUtente;
-        if (isAdmin) {
+        if (isAdmin) {      // Vediamo se si tratta di un nuovo admin o un nuovo user
             nuovoUtente = new Amministratore(email, username, password);
         } else {
             nuovoUtente = new UtenteGenerico(email, username, password);
