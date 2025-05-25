@@ -1,0 +1,11 @@
+Link alla repository del progetto: https://github.com/Andre-m3/OOProject/tree/master
+
+Repository di Antonio Andrea Montella (N86005652)
+Collaboratore alla Repository: Adriano Montella (N86005823)
+
+In questo secondo Homework sono stati realizzati i package "controller" e "GUI", con l'implementazione delle relative classi.
+È stato utilizzato il plugin "Swing UI Designer" per la realizzazione delle varie interfacce grafiche.
+
+NB.:	Sono stati aggiunti due utenti a scopo di test.
+		Utente Generico: ("user", "password123")
+		Amministratore: ("admin", "admin123")
