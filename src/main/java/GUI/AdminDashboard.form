@@ -11,20 +11,20 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="5f783" binding="topPanel" layout-manager="BorderLayout" hgap="5" vgap="5">
+      <grid id="5f783" binding="topPanel" layout-manager="BorderLayout" hgap="5" vgap="2">
         <constraints/>
         <properties>
           <font name="Droid Sans Mono" size="36" style="1"/>
-          <maximumSize width="800" height="150"/>
-          <minimumSize width="800" height="150"/>
-          <preferredSize width="800" height="150"/>
+          <maximumSize width="800" height="160"/>
+          <minimumSize width="800" height="160"/>
+          <preferredSize width="800" height="160"/>
         </properties>
         <border type="none"/>
         <children>
           <component id="32c9c" class="javax.swing.JLabel" binding="welcomeText">
             <constraints border-constraint="Center"/>
             <properties>
-              <font name="Droid Sans Mono" size="36" style="1"/>
+              <font name="Droid Sans Mono" size="48" style="1"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
               <text value="Bentornato, Admin!"/>
@@ -56,18 +56,18 @@
       <grid id="ae9fe" binding="btnsPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints/>
         <properties>
-          <maximumSize width="800" height="270"/>
-          <minimumSize width="800" height="270"/>
-          <preferredSize width="800" height="270"/>
+          <maximumSize width="500" height="270"/>
+          <minimumSize width="500" height="270"/>
+          <preferredSize width="500" height="270"/>
         </properties>
         <border type="none"/>
         <children>
           <grid id="9e79b" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints border-constraint="West"/>
             <properties>
-              <maximumSize width="400" height="250"/>
-              <minimumSize width="400" height="250"/>
-              <preferredSize width="400" height="250"/>
+              <maximumSize width="250" height="250"/>
+              <minimumSize width="250" height="250"/>
+              <preferredSize width="250" height="250"/>
             </properties>
             <border type="none"/>
             <children>
@@ -98,9 +98,9 @@
           <grid id="508ed" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints border-constraint="Center"/>
             <properties>
-              <maximumSize width="400" height="250"/>
-              <minimumSize width="400" height="250"/>
-              <preferredSize width="400" height="250"/>
+              <maximumSize width="250" height="250"/>
+              <minimumSize width="250" height="250"/>
+              <preferredSize width="250" height="250"/>
             </properties>
             <border type="none"/>
             <children>
