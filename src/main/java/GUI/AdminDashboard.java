@@ -5,9 +5,11 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
+import controller.Controller;
 
 public class AdminDashboard {
-    private static JFrame FrameAdmin;
+    private JFrame FrameAdmin;
+    private Controller controller;
     private JPanel panel1;
     private JPanel topPanel;
     private JLabel welcomeText;
@@ -17,21 +19,41 @@ public class AdminDashboard {
     private JButton btnViewVoli;
     private JButton btnLogout;
 
-    public static void main(String[] args) {
-        FrameAdmin = new JFrame("Dashboard Admin");
-        FrameAdmin.setContentPane(new AdminDashboard().panel1);
+    public AdminDashboard(JFrame frame) {
+
+        controller = Controller.getInstance();
+        FrameAdmin = frame;                             // Non creiamo un nuovo frame, ma utilizziamo quello passato!
+
+        FrameAdmin.setTitle("Dashboard Admin");
+        FrameAdmin.setContentPane(panel1);
         FrameAdmin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FrameAdmin.pack();
         FrameAdmin.setLocationRelativeTo(null);         // Centra la finestra sullo schermo
         FrameAdmin.setVisible(true);
-
-        // Momentaneo in via precauzionale
         FrameAdmin.setResizable(false);
 
+        // Per renderlo migliore, inseriamo l'username dell'utente nel messaggio di benvenuto!
+        if (controller.getUtenteLoggato() != null) {
+            welcomeText.setText("Bentornato, " + controller.getUtenteLoggato().getUsername() + "!");
+        }
+
+        setupButtons();
+
+        // Creiamo il Listener per il pulsante di Logout, che dovrà portarci di nuovo al Login!
+        btnLogout.addActionListener(e -> {
+            controller.logout();
+            FrameAdmin.dispose();
+            // Apri di nuovo la pagina di login
+            LandingPageLogin.showLoginPage();
+        });
     }
 
     public AdminDashboard() {
+        controller = Controller.getInstance();
+        setupButtons();
+    }
 
+    private void setupButtons() {
         /* Quanto segue è la personalizzazione dei 4 pulsanti della Dashboard Admin
          * La personalizzazione è la medesima per tutti e 4 i pulsanti!
          * Il colore dello sfondo (sfondoLeggermenteScuro) è stato creato come oggetto, quindi creato solo una volta
@@ -70,8 +92,10 @@ public class AdminDashboard {
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         btnLogout.setOpaque(true);
-
     }
+
+
+
 
 
     {

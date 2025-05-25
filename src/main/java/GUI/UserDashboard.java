@@ -1,16 +1,15 @@
 package GUI;
 
-import com.intellij.uiDesigner.core.GridLayoutManager;
-
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
+import controller.Controller;
 
 public class UserDashboard {
-    private static JFrame FrameUser;
-    private JPanel btnsPanel;
+    private JFrame FrameUser;
+    private JPanel buttonPanel;
     private JButton btnPrenotaVolo;
     private JButton btnAreaPersonale;
     private JButton btnViewVoli;
@@ -18,22 +17,44 @@ public class UserDashboard {
     private JPanel topPanel;
     private JLabel welcomeText;
     private JPanel panel1;
+    private Controller controller;
 
-    public static void main(String[] args) {
-        FrameUser = new JFrame("Dashboard Utente");
-        FrameUser.setContentPane(new UserDashboard().panel1);
+    public UserDashboard(JFrame frame) {
+        controller = Controller.getInstance();
+        FrameUser = frame;
+
+        FrameUser.setTitle("Dashboard Utente");
+        FrameUser.setContentPane(panel1);
         FrameUser.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FrameUser.pack();
         FrameUser.setLocationRelativeTo(null);         // Centra la finestra sullo schermo
         FrameUser.setVisible(true);
-
-        // Momentaneo in via precauzionale
         FrameUser.setResizable(false);
+
+        // Aggiorniamo il messaggio di benvenuto con il nome utente, così da fornire un risultato più efficace!
+        if (controller.getUtenteLoggato() != null) {
+            welcomeText.setText("Bentornato, " + controller.getUtenteLoggato().getUsername() + "!");
+        }
+
+        setupButtons();
+
+        // Aggiungiamo funzionalità al pulsante logout
+        btnLogout.addActionListener(e -> {
+            controller.logout();
+            FrameUser.dispose();
+            // Apriamo di nuovo la pagina di login
+            LandingPageLogin.showLoginPage();
+        });
 
     }
 
     public UserDashboard() {
+    controller = Controller.getInstance();
+    setupButtons();
 
+    }
+
+    private void setupButtons() {
         /* Quanto segue è la personalizzazione dei 4 pulsanti della Dashboard Admin
          * La personalizzazione è la medesima per tutti e 4 i pulsanti!
          * Il colore dello sfondo (sfondoLeggermenteScuro) è stato creato come oggetto, quindi creato solo una volta
@@ -72,7 +93,6 @@ public class UserDashboard {
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         btnLogout.setOpaque(true);
-
     }
 
     {
@@ -125,18 +145,18 @@ public class UserDashboard {
         panel2.setMinimumSize(new Dimension(800, 25));
         panel2.setPreferredSize(new Dimension(800, 25));
         panel1.add(panel2);
-        btnsPanel = new JPanel();
-        btnsPanel.setLayout(new BorderLayout(0, 0));
-        btnsPanel.setMaximumSize(new Dimension(500, 270));
-        btnsPanel.setMinimumSize(new Dimension(500, 270));
-        btnsPanel.setPreferredSize(new Dimension(500, 270));
-        panel1.add(btnsPanel);
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BorderLayout(0, 0));
+        buttonPanel.setMaximumSize(new Dimension(500, 270));
+        buttonPanel.setMinimumSize(new Dimension(500, 270));
+        buttonPanel.setPreferredSize(new Dimension(500, 270));
+        panel1.add(buttonPanel);
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new BorderLayout(0, 0));
         panel3.setMaximumSize(new Dimension(250, 250));
         panel3.setMinimumSize(new Dimension(250, 250));
         panel3.setPreferredSize(new Dimension(250, 250));
-        btnsPanel.add(panel3, BorderLayout.WEST);
+        buttonPanel.add(panel3, BorderLayout.WEST);
         btnPrenotaVolo = new JButton();
         Font btnPrenotaVoloFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnPrenotaVolo.getFont());
         if (btnPrenotaVoloFont != null) btnPrenotaVolo.setFont(btnPrenotaVoloFont);
@@ -160,7 +180,7 @@ public class UserDashboard {
         panel4.setMaximumSize(new Dimension(250, 250));
         panel4.setMinimumSize(new Dimension(250, 250));
         panel4.setPreferredSize(new Dimension(250, 250));
-        btnsPanel.add(panel4, BorderLayout.CENTER);
+        buttonPanel.add(panel4, BorderLayout.CENTER);
         btnViewVoli = new JButton();
         Font btnViewVoliFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnViewVoli.getFont());
         if (btnViewVoliFont != null) btnViewVoli.setFont(btnViewVoliFont);

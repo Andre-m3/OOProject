@@ -1,23 +1,24 @@
 package GUI;
 
-import com.intellij.uiDesigner.core.Spacer;
 import controller.Controller;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Locale;
 
 public class LandingPageLogin {
     private static JFrame FrameLogin;
-    private Controller controller;              // Non ricordo perchè sta qui ANNOTARE ANNOTARE ANNOTARE
+    private Controller controller;
     private JPanel panel1;
     private JPanel topPanel;
     private JLabel mainText;
     private JPanel midPanel;
     private JTextField emailField;
-    private JPanel emailForm;
+    private JPanel usernameForm;
     private JLabel subText;
     private JPanel passwordForm;
     private JPasswordField passwordField;
@@ -27,6 +28,11 @@ public class LandingPageLogin {
     private JLabel registerField;
 
     public static void main(String[] args) {
+        showLoginPage();
+
+    }
+
+    public static void showLoginPage() {
         FrameLogin = new JFrame("Login");
         FrameLogin.setContentPane(new LandingPageLogin().panel1);
         FrameLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,11 +42,10 @@ public class LandingPageLogin {
 
         // Per impedire eventuali problemi, impediamo all'utente di ridimensionare la finestra di Login
         FrameLogin.setResizable(false);
-
     }
 
     public LandingPageLogin() {
-        controller = new Controller();              // Dopo la modifica al controller è sempre necessario? ANNOTARE ANNOTARE ANNOTARE
+        controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!!!
 
         /*
          * Quanto segue è la personalizzazione di alcuni componenti grafici della pagina di Login
@@ -56,6 +61,50 @@ public class LandingPageLogin {
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         btnLogin.setOpaque(true);
+
+        // Listener per il pulsante di login. Effettuiamo vari controlli
+        // Utilizziamo l'istanza del controller (gia creata) per effettuare le verifiche presenti in essa!
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ottieni i dati inseriti dall'utente
+                String username = emailField.getText();
+                String password = new String(passwordField.getPassword());
+
+                // Verifichiamo che i campi non siano effettivamente vuoti
+                if (username.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(FrameLogin,
+                            "Inserisci sia username che password!",
+                            "Errore di login",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Effettua il login tramite il controller
+                boolean loginSuccess = controller.login(username, password);
+
+                if (loginSuccess) {
+                    // Chiudiamo la finestra di login
+                    FrameLogin.dispose();
+
+                    // Creiamo una nuova finestra per la dashboard (relativa al login)
+                    JFrame dashboardFrame = new JFrame();
+
+                    // Apri l'interfaccia appropriata in base al tipo di utente
+                    if (controller.isUtenteAdmin()) {
+                        new AdminDashboard(dashboardFrame);
+                    } else {
+                        new UserDashboard(dashboardFrame);
+                    }
+                } else {
+                    // In caso di Login fallito per utente inesistente, mostriamo un popUp di errore!!
+                    JOptionPane.showMessageDialog(FrameLogin,
+                            "Username o password non validi!",
+                            "Errore di login",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
 
 
         // ADD ACTION LISTENERS OR OTHER CODE
@@ -114,20 +163,20 @@ public class LandingPageLogin {
         midPanel.setMinimumSize(new Dimension(800, 180));
         midPanel.setPreferredSize(new Dimension(800, 180));
         panel1.add(midPanel);
-        emailForm = new JPanel();
-        emailForm.setLayout(new BorderLayout(0, 0));
-        emailForm.setMaximumSize(new Dimension(400, 75));
-        emailForm.setMinimumSize(new Dimension(400, 75));
-        emailForm.setPreferredSize(new Dimension(400, 75));
-        midPanel.add(emailForm);
+        usernameForm = new JPanel();
+        usernameForm.setLayout(new BorderLayout(0, 0));
+        usernameForm.setMaximumSize(new Dimension(400, 75));
+        usernameForm.setMinimumSize(new Dimension(400, 75));
+        usernameForm.setPreferredSize(new Dimension(400, 75));
+        midPanel.add(usernameForm);
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, label1.getFont());
         if (label1Font != null) label1.setFont(label1Font);
         label1.setHorizontalAlignment(2);
         label1.setHorizontalTextPosition(0);
-        label1.setText("Email");
+        label1.setText("Username");
         label1.setVerticalAlignment(3);
-        emailForm.add(label1, BorderLayout.CENTER);
+        usernameForm.add(label1, BorderLayout.CENTER);
         emailField = new JTextField();
         emailField.setColumns(0);
         emailField.setEnabled(true);
@@ -140,7 +189,7 @@ public class LandingPageLogin {
         emailField.setPreferredSize(new Dimension(24, 40));
         emailField.setText("");
         emailField.setVisible(true);
-        emailForm.add(emailField, BorderLayout.SOUTH);
+        usernameForm.add(emailField, BorderLayout.SOUTH);
         passwordForm = new JPanel();
         passwordForm.setLayout(new BorderLayout(0, 0));
         passwordForm.setMaximumSize(new Dimension(400, 75));
