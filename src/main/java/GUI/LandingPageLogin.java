@@ -2,8 +2,6 @@ package GUI;
 
 import controller.Controller;
 
-import com.intellij.uiDesigner.core.GridLayoutManager;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,7 +12,11 @@ public class LandingPageLogin {
     private JPanel topPanel;
     private JLabel mainText;
     private JPanel midPanel;
-    private JTextField textField1;
+    private JTextField emailField;
+    private JPanel emailForm;
+    private JPanel passwordForm;
+    private JTextField passwordField;
+    private JLabel subText;
 
     public static void main(String[] args) {
         FrameLogin = new JFrame("Login");
