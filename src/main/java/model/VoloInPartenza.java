@@ -1,23 +1,31 @@
 package model;
 
 public class VoloInPartenza extends Volo{
-    private short gateImbarco;
+    private Short gateImbarco;          // Short è Wrapped, non Primitivo!
     private String aeroportoDestinazione;
 
+    // Abbiamo un primo Costruttore che accetta l'inserimento del Gate Imbarco (Short)
     public VoloInPartenza(String numeroVolo, String compagniaAerea, String orarioPrevisto,
                           String data, int ritardo, String stato, String tipoVolo,
-                          short gateImbarco, String aeroportoDestinazione
-    ) {
+                          Short gateImbarco, String aeroportoDestinazione) {
         super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, tipoVolo);
         this.gateImbarco = gateImbarco;
         this.aeroportoDestinazione = aeroportoDestinazione;
-//        this.setTipoVolo("Partenza");
     }
 
-    public int getGateImbarco() {
+    // Abbiamo un secondo Costruttore che accetta l'omissione del Gate (settato automaticamente a null)
+    public VoloInPartenza(String numeroVolo, String compagniaAerea, String orarioPrevisto,
+                          String data, int ritardo, String stato, String tipoVolo,
+                          String aeroportoDestinazione) {
+        super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, tipoVolo);
+        this.gateImbarco = null;
+        this.aeroportoDestinazione = aeroportoDestinazione;
+    }
+
+    public Short getGateImbarco() {
         return gateImbarco;
     }
-    public void setGateImbarco(short gateImbarco) {
+    public void setGateImbarco(Short gateImbarco) {
         this.gateImbarco = gateImbarco;
     }
 
@@ -35,7 +43,8 @@ public class VoloInPartenza extends Volo{
                 + "\n- Destinazione: " + this.getAeroportoDestinazione()
                 + "\n- Orario Partenza: " + this.getOrarioPrevisto()
                 + "\n- Ritardo: " + this.getRitardo() + " minuti"
-                + "\n- Gate Imbarco: " + this.getGateImbarco() + "\n";
+                + "\n- Gate Imbarco: " + (this.getGateImbarco() == null ? "non assegnato" : this.getGateImbarco()) + "\n";
+                    // Effettua un controllo sul gate. Se non è presente (quindi null) non visualizziamo nulla, altrimenti visualizziamo il valore del gate
     }
 
 }

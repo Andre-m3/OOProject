@@ -21,9 +21,12 @@ public class Main {
 
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
-        admin1.aggiornaVolo();                      // Metodo accessibile dal solo Amministratore
-        admin1.modificaGateImbarco();               // Metodo accessibile dal solo Amministratore
         admin1.visualizzaVoli();                    // Metodo accessibile da chiunque
+//        admin1.aggiornaVolo();                    // Metodo accessibile dal solo Amministratore
+//        admin1.modificaGateImbarco();             // Metodo accessibile dal solo Amministratore
+        utente1.prenotaVolo();                      // Metodo accessibile dal solo utente
+        utente1.visualizzaTicket();                 // Metodo accessibile dal solo utente
+        utente1.cercaPrenotazione();
 
     }
 }

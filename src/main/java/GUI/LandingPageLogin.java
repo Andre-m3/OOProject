@@ -8,15 +8,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LandingPageLogin {
-    private JPanel mainPanel;
     private static JFrame FrameLogin;
     private Controller controller;
+    private JPanel panel1;
+    private JPanel topPanel;
+    private JLabel mainText;
+    private JPanel midPanel;
+    private JTextField textField1;
 
     public static void main(String[] args) {
         FrameLogin = new JFrame("Login");
-        FrameLogin.setContentPane(new LandingPageLogin().mainPanel);
+        FrameLogin.setContentPane(new LandingPageLogin().panel1);
         FrameLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FrameLogin.pack();
+        FrameLogin.setLocationRelativeTo(null);         // Centra la finestra sullo schermo
         FrameLogin.setVisible(true);
 
     }
@@ -26,6 +31,7 @@ public class LandingPageLogin {
 
         // ADD ACTION LISTENERS OR OTHER CODE
     }
+
 
 
 
@@ -47,7 +53,21 @@ public class LandingPageLogin {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1 = new JPanel();
+        panel1.setLayout(new BorderLayout(0, 0));
+        panel1.setMaximumSize(new Dimension(800, 600));
+        panel1.setMinimumSize(new Dimension(800, 600));
+        panel1.setPreferredSize(new Dimension(800, 600));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new BorderLayout(0, 0));
+        panel1.add(panel2, BorderLayout.CENTER);
     }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return panel1;
+    }
+
 }
