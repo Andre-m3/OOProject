@@ -19,8 +19,8 @@ public class LandingPageLogin {
     private JPanel topPanel;
     private JLabel mainText;
     private JPanel midPanel;
-    private JTextField emailField;
-    private JPanel usernameForm;
+    private JTextField emailUsernameField;
+    private JPanel emailUsernameForm;
     private JLabel subText;
     private JPanel passwordForm;
     private JPasswordField passwordField;
@@ -63,20 +63,20 @@ public class LandingPageLogin {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Ottieni i dati inseriti dall'utente
-                String username = emailField.getText();
+                String usernameOrEmail = emailUsernameField.getText();
                 String password = new String(passwordField.getPassword());
 
                 // Verifichiamo che i campi non siano effettivamente vuoti
-                if (username.isEmpty() || password.isEmpty()) {
+                if (usernameOrEmail.isEmpty() || password.isEmpty()) {
                     JOptionPane.showMessageDialog(FrameLogin,
-                            "Inserisci sia username che password!",
+                            "Inserisci sia email/username che password!",
                             "Errore di login",
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 // Effettua il login tramite il controller
-                boolean loginSuccess = controller.login(username, password);
+                boolean loginSuccess = controller.login(usernameOrEmail, password);
 
                 if (loginSuccess) {
                     // Chiudiamo la finestra di login
@@ -197,33 +197,33 @@ public class LandingPageLogin {
         midPanel.setMinimumSize(new Dimension(800, 180));
         midPanel.setPreferredSize(new Dimension(800, 180));
         panel1.add(midPanel);
-        usernameForm = new JPanel();
-        usernameForm.setLayout(new BorderLayout(0, 0));
-        usernameForm.setMaximumSize(new Dimension(400, 75));
-        usernameForm.setMinimumSize(new Dimension(400, 75));
-        usernameForm.setPreferredSize(new Dimension(400, 75));
-        midPanel.add(usernameForm);
+        emailUsernameForm = new JPanel();
+        emailUsernameForm.setLayout(new BorderLayout(0, 0));
+        emailUsernameForm.setMaximumSize(new Dimension(400, 75));
+        emailUsernameForm.setMinimumSize(new Dimension(400, 75));
+        emailUsernameForm.setPreferredSize(new Dimension(400, 75));
+        midPanel.add(emailUsernameForm);
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, label1.getFont());
         if (label1Font != null) label1.setFont(label1Font);
         label1.setHorizontalAlignment(2);
         label1.setHorizontalTextPosition(0);
-        label1.setText("Username");
+        label1.setText("Email / Username");
         label1.setVerticalAlignment(3);
-        usernameForm.add(label1, BorderLayout.CENTER);
-        emailField = new JTextField();
-        emailField.setColumns(0);
-        emailField.setEnabled(true);
-        Font emailFieldFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, emailField.getFont());
-        if (emailFieldFont != null) emailField.setFont(emailFieldFont);
-        emailField.setForeground(new Color(-13487566));
-        emailField.setHorizontalAlignment(2);
-        emailField.setMaximumSize(new Dimension(50, 40));
-        emailField.setMinimumSize(new Dimension(50, 40));
-        emailField.setPreferredSize(new Dimension(24, 40));
-        emailField.setText("");
-        emailField.setVisible(true);
-        usernameForm.add(emailField, BorderLayout.SOUTH);
+        emailUsernameForm.add(label1, BorderLayout.CENTER);
+        emailUsernameField = new JTextField();
+        emailUsernameField.setColumns(0);
+        emailUsernameField.setEnabled(true);
+        Font emailUsernameFieldFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, emailUsernameField.getFont());
+        if (emailUsernameFieldFont != null) emailUsernameField.setFont(emailUsernameFieldFont);
+        emailUsernameField.setForeground(new Color(-13487566));
+        emailUsernameField.setHorizontalAlignment(2);
+        emailUsernameField.setMaximumSize(new Dimension(50, 40));
+        emailUsernameField.setMinimumSize(new Dimension(50, 40));
+        emailUsernameField.setPreferredSize(new Dimension(24, 40));
+        emailUsernameField.setText("");
+        emailUsernameField.setVisible(true);
+        emailUsernameForm.add(emailUsernameField, BorderLayout.SOUTH);
         passwordForm = new JPanel();
         passwordForm.setLayout(new BorderLayout(0, 0));
         passwordForm.setMaximumSize(new Dimension(400, 75));

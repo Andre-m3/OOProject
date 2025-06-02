@@ -55,7 +55,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <grid id="d4af3" binding="usernameForm" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="d4af3" binding="emailUsernameForm" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints/>
             <properties>
               <maximumSize width="400" height="75"/>
@@ -70,11 +70,11 @@
                   <font name="Droid Sans Mono" size="16" style="0"/>
                   <horizontalAlignment value="2"/>
                   <horizontalTextPosition value="0"/>
-                  <text value="Username"/>
+                  <text value="Email / Username"/>
                   <verticalAlignment value="3"/>
                 </properties>
               </component>
-              <component id="dde66" class="javax.swing.JTextField" binding="emailField">
+              <component id="dde66" class="javax.swing.JTextField" binding="emailUsernameField">
                 <constraints border-constraint="South"/>
                 <properties>
                   <columns value="0"/>

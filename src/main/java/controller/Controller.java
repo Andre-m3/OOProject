@@ -52,19 +52,25 @@ public class Controller {
 
     /**
      * Effettua il login di un utente
-     * @param username Username dell'utente
+     * @param emailUsername Username dell'utente
      * @param password Password dell'utente
      * @return true se il login è avvenuto con successo, false altrimenti
      */
-    public boolean login(String username, String password) {
+    public boolean login(String emailUsername, String password) {
         for (Utente utente : utentiRegistrati) {
-            if (utente.getUsername().equals(username)) {
-                // In una implementazione reale, verificheremmo la password in modo sicuro
-                // con hashing e salting
-                utenteLoggato = utente;
-                return true;
+            if (utente.getUsername().equals(emailUsername) || utente.getEmail().equals(emailUsername)) {
+                // Verifica la password
+                if (utente.verificaPassword(password)) {
+                    utenteLoggato = utente;
+                    return true;
+                } else {
+                    // Password errata
+                    return false;
+                }
             }
         }
+
+        // Utente non trovato
         return false;
     }
 

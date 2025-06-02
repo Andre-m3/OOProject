@@ -108,7 +108,7 @@
                   <verticalAlignment value="3"/>
                 </properties>
               </component>
-              <component id="c56aa" class="javax.swing.JTextField">
+              <component id="c56aa" class="javax.swing.JTextField" binding="usernameField">
                 <constraints border-constraint="South"/>
                 <properties>
                   <font name="Droid Sans Mono" size="14" style="0"/>

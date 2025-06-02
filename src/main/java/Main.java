@@ -19,11 +19,17 @@ public class Main {
                 "!MyAmazingPassword_3!"
         );  // Utente -> Amministratore
 
+        /* Lista Utenti presenti nel sistema:
+         * - Antonioan.montella@studenti.unina.it   | AndreS3   | Andrea3!
+         * - admin@example.com      | admin     | admin123
+         * - user@example.com       | user      | password123
+         */
+
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.inserimentoVolo();                   // Metodo accessibile dal solo Amministratore
         admin1.visualizzaVoli();                    // Metodo accessibile da chiunque
-//        admin1.aggiornaVolo();                    // Metodo accessibile dal solo Amministratore
-//        admin1.modificaGateImbarco();             // Metodo accessibile dal solo Amministratore
+        admin1.aggiornaVolo();                      // Metodo accessibile dal solo Amministratore
+        admin1.modificaGateImbarco();               // Metodo accessibile dal solo Amministratore
         utente1.prenotaVolo();                      // Metodo accessibile dal solo utente
         utente1.visualizzaTicket();                 // Metodo accessibile dal solo utente
         utente1.cercaPrenotazione();

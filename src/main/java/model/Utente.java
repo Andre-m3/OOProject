@@ -28,9 +28,26 @@ public class Utente {
         this.username = username;
     }
 
+    /**
+     * Ottiene la password dell'utente (solo per controlli interni)
+     * @return La password dell'utente
+     */
     public void setPassword(String password) {
         this.password = password;
     }
+    protected String getPassword() {
+        return password;
+    }
+
+    /**
+     * Verifica se la password fornita corrisponde alla password dell'utente
+     * @param passwordToCheck La password da verificare
+     * @return true se la password è corretta, false altrimenti
+     */
+    public boolean verificaPassword(String passwordToCheck) {
+        return this.password.equals(passwordToCheck);
+    }
+
 
     public void visualizzaVoli() {
         System.out.println("\n=== Elenco Voli Registrati ===");

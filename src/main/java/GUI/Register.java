@@ -6,9 +6,12 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class Register {
     private JFrame FrameRegister;
@@ -29,10 +32,12 @@ public class Register {
     private JPanel usernameForm;
     private JPanel isAdminCheck;
     private JCheckBox adminCheck;
+    private JTextField usernameField;
 
     public Register(JFrame frame) {
         controller = Controller.getInstance();
         FrameRegister = frame;              // Analogo -> AdminDashboard & UserDashboard
+
         FrameRegister.setTitle("Register");
         FrameRegister.setContentPane(panel1);
         FrameRegister.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +50,61 @@ public class Register {
 
         setupButtons();
 
-        // Aggiungiamo un MouseListener per gestire il cambio di colore e il click
+        // Aggiungiamo un Listener per il pulsante di registrazione
+        btnRegister.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ottieni i dati inseriti dall'utente
+                String email = emailField.getText();
+                String username = usernameField.getText();
+                String password = new String(passwordField.getPassword());
+                boolean isAdmin = adminCheck.isSelected();
+
+                // Verifica che i campi non siano vuoti
+                if (email.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                    JOptionPane.showMessageDialog(FrameRegister,
+                            "Tutti i campi sono obbligatori!",
+                            "Errore di registrazione",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Verifica il formato dell'email
+                if (!isValidEmail(email)) {
+                    JOptionPane.showMessageDialog(FrameRegister,
+                            "Formato email non valido!",
+                            "Errore di registrazione",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Registra l'utente tramite il controller
+                boolean registrationSuccess = controller.registraUtente(email, username, password, isAdmin);
+
+                if (registrationSuccess) {
+                    // Registrazione completata con successo!
+                    JOptionPane.showMessageDialog(FrameRegister,
+                            "Registrazione completata con successo!",
+                            "Registrazione",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    // Chiudiamo la finestra di registrazione
+                    FrameRegister.dispose();
+
+                    // Apri la pagina di login
+                    LandingPageLogin.showLoginPage();
+                } else {
+                    // Registrazione fallita...
+                    JOptionPane.showMessageDialog(FrameRegister,
+                            "Username o email già in uso!",
+                            "Errore di registrazione",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+
+        // Aggiungiamo un Listener per gestire il cambio di colore e il click
         registerField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
@@ -102,6 +161,21 @@ public class Register {
         });
 
     }
+
+    // Pattern per validare l'email
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+
+    /**
+     * Verifica se l'email ha un formato valido
+     *
+     * @param email Email da verificare
+     * @return true se l'email è valida, false altrimenti
+     */
+    private boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+
 
     private void setupButtons() {
         /* Come descritto dell'interfaccia Login, abbiamo copiato la personalizzazione effettuata
@@ -221,17 +295,17 @@ public class Register {
         label2.setText("Username");
         label2.setVerticalAlignment(3);
         usernameForm.add(label2, BorderLayout.CENTER);
-        final JTextField textField1 = new JTextField();
-        Font textField1Font = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, textField1.getFont());
-        if (textField1Font != null) textField1.setFont(textField1Font);
-        textField1.setForeground(new Color(-13487566));
-        textField1.setHorizontalAlignment(2);
-        textField1.setMaximumSize(new Dimension(50, 40));
-        textField1.setMinimumSize(new Dimension(50, 40));
-        textField1.setPreferredSize(new Dimension(50, 40));
-        textField1.setText("");
-        textField1.setVisible(true);
-        usernameForm.add(textField1, BorderLayout.SOUTH);
+        usernameField = new JTextField();
+        Font usernameFieldFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 14, usernameField.getFont());
+        if (usernameFieldFont != null) usernameField.setFont(usernameFieldFont);
+        usernameField.setForeground(new Color(-13487566));
+        usernameField.setHorizontalAlignment(2);
+        usernameField.setMaximumSize(new Dimension(50, 40));
+        usernameField.setMinimumSize(new Dimension(50, 40));
+        usernameField.setPreferredSize(new Dimension(50, 40));
+        usernameField.setText("");
+        usernameField.setVisible(true);
+        usernameForm.add(usernameField, BorderLayout.SOUTH);
         passwordForm = new JPanel();
         passwordForm.setLayout(new BorderLayout(0, 0));
         passwordForm.setMaximumSize(new Dimension(400, 75));
