@@ -31,7 +31,6 @@ public class LandingPageLogin {
 
     public static void main(String[] args) {
         showLoginPage();
-
     }
 
     public static void showLoginPage() {

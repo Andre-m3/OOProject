@@ -40,7 +40,7 @@ public class Utente {
     }
 
     /**
-     * Verifica se la password fornita corrisponde alla password dell'utente
+     * Verifica se la password inserita corrisponde alla password dell'utente
      * @param passwordToCheck La password da verificare
      * @return true se la password è corretta, false altrimenti
      */

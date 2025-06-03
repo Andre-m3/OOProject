@@ -16,7 +16,7 @@ public class Prenotazione {
     private String stato;
     private int numeroPasseggeri;
     private ArrayList<Ticket> tickets;
-
+    
     public Prenotazione(String codicePrenotazione, String codiceVolo, String dataVolo,
                         String partenzaDestinazione, String stato, int numeroPasseggeri) {
         this.codicePrenotazione = codicePrenotazione;

@@ -245,7 +245,7 @@ public class UtenteGenerico extends Utente {
         }
     }
 
-    // Metodo helper per mostrare tutte le prenotazioni dell'utente corrente
+    // Metodo per mostrare tutte le prenotazioni dell'utente corrente
     private void mostraPrenotazioniUtente() {
         if (this.prenotazioni.isEmpty()) {
             System.out.println("Non hai alcuna prenotazione registrata.");
@@ -469,7 +469,7 @@ public class UtenteGenerico extends Utente {
         System.out.println("Data Nascita: " + ticketDaModificare.getDataNascita());
         System.out.println("Posto: " + ticketDaModificare.getPostoAssegnato());
         System.out.println("Codice Volo: " + ticketDaModificare.getCodiceVolo());
-    }               // DA CANCELLARE!
+    }               // DA .... ?
 
     public void visualizzaTicket() {
         Scanner scanner = new Scanner(System.in);

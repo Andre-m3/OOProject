@@ -163,8 +163,7 @@ public class Register {
     }
 
     // Pattern per validare l'email
-    private static final Pattern EMAIL_PATTERN =
-            Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
     /**
      * Verifica se l'email ha un formato valido

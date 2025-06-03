@@ -110,7 +110,6 @@ public class Amministratore extends Utente {
         if (listaVoli.isEmpty()) {
             return; // Usciamo dal metodo se non ci sono voli
         }
-
         System.out.print("Inserisci il codice del volo da aggiornare: ");
         String codiceDaCercare = scanner.nextLine();
 
