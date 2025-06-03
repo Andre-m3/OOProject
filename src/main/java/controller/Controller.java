@@ -7,7 +7,7 @@ import java.util.Optional;
 
 /**
  * Controller che fa da intermediario tra il pacchetto GUI e il pacchetto model.
- * Implementa il pattern Singleton per garantire una singola istanza.
+ * Implementa il pattern 'Singleton' per garantire una singola istanza.
  */
 public class Controller {
 
