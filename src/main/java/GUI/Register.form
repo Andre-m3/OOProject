@@ -126,6 +126,7 @@
           <grid id="d4008" binding="passwordForm" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints/>
             <properties>
+              <foreground color="-16777216"/>
               <maximumSize width="400" height="75"/>
               <minimumSize width="400" height="75"/>
               <preferredSize width="400" height="75"/>
@@ -145,9 +146,10 @@
               <component id="89079" class="javax.swing.JPasswordField" binding="passwordField">
                 <constraints border-constraint="South"/>
                 <properties>
+                  <foreground color="-16777216"/>
                   <maximumSize width="50" height="40"/>
                   <minimumSize width="50" height="40"/>
-                  <opaque value="false"/>
+                  <opaque value="true"/>
                   <preferredSize width="50" height="40"/>
                 </properties>
               </component>

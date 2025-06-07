@@ -20,8 +20,9 @@ public class UserDashboard {
     private Controller controller;
 
     public UserDashboard(JFrame frame) {
+
         controller = Controller.getInstance();
-        FrameUser = frame;
+        FrameUser = frame;                             // Non creiamo un nuovo frame, ma utilizziamo quello passato!
 
         FrameUser.setTitle("Dashboard Utente");
         FrameUser.setContentPane(panel1);
@@ -37,6 +38,16 @@ public class UserDashboard {
         }
 
         setupButtons();
+
+        // Listener per il pulsante Visualizza Voli
+        btnViewVoli.addActionListener(e -> {
+            FrameUser.setVisible(false);  // Nascondi la dashboard admin
+            new VoliAdmin(FrameUser);     // Apri l'interfaccia VoliAdmin passando il frame
+            /* Non facciamo il dispose, è inutile cancellare l'istanza della dashboard, per poi ricrearla.
+             * L'utente ci tornerà per forza qui! Di conseguenza, possiamo semplicemente nasconderla (setVisible(false))
+             * e riaprirla (setVisible(true)) quando necessario.
+             */
+        });
 
         // Aggiungiamo funzionalità al pulsante logout
         btnLogout.addActionListener(e -> {

@@ -49,6 +49,7 @@ public class LandingPageLogin {
         controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!!!        // Rendiamo il testo "Registrati qui..." cliccabile
 
         setupButtons();
+
         /* Personalizziamo il testo per passare al form di registrazione.
          * In questo caso abbiamo fatto in modo che quando il cursore passerà sopra al testo
          *      quest'ultimo cambi colore, così facendo renderà all'utente chiara l'idea di come muoversi!
@@ -56,8 +57,34 @@ public class LandingPageLogin {
         registerField.setCursor(new Cursor(Cursor.HAND_CURSOR));
         registerField.setForeground(new Color(70, 70, 70));         // Colore del testo al passaggio del cursore
 
-        // Listener per il pulsante di login. Effettuiamo vari controlli
-        // Utilizziamo l'istanza del controller (gia creata) per effettuare le verifiche presenti in essa!
+        /* Listener per il testo "...Registrati qui"
+         * Aggiungiamo un MouseListener per gestire il cambio di colore e il click
+         */
+        registerField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                // Quando il mouse passa sopra, cambia colore
+                registerField.setForeground(new Color(0, 102, 204));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                // Quando il mouse esce, ripristina il colore originale
+                registerField.setForeground(new Color(70, 70, 70));
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // Quando viene cliccato, apriamo la pagina di registrazione e chiudiamo quella di login
+                JFrame registerFrame = new JFrame("Registrazione");
+                new Register(registerFrame);
+                FrameLogin.dispose();           // "Cancelliamo" la finestra di login con il dispose
+            }
+        });
+
+        /* Listener per il pulsante di login. Effettuiamo vari controlli
+         * Utilizziamo l'istanza del controller (già creata) per effettuare le verifiche presenti in essa!
+         */
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,30 +124,6 @@ public class LandingPageLogin {
                             "Errore di login",
                             JOptionPane.ERROR_MESSAGE);
                 }
-            }
-        });
-
-        // Listener per il testo "...Registrati qui"
-        // Aggiungiamo un MouseListener per gestire il cambio di colore e il click
-        registerField.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                // Quando il mouse passa sopra, cambia colore
-                registerField.setForeground(new Color(0, 102, 204)); // Blu più vivace
-            }
-
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                // Quando il mouse esce, ripristina il colore originale
-                registerField.setForeground(new Color(70, 70, 70));
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                // Quando viene cliccato, apri la pagina di registrazione e chiudi quella di login
-                JFrame registerFrame = new JFrame("Registrazione");
-                new Register(registerFrame);
-                FrameLogin.dispose(); // Chiudi la finestra di login
             }
         });
 
@@ -239,9 +242,10 @@ public class LandingPageLogin {
         passwordForm.add(label2, BorderLayout.CENTER);
         passwordField = new JPasswordField();
         passwordField.setColumns(0);
+        passwordField.setForeground(new Color(-16777216));
         passwordField.setMaximumSize(new Dimension(50, 40));
         passwordField.setMinimumSize(new Dimension(50, 40));
-        passwordField.setOpaque(false);
+        passwordField.setOpaque(true);
         passwordField.setPreferredSize(new Dimension(61, 40));
         passwordField.setText("");
         passwordForm.add(passwordField, BorderLayout.SOUTH);
@@ -252,6 +256,7 @@ public class LandingPageLogin {
         loginPanel.setPreferredSize(new Dimension(800, 55));
         panel1.add(loginPanel);
         btnLogin = new JButton();
+        btnLogin.setBackground(new Color(-11645362));
         Font btnLoginFont = this.$$$getFont$$$("Droid Sans Mono", Font.BOLD, 14, btnLogin.getFont());
         if (btnLoginFont != null) btnLogin.setFont(btnLoginFont);
         btnLogin.setHorizontalTextPosition(0);

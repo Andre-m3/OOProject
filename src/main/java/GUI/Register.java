@@ -307,6 +307,7 @@ public class Register {
         usernameForm.add(usernameField, BorderLayout.SOUTH);
         passwordForm = new JPanel();
         passwordForm.setLayout(new BorderLayout(0, 0));
+        passwordForm.setForeground(new Color(-16777216));
         passwordForm.setMaximumSize(new Dimension(400, 75));
         passwordForm.setMinimumSize(new Dimension(400, 75));
         passwordForm.setPreferredSize(new Dimension(400, 75));
@@ -320,9 +321,10 @@ public class Register {
         label3.setVerticalAlignment(3);
         passwordForm.add(label3, BorderLayout.CENTER);
         passwordField = new JPasswordField();
+        passwordField.setForeground(new Color(-16777216));
         passwordField.setMaximumSize(new Dimension(50, 40));
         passwordField.setMinimumSize(new Dimension(50, 40));
-        passwordField.setOpaque(false);
+        passwordField.setOpaque(true);
         passwordField.setPreferredSize(new Dimension(50, 40));
         passwordForm.add(passwordField, BorderLayout.SOUTH);
         isAdminCheck = new JPanel();

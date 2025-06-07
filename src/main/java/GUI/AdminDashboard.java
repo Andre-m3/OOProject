@@ -39,6 +39,16 @@ public class AdminDashboard {
 
         setupButtons();
 
+        // Listener per il pulsante Visualizza Voli
+        btnViewVoli.addActionListener(e -> {
+            FrameAdmin.setVisible(false);  // Nascondi la dashboard admin
+            new VoliAdmin(FrameAdmin);     // Apri l'interfaccia VoliAdmin passando il frame
+            /* Non facciamo il dispose, è inutile cancellare l'istanza della dashboard, per poi ricrearla.
+             * L'utente ci tornerà per forza qui! Di conseguenza, possiamo semplicemente nasconderla (setVisible(false))
+             * e riaprirla (setVisible(true)) quando necessario.
+             */
+        });
+
         // Creiamo il Listener per il pulsante di Logout, che dovrà portarci di nuovo al Login!
         btnLogout.addActionListener(e -> {
             controller.logout();
@@ -46,6 +56,7 @@ public class AdminDashboard {
             // Apri di nuovo la pagina di login
             LandingPageLogin.showLoginPage();
         });
+
     }
 
     public AdminDashboard() {
