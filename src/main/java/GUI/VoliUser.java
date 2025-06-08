@@ -1,9 +1,11 @@
 package GUI;
 
 import controller.Controller;
+import model.Volo;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -11,7 +13,7 @@ import java.awt.event.WindowEvent;
 import java.util.Locale;
 
 public class VoliUser {
-    private JFrame FrameFlightlist;
+    private JFrame FrameVoli;
     private Controller controller;
     private JPanel panel1;
     private JButton btnHomepage;
@@ -24,37 +26,47 @@ public class VoliUser {
     private JLabel spacerBypass;
     private JButton btnBookFlight;
 
+    private DefaultTableModel tableModel;           // Nel codice impostiamo anche la tabella di visualizzazione dei voli, commentata di seguito!
+
     public VoliUser(JFrame frameDash) {
         controller = Controller.getInstance();
-        FrameFlightlist = new JFrame();
+        FrameVoli = new JFrame();
 
-        FrameFlightlist.setTitle("Voli Esistenti");
-        FrameFlightlist.setContentPane(panel1);
+        FrameVoli.setTitle("Voli Esistenti");
+        FrameVoli.setContentPane(panel1);
         /* Non vogliamo che alla chiusura venga terminata l'esecuzione del programma! (exit_on_cose)
          * Facendo 'dispose_on_close' abbiamo il controllo sulla chiusura della finestra...
          * Aggiungeremo un Listener (WindowsListener) per gestire la chiusura della finestra e tornare alla Dashboard Admin
          */
-        FrameFlightlist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        FrameFlightlist.pack();
-        FrameFlightlist.setLocationRelativeTo(null);         // Centra la finestra sullo schermo
-        FrameFlightlist.setVisible(true);
-
-        // Preveniamo eventuali problemi di formattazione impedendo all'utente di ridimensionare la finestra di registrazione
-        FrameFlightlist.setResizable(false);
+        FrameVoli.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        FrameVoli.pack();
+        FrameVoli.setLocationRelativeTo(null);
+        FrameVoli.setVisible(true);
+        FrameVoli.setResizable(false);
 
         setupButtons();
+        setupTable();
+        loadVoli();
 
         // Aggiungiamo il listener per il pulsante Homepage
         btnHomepage.addActionListener(e -> {
-            FrameFlightlist.dispose();                  // Facciamo il dispose della finestra VoliAdmin, non è previsto un riutilizzo sicuro!
+            FrameVoli.dispose();                  // Facciamo il dispose della finestra VoliAdmin, non è previsto un riutilizzo sicuro!
             frameDash.setVisible(true);                     // Mostriamo nuovamente l'interfaccia AdminDashboard, che non avevamo mai cancellato ma solo nascosto!
         });
 
-        /* Questa volta necessitiamo di un WindowListener
+
+        /* Listener PRENOTA VOLO
+         * Attenzione! Come fatto (e ben commentato) in "AreaPrivata", andremo a passare insieme al frame anche
+         * le "informazioni" del volo che selezioniamo. Non servirà inserire dati, ma semplicemente cliccare sul volo dalla lista!
+         */
+        btnBookFlight.addActionListener(e -> prenotaVoloSelezionato());
+
+        /* Window Listener
+         * Questa volta necessitiamo di un WindowListener
          * Il metodo windowClosing() viene chiamato quando si preme il pulsante X
          * Così torniamo alla dashboard admin quando questa finestra viene chiusa
          */
-        FrameFlightlist.addWindowListener(new WindowAdapter() {
+        FrameVoli.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 frameDash.setVisible(true);
@@ -86,9 +98,139 @@ public class VoliUser {
         btnHomepage.setOpaque(true);
 
     }
+    private void setupTable() {
+        // Configuriamo il modello della tabella!
+        String[] columnNames = {"Numero Volo", "Compagnia", "Data", "Orario", "Stato", "Tipo"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Tabella non modificabile
+            }
+        };
+        tabellaVoli.setModel(tableModel);
+        tabellaVoli.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
-    {
+        // Impostiamo la larghezza di ciascuna colonna
+        tabellaVoli.getColumnModel().getColumn(0).setPreferredWidth(100); // Numero Volo
+        tabellaVoli.getColumnModel().getColumn(1).setPreferredWidth(120); // Compagnia
+        tabellaVoli.getColumnModel().getColumn(2).setPreferredWidth(100); // Data
+        tabellaVoli.getColumnModel().getColumn(3).setPreferredWidth(80);  // Orario
+        tabellaVoli.getColumnModel().getColumn(4).setPreferredWidth(100); // Stato
+        tabellaVoli.getColumnModel().getColumn(5).setPreferredWidth(100); // Tipo
+        // Bisogna effettuare modifiche in seguito alla correzione del diagramma UML!
+
+    }
+    private void loadVoli() {
+        // Carica i voli disponibili nella tabella
+        tableModel.setRowCount(0); // Pulisce la tabella
+
+        var voli = controller.getVoliDisponibili();
+
+        if (voli == null || voli.isEmpty()) {
+            // Aggiungi una riga vuota per indicare che non ci sono voli
+            tableModel.addRow(new Object[]{"N/A", "Nessun volo", "disponibile", "al momento", "", ""});
+            btnBookFlight.setEnabled(false);
+        } else {
+            for (Volo volo : voli) {
+                // Formatta l'orario con eventuale ritardo
+                String orarioCompleto = volo.getOrarioPrevisto();
+                if (volo.getRitardo() > 0) {
+                    orarioCompleto += " (+" + volo.getRitardo() + " min)";
+                }
+
+                Object[] row = {
+                        volo.getNumeroVolo(),
+                        volo.getCompagniaAerea(),
+                        volo.getData(),
+                        orarioCompleto,
+                        volo.getStato(),
+                        volo.getTipoVolo()
+                };
+                tableModel.addRow(row);
+            }
+            btnBookFlight.setEnabled(true);
+        }
+    }
+    private void prenotaVoloSelezionato() {
+            int selectedRow = tabellaVoli.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(FrameVoli,
+                        "Seleziona un volo da prenotare.",
+                        "Nessun volo selezionato",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Ottieni il numero del volo selezionato
+            String numeroVolo = (String) tableModel.getValueAt(selectedRow, 0);
+
+            if ("N/A".equals(numeroVolo)) {
+                JOptionPane.showMessageDialog(FrameVoli,
+                        "Non ci sono voli disponibili al momento.",
+                        "Nessun volo disponibile",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // Ottieni il volo completo dal controller
+            Volo voloSelezionato = controller.getVoloPerNumero(numeroVolo);
+
+            if (voloSelezionato == null) {
+                JOptionPane.showMessageDialog(FrameVoli,
+                        "Errore nel recupero delle informazioni del volo.",
+                        "Errore",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Mostra informazioni dettagliate del volo
+            String dettagliVolo = String.format(
+                    "Dettagli del volo selezionato:\n\n" +
+                            "Numero Volo: %s\n" +
+                            "Compagnia: %s\n" +
+                            "Data: %s\n" +
+                            "Orario: %s\n" +
+                            "Stato: %s\n" +
+                            "Tipo: %s",
+                    voloSelezionato.getNumeroVolo(),
+                    voloSelezionato.getCompagniaAerea(),
+                    voloSelezionato.getData(),
+                    voloSelezionato.getOrarioPrevisto(),
+                    voloSelezionato.getStato(),
+                    voloSelezionato.getTipoVolo()
+            );
+
+            int confirm = JOptionPane.showConfirmDialog(FrameVoli,
+                    dettagliVolo + "\n\nVuoi procedere con la prenotazione?",
+                    "Conferma Prenotazione",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                // Per ora mostriamo un messaggio di successo
+                // In futuro qui andranno i dialog per inserire i passeggeri, ecc.
+                JOptionPane.showMessageDialog(FrameVoli,
+                        "Prenotazione in corso per il volo " + numeroVolo + "!\n\n" +
+                                "Funzionalità completa di prenotazione in arrivo...",
+                        "Prenotazione",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
 // DO NOT EDIT OR ADD ANY CODE HERE!
@@ -106,9 +248,9 @@ public class VoliUser {
         panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         panel1.setEnabled(true);
-        panel1.setMaximumSize(new Dimension(800, 600));
-        panel1.setMinimumSize(new Dimension(800, 600));
-        panel1.setPreferredSize(new Dimension(800, 600));
+        panel1.setMaximumSize(new Dimension(800, 650));
+        panel1.setMinimumSize(new Dimension(800, 650));
+        panel1.setPreferredSize(new Dimension(800, 650));
         topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 75));
         topPanel.setMaximumSize(new Dimension(720, 120));
@@ -162,9 +304,9 @@ public class VoliUser {
         scrollPane.setViewportView(tabellaVoli);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        bottomPanel.setMaximumSize(new Dimension(720, 150));
-        bottomPanel.setMinimumSize(new Dimension(720, 150));
-        bottomPanel.setPreferredSize(new Dimension(720, 150));
+        bottomPanel.setMaximumSize(new Dimension(720, 100));
+        bottomPanel.setMinimumSize(new Dimension(720, 100));
+        bottomPanel.setPreferredSize(new Dimension(720, 100));
         panel1.add(bottomPanel);
         spacerBypass = new JLabel();
         spacerBypass.setHorizontalAlignment(2);

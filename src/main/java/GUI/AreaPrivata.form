@@ -1,13 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.AreaPrivata">
-  <grid id="27dc6" row-count="1" column-count="1" layout-manager="GridLayoutManager">
-    <margin top="0" left="0" bottom="0" right="0"/>
+  <grid id="27dc6" binding="panel1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
-      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+      <xy x="20" y="20" width="800" height="650"/>
     </constraints>
-    <properties/>
+    <properties>
+      <maximumSize width="800" height="650"/>
+      <minimumSize width="800" height="650"/>
+      <preferredSize width="800" height="650"/>
+    </properties>
     <border type="none"/>
-    <children/>
+    <children>
+      <grid id="6edb3" binding="topPanel" layout-manager="BorderLayout" hgap="5" vgap="2">
+        <constraints/>
+        <properties>
+          <maximumSize width="800" height="125"/>
+          <minimumSize width="800" height="125"/>
+          <preferredSize width="800" height="125"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="23c68" class="javax.swing.JLabel" binding="welcomeText">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="48" style="0"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <maximumSize width="800" height="64"/>
+              <minimumSize width="800" height="64"/>
+              <preferredSize width="800" height="64"/>
+              <text value="Area Personale"/>
+              <verticalAlignment value="3"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+          <component id="a6be1" class="javax.swing.JLabel" binding="subText">
+            <constraints border-constraint="South"/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="20" style="0"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <maximumSize width="800" height="17"/>
+              <minimumSize width="800" height="17"/>
+              <preferredSize width="800" height="17"/>
+              <text value="Ecco tutte le tue informazioni private!"/>
+              <verticalAlignment value="0"/>
+              <verticalTextPosition value="0"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="5cf91" binding="infoPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="10" vgap="0">
+        <margin top="5" left="0" bottom="5" right="100"/>
+        <constraints/>
+        <properties>
+          <maximumSize width="700" height="120"/>
+          <minimumSize width="700" height="120"/>
+          <preferredSize width="700" height="120"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="22d61" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="10" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="300" height="30"/>
+                <preferred-size width="300" height="30"/>
+                <maximum-size width="300" height="30"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="16" style="0"/>
+              <horizontalAlignment value="2"/>
+              <text value="Username: "/>
+              <verticalAlignment value="0"/>
+              <verticalTextPosition value="0"/>
+            </properties>
+          </component>
+          <component id="25985" class="javax.swing.JLabel" binding="usernameValue">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="10" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="300" height="30"/>
+                <preferred-size width="300" height="30"/>
+                <maximum-size width="300" height="30"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Light" size="16" style="0"/>
+              <text value="miaUsername"/>
+            </properties>
+          </component>
+          <component id="e73ab" class="javax.swing.JLabel" binding="emailValue">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="300" height="30"/>
+                <preferred-size width="300" height="30"/>
+                <maximum-size width="300" height="30"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Light" size="16" style="0"/>
+              <text value="miaEmail"/>
+            </properties>
+          </component>
+          <component id="18547" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="300" height="30"/>
+                <preferred-size width="300" height="30"/>
+                <maximum-size width="300" height="30"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="16" style="0"/>
+              <horizontalAlignment value="2"/>
+              <text value="Email: "/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="7630d" binding="bookingPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints/>
+        <properties>
+          <maximumSize width="700" height="270"/>
+          <minimumSize width="700" height="270"/>
+          <preferredSize width="700" height="270"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="87224" class="javax.swing.JLabel" binding="bookingText">
+            <constraints border-constraint="North"/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="24" style="0"/>
+              <horizontalAlignment value="2"/>
+              <preferredSize width="320" height="35"/>
+              <text value="Le tue prenotazioni:"/>
+            </properties>
+          </component>
+          <scrollpane id="d0626">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="ac806" class="javax.swing.JList" binding="prenotazioniList">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </grid>
+      <grid id="e5992" binding="bottomPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="2">
+        <constraints/>
+        <properties>
+          <maximumSize width="705" height="80"/>
+          <minimumSize width="705" height="80"/>
+          <preferredSize width="705" height="80"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="fffc" class="javax.swing.JButton" binding="btnHomepage">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <label value="Homepage"/>
+              <maximumSize width="90" height="40"/>
+              <minimumSize width="90" height="40"/>
+              <preferredSize width="90" height="40"/>
+              <text value="Homepage"/>
+            </properties>
+          </component>
+          <component id="2e70" class="javax.swing.JLabel" binding="spacerBypass">
+            <constraints/>
+            <properties>
+              <maximumSize width="400" height="0"/>
+              <minimumSize width="400" height="0"/>
+              <preferredSize width="400" height="0"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="d5ef" class="javax.swing.JButton" binding="btnModificaPrenotazione">
+            <constraints/>
+            <properties>
+              <maximumSize width="80" height="40"/>
+              <minimumSize width="80" height="40"/>
+              <preferredSize width="80" height="40"/>
+              <text value="Modifica"/>
+            </properties>
+          </component>
+          <component id="7157e" class="javax.swing.JButton" binding="btnTickets">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="110" height="40"/>
+              <minimumSize width="110" height="40"/>
+              <preferredSize width="110" height="40"/>
+              <text value="Vedi Tickets"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
   </grid>
 </form>

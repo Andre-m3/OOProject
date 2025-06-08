@@ -398,13 +398,13 @@ public class UtenteGenerico extends Utente {
         }
 
         // Visualizzo i dettagli del ticket
-        System.out.println("\n=== Dettagli Ticket ===");
+        System.out.println("\n=== Dettagli TicketDialog ===");
         System.out.println("Nome: " + ticketDaModificare.getNome());
         System.out.println("Cognome: " + ticketDaModificare.getCognome());
         System.out.println("Documento: " + ticketDaModificare.getNumeroDocumento());
         System.out.println("Data Nascita: " + ticketDaModificare.getDataNascita());
         System.out.println("Posto: " + ticketDaModificare.getPostoAssegnato());
-        System.out.println("Codice Volo: " + ticketDaModificare.getCodiceVolo());
+        System.out.println("Codice Prenotazione: " + ticketDaModificare.getCodicePrenotazione());
 
         // Chiedo se l'utente vuole cancellare il ticket
         System.out.print("\nVuoi cancellare il ticket di questo passeggero? (s/n): ");
@@ -417,7 +417,7 @@ public class UtenteGenerico extends Utente {
             // Aggiorno il numero di passeggeri
             prenotazioneDaModificare.setNumeroPasseggeri(tickets.size());
 
-            System.out.println("Ticket cancellato con successo.");
+            System.out.println("TicketDialog cancellato con successo.");
 
             // Se non ci sono più ticket, cancello la prenotazione
             if (tickets.isEmpty()) {
@@ -462,18 +462,18 @@ public class UtenteGenerico extends Utente {
         System.out.println("\nModifiche salvate con successo.");
 
         // Visualizzo lo stato aggiornato del ticket
-        System.out.println("\n=== Ticket aggiornato ===");
+        System.out.println("\n=== TicketDialog aggiornato ===");
         System.out.println("Nome: " + ticketDaModificare.getNome());
         System.out.println("Cognome: " + ticketDaModificare.getCognome());
         System.out.println("Documento: " + ticketDaModificare.getNumeroDocumento());
         System.out.println("Data Nascita: " + ticketDaModificare.getDataNascita());
         System.out.println("Posto: " + ticketDaModificare.getPostoAssegnato());
-        System.out.println("Codice Volo: " + ticketDaModificare.getCodiceVolo());
-    }               // DA .... ?
+        System.out.println("Codice Volo: " + ticketDaModificare.getCodicePrenotazione());
+    }
 
     public void visualizzaTicket() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("=== Visualizzazione Ticket ===");
+        System.out.println("=== Visualizzazione TicketDialog ===");
 
         // Verifico se l'utente ha prenotazioni
         if (this.prenotazioni.isEmpty()) {
@@ -534,16 +534,16 @@ public class UtenteGenerico extends Utente {
         System.out.println("Numero passeggeri: " + prenotazioneTrovata.getNumeroPasseggeri());
 
         // Visualizzo i dettagli di ogni ticket
-        System.out.println("\n=== Ticket associati ===");
+        System.out.println("\n=== TicketDialog associati ===");
         for (int i = 0; i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
-            System.out.println("\nTicket " + (i + 1) + ":");
+            System.out.println("\nTicketDialog " + (i + 1) + ":");
             System.out.println("- Nome: " + ticket.getNome());
             System.out.println("- Cognome: " + ticket.getCognome());
             System.out.println("- Documento: " + ticket.getNumeroDocumento());
             System.out.println("- Data Nascita: " + ticket.getDataNascita());
             System.out.println("- Posto: " + ticket.getPostoAssegnato());
-            System.out.println("- Codice Volo: " + ticket.getCodiceVolo());
+            System.out.println("- Codice Prenotazione: " + ticket.getCodicePrenotazione());
         }
     }
 }

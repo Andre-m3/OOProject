@@ -86,9 +86,9 @@
       <grid id="220a5" binding="bottomPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints/>
         <properties>
-          <maximumSize width="720" height="150"/>
-          <minimumSize width="720" height="150"/>
-          <preferredSize width="720" height="150"/>
+          <maximumSize width="720" height="100"/>
+          <minimumSize width="720" height="100"/>
+          <preferredSize width="720" height="100"/>
         </properties>
         <border type="none"/>
         <children>

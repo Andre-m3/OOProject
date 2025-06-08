@@ -36,10 +36,8 @@ public class VoliAdmin {
          */
         FrameFlightlist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         FrameFlightlist.pack();
-        FrameFlightlist.setLocationRelativeTo(null);        // Centra la finestra sullo schermo
+        FrameFlightlist.setLocationRelativeTo(null);
         FrameFlightlist.setVisible(true);
-
-        // Preveniamo eventuali problemi di formattazione impedendo all'utente di ridimensionare la finestra di registrazione
         FrameFlightlist.setResizable(false);
 
         setupButtons();
@@ -86,6 +84,15 @@ public class VoliAdmin {
         btnHomepage.setOpaque(true);
 
     }
+
+
+
+
+
+
+
+
+
 
 
     {
@@ -161,9 +168,9 @@ public class VoliAdmin {
         scrollPane.setViewportView(tabellaVoli);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        bottomPanel.setMaximumSize(new Dimension(720, 150));
-        bottomPanel.setMinimumSize(new Dimension(720, 150));
-        bottomPanel.setPreferredSize(new Dimension(720, 150));
+        bottomPanel.setMaximumSize(new Dimension(720, 100));
+        bottomPanel.setMinimumSize(new Dimension(720, 100));
+        bottomPanel.setPreferredSize(new Dimension(720, 100));
         panel1.add(bottomPanel);
         spacerBypass = new JLabel();
         spacerBypass.setHorizontalAlignment(2);

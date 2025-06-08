@@ -16,10 +16,10 @@ public class Controller {
     private ArrayList<Utente> utentiRegistrati;     // Lista degli utenti registrati
 
     /**
-     * Costruttore privato per il pattern Singleton
+     * Costruttore privato per il pattern
      */
     public Controller() {
-        // Inizializzazione delle liste
+        // Inizializzazione di una lista provvisoria per creare due utenti registrati di default
         utentiRegistrati = new ArrayList<>();
 
         // Creazione utenti di default per testing
@@ -37,6 +37,12 @@ public class Controller {
 
         utentiRegistrati.add(utente);
         utentiRegistrati.add(admin);
+
+        // Aggiuntai di alcuni voli per testing
+        Volo.aggiungiVolo(new Volo("AZ123", "Alitalia", "14:30", "10/06/2025", 0, "IN ORARIO", "PARTENZA"));
+        Volo.aggiungiVolo(new Volo("FR456", "Ryanair", "16:45", "11/06/2025", 15, "RITARDO", "PARTENZA"));
+        Volo.aggiungiVolo(new Volo("LH789", "Lufthansa", "09:15", "12/06/2025", 0, "IN ORARIO", "ARRIVO"));
+        Volo.aggiungiVolo(new Volo("BA101", "British Airways", "18:20", "13/06/2025", 0, "IN ORARIO", "PARTENZA"));
     }
 
     /**
@@ -379,33 +385,13 @@ public class Controller {
                 numeroDocumento,
                 dataNascita,
                 postoAssegnato,
-                prenotazione.getCodiceVolo()
+                prenotazione.getCodicePrenotazione()
         );
 
         prenotazione.aggiungiTicket(ticket);
         return true;
     }
 
-    /**
-     * Cerca una prenotazione per codice
-     * @param codicePrenotazione Codice della prenotazione da cercare
-     * @return La prenotazione trovata o null se non esiste
-     */
-    public Prenotazione cercaPrenotazione(String codicePrenotazione) {
-        if (!(utenteLoggato instanceof UtenteGenerico)) {
-            return null;
-        }
-
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-
-        for (Prenotazione prenotazione : utente.getPrenotazioni()) {
-            if (prenotazione.getCodicePrenotazione().equals(codicePrenotazione)) {
-                return prenotazione;
-            }
-        }
-
-        return null;  // Prenotazione non trovata
-    }
 
     /**
      * Ottiene tutte le prenotazioni dell'utente loggato
@@ -466,13 +452,38 @@ public class Controller {
         return voliInArrivo;
     }
 
+    public ArrayList<Volo> getTuttiIVoli() {
+        return Volo.getListaVoli();
+    }
+
+    /**
+     * Ottiene tutti i voli disponibili per la prenotazione
+     * Filtra solo i voli che non sono cancellati o ritardati
+     * @return Lista dei voli disponibili per prenotazione
+     */
+    public ArrayList<Volo> getVoliDisponibili() {
+        ArrayList<Volo> voliDisponibili = new ArrayList<>();
+
+        for (Volo volo : Volo.getListaVoli()) {
+            // Filtra solo i voli che sono disponibili per la prenotazione
+            // (puoi aggiungere più filtri se necessario)
+            if (!"CANCELLATO".equalsIgnoreCase(volo.getStato()) &&
+                    !"TERMINATO".equalsIgnoreCase(volo.getStato())) {
+                voliDisponibili.add(volo);
+            }
+        }
+
+        return voliDisponibili;
+    }
+
+
     /**
      * Cambia lo stato di una prenotazione
      * @param codicePrenotazione Codice della prenotazione
      * @param nuovoStato Nuovo stato della prenotazione
      * @return true se la modifica è avvenuta con successo, false altrimenti
      */
-    public boolean cambiaStatoPrenotazione(String codicePrenotazione, String nuovoStato) {
+    /* public boolean cambiaStatoPrenotazione(String codicePrenotazione, String nuovoStato) {
         if (!(utenteLoggato instanceof UtenteGenerico)) {
             return false;
         }
@@ -493,4 +504,50 @@ public class Controller {
             return false;  // Stato non valido
         }
     }
+    */
+
+    /**
+     * Elimina una prenotazione
+     * @param prenotazione La prenotazione da eliminare
+     * @return true se l'eliminazione è avvenuta con successo
+     */
+    public boolean eliminaPrenotazione(Prenotazione prenotazione) {
+        if (!(utenteLoggato instanceof UtenteGenerico)) {
+            return false;
+        }
+
+        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
+        return utente.getPrenotazioni().remove(prenotazione);
+    }
+
+    /**
+     * Modifica un ticket di una prenotazione
+     * @param ticket Il ticket da modificare
+     * @param nuovoNome Nuovo nome (opzionale)
+     * @param nuovoCognome Nuovo cognome (opzionale)
+     * @param nuovoNumeroDocumento Nuovo numero documento (opzionale)
+     * @param nuovaDataNascita Nuova data nascita (opzionale)
+     * @return true se la modifica è avvenuta con successo
+     */
+    public boolean modificaTicket(Ticket ticket, String nuovoNome, String nuovoCognome,
+                                  String nuovoNumeroDocumento, String nuovaDataNascita) {
+        try {
+            if (nuovoNome != null && !nuovoNome.trim().isEmpty()) {
+                ticket.setNome(nuovoNome);
+            }
+            if (nuovoCognome != null && !nuovoCognome.trim().isEmpty()) {
+                ticket.setCognome(nuovoCognome);
+            }
+            if (nuovoNumeroDocumento != null && !nuovoNumeroDocumento.trim().isEmpty()) {
+                ticket.setNumeroDocumento(nuovoNumeroDocumento);
+            }
+            if (nuovaDataNascita != null && !nuovaDataNascita.trim().isEmpty()) {
+                ticket.setDataNascita(nuovaDataNascita);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }

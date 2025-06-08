@@ -6,15 +6,15 @@ public class Ticket {
     private String numeroDocumento;
     private String dataNascita;
     private String postoAssegnato;          // Il "postoAssegnato" a un passeggero è sempre alfanumerico!
-    private String codiceVolo;
+    private String codicePrenotazione;
 
-    public Ticket(String nome, String cognome, String numeroDocumento, String dataNascita, String postoAssegnato, String codiceVolo) {
+    public Ticket(String nome, String cognome, String numeroDocumento, String dataNascita, String postoAssegnato, String codicePrenotazione) {
         this.nome = nome;
         this.cognome = cognome;
         this.numeroDocumento = numeroDocumento;
         this.dataNascita = dataNascita;
         this.postoAssegnato = postoAssegnato;
-        this.codiceVolo = codiceVolo;
+        this.codicePrenotazione = codicePrenotazione;
     }
 
     public String getNome() {
@@ -52,11 +52,11 @@ public class Ticket {
         this.postoAssegnato = postoAssegnato;
     }
 
-    public String getCodiceVolo() {
-        return codiceVolo;
+    public String getCodicePrenotazione() {
+        return codicePrenotazione;
     }
-    public void setCodiceVolo(String codiceVolo) {
-        this.codiceVolo = codiceVolo;
+    public void setCodicePrenotazione(String codicePrenotazione) {
+        this.codicePrenotazione = codicePrenotazione;
     }
 
     @Override
@@ -67,6 +67,6 @@ public class Ticket {
                 "\n- Documento: " + numeroDocumento +
                 "\n- Data Nascita: " + dataNascita +
                 "\n- Posto: " + postoAssegnato +
-                "\n- Codice Volo: " + codiceVolo;
+                "\n- Codice Volo: " + codicePrenotazione;
     }
 }
