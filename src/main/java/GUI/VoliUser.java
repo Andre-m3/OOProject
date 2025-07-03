@@ -1,7 +1,6 @@
 package GUI;
 
 import controller.Controller;
-import model.Volo;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -122,17 +121,16 @@ public class VoliUser {
 
     }
     private void loadVoli() {
-        // Carica i voli disponibili nella tabella
-        tableModel.setRowCount(0); // Pulisce la tabella
+        tableModel.setRowCount(0);      // È sempre buono usarlo, così per pulire la tabella da eventuali righe "sporche"
 
-        var voli = controller.getVoliDisponibili();
+        var voli = controller.getVoliDisponibili();         // Richiamiamo il metodo esistente, sviluppato nel Controller
 
-        if (voli == null || voli.isEmpty()) {
+        if (voli == null || voli.isEmpty()) {               // Verifichiamo se ci sono voli
             // Aggiungi una riga vuota per indicare che non ci sono voli
-            tableModel.addRow(new Object[]{"N/A", "Nessun volo", "disponibile", "al momento", "", ""});
-            btnBookFlight.setEnabled(false);
+            tableModel.addRow(new Object[]{"N/A", "Nessun volo", "prenotabile", "al momento", "", ""});
+            btnBookFlight.setEnabled(false);                // In tal caso, non permettiamo all'utente di cliccare il pulsante "Prenota"
         } else {
-            for (Volo volo : voli) {
+            for (var volo : voli) {
                 // Formatta l'orario con eventuale ritardo
                 String orarioCompleto = volo.getOrarioPrevisto();
                 if (volo.getRitardo() > 0) {
@@ -162,7 +160,7 @@ public class VoliUser {
                 return;
             }
 
-            // Ottieni il numero del volo selezionato
+            // Ottengo il numero del volo selezionato
             String numeroVolo = (String) tableModel.getValueAt(selectedRow, 0);
 
             if ("N/A".equals(numeroVolo)) {
@@ -173,18 +171,19 @@ public class VoliUser {
                 return;
             }
 
-            // Ottieni il volo completo dal controller
-            Volo voloSelezionato = controller.getVoloPerNumero(numeroVolo);
+            // Ottengo il volo completo dal controller
+            var voloSelezionato = controller.getVoloPerNumero(numeroVolo);
 
             if (voloSelezionato == null) {
                 JOptionPane.showMessageDialog(FrameVoli,
-                        "Errore nel recupero delle informazioni del volo.",
+                        "Errore nel recupero dei dati del volo.",
                         "Errore",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Mostra informazioni dettagliate del volo
+
+            // Mostriamo le informazioni dettagliate del volo
             String dettagliVolo = String.format(
                     "Dettagli del volo selezionato:\n\n" +
                             "Numero Volo: %s\n" +

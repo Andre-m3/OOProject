@@ -59,7 +59,7 @@ public class UserDashboard {
         btnLogout.addActionListener(e -> {
             controller.logout();
             FrameUser.dispose();
-            // Apriamo di nuovo la pagina di login
+            // Apriamo di nuovo la pagina di login, fondamentale!
             LandingPageLogin.showLoginPage();
         });
 

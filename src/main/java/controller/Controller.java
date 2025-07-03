@@ -39,10 +39,10 @@ public class Controller {
         utentiRegistrati.add(admin);
 
         // Aggiuntai di alcuni voli per testing
-        Volo.aggiungiVolo(new Volo("AZ123", "Alitalia", "14:30", "10/06/2025", 0, "IN ORARIO", "PARTENZA"));
-        Volo.aggiungiVolo(new Volo("FR456", "Ryanair", "16:45", "11/06/2025", 15, "RITARDO", "PARTENZA"));
-        Volo.aggiungiVolo(new Volo("LH789", "Lufthansa", "09:15", "12/06/2025", 0, "IN ORARIO", "ARRIVO"));
-        Volo.aggiungiVolo(new Volo("BA101", "British Airways", "18:20", "13/06/2025", 0, "IN ORARIO", "PARTENZA"));
+        Volo.aggiungiVolo(new Volo("AZ123", "Alitalia", "14:30", "03/08/2025", 0, "PROGRAMMATO", "PARTENZA"));
+        Volo.aggiungiVolo(new Volo("FR456", "Ryanair", "16:45", "11/06/2025", 15, "IN_RITARDO", "PARTENZA"));
+        Volo.aggiungiVolo(new Volo("LH789", "Lufthansa", "09:15", "28/07/2025", 0, "PROGRAMMATO", "ARRIVO"));
+        Volo.aggiungiVolo(new Volo("BA101", "British Airways", "18:20", "30/07/2025", 0, "PROGRAMMATO", "PARTENZA"));
     }
 
     /**
@@ -452,29 +452,33 @@ public class Controller {
         return voliInArrivo;
     }
 
+    /**
+     * Ottiene tutti i voli per l'amministratore (sia passati che futuri)
+     * Ottenere anche i voli passati potrebbe risultare utile a un amministratore!
+     * @return Lista di tutti i voli
+     */
     public ArrayList<Volo> getTuttiIVoli() {
         return Volo.getListaVoli();
     }
 
     /**
      * Ottiene tutti i voli disponibili per la prenotazione
-     * Filtra solo i voli che non sono cancellati o ritardati
+     * Filtra solo i voli in stato PROGRAMMATO, ovvero i soli utili alla prenotazione!
      * @return Lista dei voli disponibili per prenotazione
      */
     public ArrayList<Volo> getVoliDisponibili() {
         ArrayList<Volo> voliDisponibili = new ArrayList<>();
 
         for (Volo volo : Volo.getListaVoli()) {
-            // Filtra solo i voli che sono disponibili per la prenotazione
-            // (puoi aggiungere più filtri se necessario)
-            if (!"CANCELLATO".equalsIgnoreCase(volo.getStato()) &&
-                    !"TERMINATO".equalsIgnoreCase(volo.getStato())) {
+            // Filtra solo i voli PROGRAMMATO per la prenotazione
+            if ("PROGRAMMATO".equalsIgnoreCase(volo.getStato())) {
                 voliDisponibili.add(volo);
             }
         }
 
         return voliDisponibili;
     }
+
 
 
     /**

@@ -4,6 +4,7 @@ import controller.Controller;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -24,6 +25,8 @@ public class VoliAdmin {
     private JButton btnUpdateFlight;
     private JLabel spacerBypass;
 
+    private DefaultTableModel tableModel;       // Nel codice impostiamo anche la tabella di visualizzazione dei voli, commentata di seguito!
+
     public VoliAdmin(JFrame frameDash) {
         controller = Controller.getInstance();
         FrameFlightlist = new JFrame();
@@ -41,6 +44,9 @@ public class VoliAdmin {
         FrameFlightlist.setResizable(false);
 
         setupButtons();
+        setupTable();
+        loadVoliAdmin();
+
 
         // Aggiungiamo il listener per il pulsante Homepage
         btnHomepage.addActionListener(e -> {
@@ -58,9 +64,9 @@ public class VoliAdmin {
                 frameDash.setVisible(true);
             }
         });
-
     }
 
+    // Metodo per la modifica (in questo caso estetica) dei vari pulsanti
     private void setupButtons() {
         // Impostiamo i pulsanti con lo stesso stile utilizzato nelle altre interfacce!
         Color sfondoLeggermenteScuro = new Color(214, 214, 214);
@@ -84,6 +90,54 @@ public class VoliAdmin {
         btnHomepage.setOpaque(true);
 
     }
+
+    // Metodo per la configurazione della tabella di visualizzazione dei voli (per un admin)
+    private void setupTable() {
+        String[] colonne = {"Numero Volo", "Compagnia", "Data", "Orario", "Stato", "Tipo"};
+        tableModel = new DefaultTableModel(colonne, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;           // Rende la tabella non editabile
+            }
+        };
+        tabellaVoli.setModel(tableModel);
+        /* IMPORTANTE! Non dobbiamo dare all'utente la possibilità di selezionare più di un volo
+         * Più selezioni contemporanee creeranno problemi difficilmente gestibili dopo il click sul btn "Prenota".
+         */
+        tabellaVoli.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    // Metodo per richiamare e gestire il risultato restituito dal metodo del Controller
+    private void loadVoliAdmin() {
+        tableModel.setRowCount(0); // È sempre buono usarlo, così per pulire la tabella da eventuali righe "sporche"
+
+        var voli = controller.getTuttiIVoli();              // Richiamiamo il metodo esistente, sviluppato nel Controller
+
+        if (voli == null || voli.isEmpty()) {               // Verifichiamo se ci sono voli
+            tableModel.addRow(new Object[]{"N/A", "Nessun volo", "presente", "nel sistema", "", ""});
+            btnUpdateFlight.setEnabled(false);      // In tal caso, non permettiamo all'admin di cliccare il pulsante "modifica Volo"
+        }
+        else {
+            for (var volo : voli) {     // L'utilizzo di var ci permette di non avere problemi, visto che non importiamo la classe volo, essendo classe del package model!
+                String orarioCompleto = volo.getOrarioPrevisto();
+                if (volo.getRitardo() > 0) {
+                    orarioCompleto += " (+" + volo.getRitardo() + " min)";
+                }
+
+                Object[] row = {
+                        volo.getNumeroVolo(),
+                        volo.getCompagniaAerea(),
+                        volo.getData(),
+                        orarioCompleto,
+                        volo.getStato(),
+                        volo.getTipoVolo()
+                };
+                tableModel.addRow(row);
+            }
+            btnUpdateFlight.setEnabled(true);
+        }
+    }
+
 
 
 

@@ -12,16 +12,19 @@ public class Volo {
     private String data;
     private int ritardo;            // espresso in minuti!
     private String stato;
-    private String tipoVolo;        // partenza - arrivo
+    private String partenza;        // Aeroporto di partenza
+    private String destinazione;    // Aeroporto di destinazione
 
-    public Volo(String numeroVolo, String compagniaAerea, String orarioPrevisto, String data, int ritardo, String stato, String tipoVolo) {
+    public Volo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
+                String data, int ritardo, String stato, String partenza, String destinazione) {
         this.numeroVolo = numeroVolo;
         this.compagniaAerea = compagniaAerea;
         this.orarioPrevisto = orarioPrevisto;
         this.data = data;
         this.ritardo = ritardo;
         this.stato = stato;
-        this.tipoVolo = tipoVolo;
+        this.partenza = partenza;
+        this.destinazione = destinazione;
     }
 
     public String getNumeroVolo() {
@@ -66,11 +69,18 @@ public class Volo {
         this.stato = stato;
     }
 
-    public String getTipoVolo() {
-        return tipoVolo;
+    public String getPartenza() {
+        return partenza;
     }
-    public void setTipoVolo(String tipoVolo) {
-        this.tipoVolo = tipoVolo;
+    public void setPartenza(String partenza) {
+        this.partenza = partenza;
+    }
+
+    public String getDestinazione() {
+        return destinazione;
+    }
+    public void setDestinazione(String destinazione) {
+        this.destinazione = destinazione;
     }
 
     // Metodo per aggiungere un volo alla lista
@@ -83,9 +93,11 @@ public class Volo {
         return listaVoli;
     }
 
+    @Override
     public String toString() {
         return "- Volo: " + this.getCompagniaAerea() + " " + this.getNumeroVolo()
                 + "\n- Data: " + this.getData()
+                + "\n- Tratta: " + this.getPartenza() + " → " + this.getDestinazione()
                 + "\n- Stato: " + this.getStato();
     }
 

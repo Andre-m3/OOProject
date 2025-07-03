@@ -50,17 +50,17 @@ public class AdminDashboard {
              */
         });
 
-        // Listener per il pulsante Area Personale
+        // Listener per il pulsante Area Personale (dell'amministratore, non utente!)
         btnAreaPersonale.addActionListener(e -> {
             FrameAdmin.setVisible(false);        // Nascondiamo la dashboard admin
-            new AreaPrivata(FrameAdmin);         // Apriamo l'interfaccia AreaPrivata passando il frame
+            new AreaPrivataAdmin(FrameAdmin);         // Apriamo l'interfaccia AreaPrivata passando il frame
         });
 
         // Creiamo il Listener per il pulsante di Logout, che dovrà portarci di nuovo al Login!
         btnLogout.addActionListener(e -> {
             controller.logout();
             FrameAdmin.dispose();
-            // Apri di nuovo la pagina di login
+            // Apri di nuovo la pagina di login, importante!
             LandingPageLogin.showLoginPage();
         });
 

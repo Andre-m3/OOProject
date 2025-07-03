@@ -3,8 +3,6 @@ package GUI;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.Controller;
-import model.Prenotazione;
-import model.UtenteGenerico;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -14,54 +12,43 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
 
-public class AreaPrivata {
-    private JFrame FrameAreaPersonale;
+public class AreaPrivataAdmin {
+    private JFrame FrameAreaAdmin;
     private Controller controller;
     private JPanel panel1;
     private JPanel topPanel;
     private JLabel welcomeText;
     private JLabel subText;
     private JPanel infoPanel;
-    private JPanel bookingPanel;
-    private JPanel bottomPanel;
     private JLabel usernameValue;
     private JLabel emailValue;
-    private JLabel bookingText;
-    private JButton btnTickets;
-    private JList prenotazioniList;
-    private JLabel spacerBypass;
+    private JPanel bottomPanel;
     private JButton btnHomepage;
-    private JButton btnModificaPrenotazione;
-    private DefaultListModel<String> prenotazioniListModel;
+    private JLabel spacerBypass;
+    private JButton btnModificaDati;
 
-    public AreaPrivata(JFrame frameDash) {
+    public AreaPrivataAdmin(JFrame frameDash) {
 
         controller = Controller.getInstance();
-        FrameAreaPersonale = new JFrame("Area Personale");
-        FrameAreaPersonale.setContentPane(panel1);
-        /* Non vogliamo che alla chiusura venga terminata l'esecuzione del programma! (exit_on_cose)
+        FrameAreaAdmin = new JFrame("Area Personale");
+        FrameAreaAdmin.setContentPane(panel1);
+        /* Non vogliamo che alla chiusura venga terminata l'esecuzione del programma! (exit_on_close)
          * Facendo 'dispose_on_close' abbiamo il controllo sulla chiusura della finestra...
          * Aggiungeremo un Listener (WindowsListener) per gestire la chiusura della finestra e tornare alla Dashboard Admin
          */
-        FrameAreaPersonale.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        FrameAreaPersonale.pack();
-        FrameAreaPersonale.setLocationRelativeTo(null);
-        FrameAreaPersonale.setVisible(true);
-        FrameAreaPersonale.setResizable(false);
+        FrameAreaAdmin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        FrameAreaAdmin.pack();
+        FrameAreaAdmin.setLocationRelativeTo(null);
+        FrameAreaAdmin.setVisible(true);
+        FrameAreaAdmin.setResizable(false);
 
         setupButtons();
         loadUserInfo();
-        loadPrenotazioni();
-
-        btnTickets.addActionListener(e -> {
-            FrameAreaPersonale.setVisible(false);
-            new TicketDialog(FrameAreaPersonale);
-        });
 
 
         // Aggiungiamo il listener per il pulsante Homepage
         btnHomepage.addActionListener(e -> {
-            FrameAreaPersonale.dispose();
+            FrameAreaAdmin.dispose();
             frameDash.setVisible(true);
         });
 
@@ -69,28 +56,12 @@ public class AreaPrivata {
          * Il metodo windowClosing() viene chiamato quando si preme il pulsante X
          * Così torniamo alla dashboard admin quando questa finestra viene chiusa
          */
-        FrameAreaPersonale.addWindowListener(new WindowAdapter() {
+        FrameAreaAdmin.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 frameDash.setVisible(true);
             }
         });
-
-        /* Il pulsante "Modifica Prenotazione" dovrà modificare esclusivamente la prenotazione selezionata
-         * In poche parole, l'utente potrà selezionare dalla lista delle prenotazioni personali direttamente quella da modificare
-         * Così cliccando sul pulsante "Modifica Prenotazione", riusciremo a passare al Dialog esattamente quella prenotazione
-         * Questo ci garantisce un approccio più "user-friendly", il che è meglio!
-         */
-        btnModificaPrenotazione.addActionListener(e -> modificaPrenotazioneSelezionata());
-
-        FrameAreaPersonale.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                frameDash.setVisible(true);
-            }
-        });
-
-
     }
 
     private void setupButtons() {
@@ -106,23 +77,14 @@ public class AreaPrivata {
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         btnHomepage.setOpaque(true);
 
-        // Pulsante TICKETS
-        btnTickets.setBackground(sfondoLeggermenteScuro);
-        btnTickets.setForeground(new Color(78, 78, 78));
-        btnTickets.setFocusPainted(false);
-        btnTickets.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        btnTickets.setOpaque(true);
-
         // Pulsante MODIFICA PRENOTAZIONE
-        btnModificaPrenotazione.setBackground(sfondoLeggermenteScuro);
-        btnModificaPrenotazione.setForeground(new Color(78, 78, 78));
-        btnModificaPrenotazione.setFocusPainted(false);
-        btnModificaPrenotazione.setBorder(BorderFactory.createCompoundBorder(
+        btnModificaDati.setBackground(sfondoLeggermenteScuro);
+        btnModificaDati.setForeground(new Color(78, 78, 78));
+        btnModificaDati.setFocusPainted(false);
+        btnModificaDati.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        btnModificaPrenotazione.setOpaque(true);
+        btnModificaDati.setOpaque(true);
 
 
     }
@@ -131,62 +93,6 @@ public class AreaPrivata {
         // Carichiamo i dati dell'utente (username ed email) nell'infoPanel
         usernameValue.setText(controller.getUtenteLoggato().getUsername());
         emailValue.setText(controller.getUtenteLoggato().getEmail());
-    }
-
-    private void loadPrenotazioni() {
-        // Inizializza il modello della lista
-        prenotazioniListModel = new DefaultListModel<>();
-        prenotazioniList.setModel(prenotazioniListModel);
-
-        // Carica le prenotazioni dell'utente. L'amministratore non avrà prenotazioni, in quanto non puo prenotare un volo. Quindi sarà istanza di UtenteGenerico
-        var utente = (UtenteGenerico) controller.getUtenteLoggato();
-        prenotazioniListModel.clear();
-
-        if (utente.getPrenotazioni().isEmpty()) {
-            prenotazioniListModel.addElement("Nessuna prenotazione trovata");
-            btnModificaPrenotazione.setEnabled(false);
-        } else {
-            for (Prenotazione prenotazione : utente.getPrenotazioni()) {
-                String prenotazioneInfo = String.format("[%s] %s - %s (%s)",
-                        prenotazione.getCodicePrenotazione(),
-                        prenotazione.getCodiceVolo(),
-                        prenotazione.getPartenzaDestinazione(),
-                        prenotazione.getStato());
-                prenotazioniListModel.addElement(prenotazioneInfo);
-            }
-            btnModificaPrenotazione.setEnabled(true);
-        }
-    }
-
-    private void modificaPrenotazioneSelezionata() {
-        int selectedIndex = prenotazioniList.getSelectedIndex();
-        if (selectedIndex == -1) {
-            JOptionPane.showMessageDialog(FrameAreaPersonale,
-                    "Seleziona una prenotazione da modificare.",
-                    "Nessuna prenotazione selezionata",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Controlla se non ci sono prenotazioni
-        var utente = (UtenteGenerico) controller.getUtenteLoggato();
-        if (utente.getPrenotazioni().isEmpty()) {
-            JOptionPane.showMessageDialog(FrameAreaPersonale,
-                    "Non hai prenotazioni da modificare.",
-                    "Nessuna prenotazione",
-                    JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        // Ora otteniamo "le informazioni" della prenotazione selezionata
-        Prenotazione prenotazioneSelezionata = utente.getPrenotazioni().get(selectedIndex);
-
-        // Adesso non ci resta che aprire il dialog di modifica, passando insieme al frame anche la prenotazione selezionata!
-        ModificaPrenotazioneDialog dialog = new ModificaPrenotazioneDialog(FrameAreaPersonale, prenotazioneSelezionata);
-        dialog.setVisible(true);
-
-        // Ricarica le prenotazioni dopo la modifica (in caso di eliminazione)
-        loadPrenotazioni();
     }
 
 
@@ -207,14 +113,14 @@ public class AreaPrivata {
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel1.setMaximumSize(new Dimension(800, 650));
-        panel1.setMinimumSize(new Dimension(800, 650));
-        panel1.setPreferredSize(new Dimension(800, 650));
+        panel1.setMaximumSize(new Dimension(700, 500));
+        panel1.setMinimumSize(new Dimension(700, 500));
+        panel1.setPreferredSize(new Dimension(700, 500));
         topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout(5, 2));
-        topPanel.setMaximumSize(new Dimension(800, 125));
-        topPanel.setMinimumSize(new Dimension(800, 125));
-        topPanel.setPreferredSize(new Dimension(800, 125));
+        topPanel.setMaximumSize(new Dimension(620, 125));
+        topPanel.setMinimumSize(new Dimension(620, 125));
+        topPanel.setPreferredSize(new Dimension(620, 125));
         panel1.add(topPanel);
         welcomeText = new JLabel();
         Font welcomeTextFont = this.$$$getFont$$$("JetBrains Mono SemiBold", Font.PLAIN, 48, welcomeText.getFont());
@@ -242,9 +148,9 @@ public class AreaPrivata {
         topPanel.add(subText, BorderLayout.SOUTH);
         infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(5, 0, 5, 100), 10, 0));
-        infoPanel.setMaximumSize(new Dimension(700, 120));
-        infoPanel.setMinimumSize(new Dimension(700, 120));
-        infoPanel.setPreferredSize(new Dimension(700, 120));
+        infoPanel.setMaximumSize(new Dimension(620, 120));
+        infoPanel.setMinimumSize(new Dimension(620, 120));
+        infoPanel.setPreferredSize(new Dimension(620, 120));
         panel1.add(infoPanel);
         final JLabel label1 = new JLabel();
         Font label1Font = this.$$$getFont$$$("JetBrains Mono SemiBold", Font.PLAIN, 16, label1.getFont());
@@ -270,28 +176,11 @@ public class AreaPrivata {
         label2.setHorizontalAlignment(2);
         label2.setText("Email: ");
         infoPanel.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, 30), new Dimension(300, 30), new Dimension(300, 30), 0, false));
-        bookingPanel = new JPanel();
-        bookingPanel.setLayout(new BorderLayout(0, 0));
-        bookingPanel.setMaximumSize(new Dimension(700, 270));
-        bookingPanel.setMinimumSize(new Dimension(700, 270));
-        bookingPanel.setPreferredSize(new Dimension(700, 270));
-        panel1.add(bookingPanel);
-        bookingText = new JLabel();
-        Font bookingTextFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 24, bookingText.getFont());
-        if (bookingTextFont != null) bookingText.setFont(bookingTextFont);
-        bookingText.setHorizontalAlignment(2);
-        bookingText.setPreferredSize(new Dimension(320, 35));
-        bookingText.setText("Le tue prenotazioni:");
-        bookingPanel.add(bookingText, BorderLayout.NORTH);
-        final JScrollPane scrollPane1 = new JScrollPane();
-        bookingPanel.add(scrollPane1, BorderLayout.CENTER);
-        prenotazioniList = new JList();
-        scrollPane1.setViewportView(prenotazioniList);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-        bottomPanel.setMaximumSize(new Dimension(705, 80));
-        bottomPanel.setMinimumSize(new Dimension(705, 80));
-        bottomPanel.setPreferredSize(new Dimension(705, 80));
+        bottomPanel.setMaximumSize(new Dimension(620, 80));
+        bottomPanel.setMinimumSize(new Dimension(620, 80));
+        bottomPanel.setPreferredSize(new Dimension(620, 80));
         panel1.add(bottomPanel);
         btnHomepage = new JButton();
         Font btnHomepageFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, btnHomepage.getFont());
@@ -303,25 +192,17 @@ public class AreaPrivata {
         btnHomepage.setText("Homepage");
         bottomPanel.add(btnHomepage);
         spacerBypass = new JLabel();
-        spacerBypass.setMaximumSize(new Dimension(400, 0));
-        spacerBypass.setMinimumSize(new Dimension(400, 0));
-        spacerBypass.setPreferredSize(new Dimension(400, 0));
+        spacerBypass.setMaximumSize(new Dimension(435, 0));
+        spacerBypass.setMinimumSize(new Dimension(435, 0));
+        spacerBypass.setPreferredSize(new Dimension(435, 0));
         spacerBypass.setText("");
         bottomPanel.add(spacerBypass);
-        btnModificaPrenotazione = new JButton();
-        btnModificaPrenotazione.setMaximumSize(new Dimension(80, 40));
-        btnModificaPrenotazione.setMinimumSize(new Dimension(80, 40));
-        btnModificaPrenotazione.setPreferredSize(new Dimension(80, 40));
-        btnModificaPrenotazione.setText("Modifica");
-        bottomPanel.add(btnModificaPrenotazione);
-        btnTickets = new JButton();
-        Font btnTicketsFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, btnTickets.getFont());
-        if (btnTicketsFont != null) btnTickets.setFont(btnTicketsFont);
-        btnTickets.setMaximumSize(new Dimension(110, 40));
-        btnTickets.setMinimumSize(new Dimension(110, 40));
-        btnTickets.setPreferredSize(new Dimension(110, 40));
-        btnTickets.setText("Vedi Tickets");
-        bottomPanel.add(btnTickets);
+        btnModificaDati = new JButton();
+        btnModificaDati.setMaximumSize(new Dimension(80, 40));
+        btnModificaDati.setMinimumSize(new Dimension(80, 40));
+        btnModificaDati.setPreferredSize(new Dimension(80, 40));
+        btnModificaDati.setText("Modifica");
+        bottomPanel.add(btnModificaDati);
     }
 
     /**
