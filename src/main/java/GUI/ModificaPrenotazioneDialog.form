@@ -123,6 +123,7 @@
                 <constraints/>
                 <properties>
                   <font name="JetBrains Mono Medium" size="18" style="0"/>
+                  <selectionMode value="0"/>
                 </properties>
               </component>
             </children>

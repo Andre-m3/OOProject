@@ -141,7 +141,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="ac806" class="javax.swing.JList" binding="prenotazioniList">
+              <component id="38454" class="javax.swing.JTable" binding="tabellaPrenotazioni">
                 <constraints/>
                 <properties/>
               </component>

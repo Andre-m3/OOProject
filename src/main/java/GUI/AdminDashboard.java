@@ -64,6 +64,13 @@ public class AdminDashboard {
             LandingPageLogin.showLoginPage();
         });
 
+        // Listener per il pulsante "Inserisci Volo"
+        btnAggiungiVolo.addActionListener(e -> {
+            // Apriamo un dialog (consulta package GUI) per inserire un nuovo volo
+            // Passiamo null come callback dato che dalla dashboard non abbiamo una lista da aggiornare
+            new DialogInserisciVolo(FrameAdmin, null);
+        });
+
     }
 
     private void setupButtons() {

@@ -1,21 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.TicketDialog">
-  <grid id="27dc6" binding="panel1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+  <grid id="27dc6" binding="panel1" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="600" height="400"/>
+      <xy x="20" y="20" width="700" height="400"/>
     </constraints>
     <properties>
-      <maximumSize width="600" height="400"/>
-      <minimumSize width="600" height="400"/>
-      <preferredSize width="600" height="400"/>
+      <maximumSize width="700" height="400"/>
+      <minimumSize width="700" height="400"/>
+      <preferredSize width="700" height="400"/>
     </properties>
     <border type="none"/>
     <children>
-      <grid id="69f5c" binding="topPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
-        <constraints/>
-        <properties/>
+      <grid id="69f5c" binding="titlePanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties>
+          <maximumSize width="700" height="60"/>
+          <minimumSize width="700" height="60"/>
+          <preferredSize width="700" height="60"/>
+        </properties>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="d0c95" class="javax.swing.JLabel" binding="lblTitolo">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="22" style="1"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Tickets della Prenotazione"/>
+              <verticalAlignment value="0"/>
+              <verticalTextPosition value="0"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="b29d3" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties>
+          <maximumSize width="700" height="80"/>
+          <minimumSize width="700" height="80"/>
+          <preferredSize width="700" height="80"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="17359" class="javax.swing.JLabel" binding="spacerBypass">
+            <constraints/>
+            <properties>
+              <maximumSize width="560" height="17"/>
+              <minimumSize width="560" height="17"/>
+              <preferredSize width="560" height="17"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="1691" class="javax.swing.JButton" binding="btnChiudi">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="10"/>
+              <maximumSize width="85" height="35"/>
+              <minimumSize width="85" height="35"/>
+              <preferredSize width="85" height="35"/>
+              <text value="Chiudi"/>
+              <verticalAlignment value="0"/>
+              <verticalTextPosition value="0"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="317c" binding="mainPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="West"/>
+        <properties>
+          <maximumSize width="700" height="260"/>
+          <minimumSize width="700" height="260"/>
+          <preferredSize width="700" height="260"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <scrollpane id="d5b4b" binding="scrollPane">
+            <constraints/>
+            <properties>
+              <maximumSize width="680" height="250"/>
+              <minimumSize width="680" height="250"/>
+              <preferredSize width="650" height="250"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="43936" class="javax.swing.JTable" binding="ticketsTable">
+                <constraints/>
+                <properties>
+                  <autoResizeMode value="4"/>
+                  <cellSelectionEnabled value="false"/>
+                  <columnSelectionAllowed value="false"/>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
       </grid>
     </children>
   </grid>

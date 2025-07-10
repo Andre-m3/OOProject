@@ -1,0 +1,401 @@
+
+package GUI;
+
+import controller.Controller;
+
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.text.StyleContext;
+import java.awt.*;
+import java.util.Locale;
+
+public class DialogModificaVolo extends JDialog {
+    private JPanel panel1;
+    private JPanel mainPanel;
+    private JTextField txtNumeroVolo;
+    private JTextField txtCompagnia;
+    private JTextField txtOrario;
+    private JTextField txtData;
+    private JSpinner spnRitardo;
+    private JTextField txtStato;
+    private JTextField txtPartenza;
+    private JTextField txtDestinazione;
+    private JPanel buttonPanel;
+    private JButton btnSalva;
+    private JButton btnAnnulla;
+    private JPanel topPanel;
+    private JLabel dialogTitle;
+
+    private Controller controller;
+    private String numeroVoloOriginale;
+
+    // Non visto a lezione: È un pattern per comunicare al dialog che bisogna aggiornare la tabella dopo una modifica
+    // Altrimenti la tabella (in questo caso di "VoliAdmin") non visualizzerebbe i nuovi dati impostati in seguito alla modifica/aggiornamento del volo/gate
+    private Runnable onSaveCallback;
+
+    public DialogModificaVolo(JFrame parent, String numeroVolo, Runnable onSaveCallback) {
+        super(parent, "Modifica Volo: " + numeroVolo, true);
+
+        this.controller = Controller.getInstance();
+        this.numeroVoloOriginale = numeroVolo;
+        this.onSaveCallback = onSaveCallback;
+
+        // Così facendo otterremo i dati del volo tramite il controller (se esiste)
+        String[] datiVolo = controller.getDatiVolo(numeroVolo);
+        if (datiVolo == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Volo non trovato!",
+                    "Errore",
+                    JOptionPane.ERROR_MESSAGE);
+            dispose();
+            return;
+        }       // Ha senso verificare se esista o meno, visto che l'utente seleziona il volo da una tabella di voli esistenti?
+
+        setContentPane(panel1);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(parent);
+
+        // Metodo che precompila i campi con i valori gia esistenti, così l'utente sa per certo cosa sta modificando!
+        precompilaCampi(datiVolo);
+
+        // Metodo che configura i Listeners. Li potremmo inserire anche qui, senza richiamare un metodo apposito (come fatto quasi sempre nelle varie interfacce).
+        setupEvents();
+
+        setVisible(true);
+    }
+
+    private void precompilaCampi(String[] datiVolo) {
+        txtNumeroVolo.setText(datiVolo[0]);
+        txtCompagnia.setText(datiVolo[1]);
+        txtOrario.setText(datiVolo[2]);
+        txtData.setText(datiVolo[3]);
+        spnRitardo.setValue(Integer.parseInt(datiVolo[4]));
+        txtStato.setText(datiVolo[5]);
+        txtPartenza.setText(datiVolo[6]);
+        txtDestinazione.setText(datiVolo[7]);
+    }
+
+
+    // Cosa facciamo quando viene cliccato il tasto "Salva" oppure "Annulla"? (Listeners)
+    // Essendo solo due, e di lettura semplice, li carichiamo tramite metodo, per averli più compatti e visibili
+    private void setupEvents() {
+        btnSalva.addActionListener(e -> salvaModifiche());
+        btnAnnulla.addActionListener(e -> dispose());
+    }
+
+    private void salvaModifiche() {
+        // Aggiorniamo i dati del volo
+        String nuovoNumeroVolo = txtNumeroVolo.getText().trim();
+        String nuovaCompagnia = txtCompagnia.getText().trim();
+        String nuovoOrario = txtOrario.getText().trim();
+        String nuovaData = txtData.getText().trim();
+        int nuovoRitardo = (Integer) spnRitardo.getValue();
+        String nuovoStato = txtStato.getText().trim();
+        String nuovaPartenza = txtPartenza.getText().trim();
+        String nuovaDestinazione = txtDestinazione.getText().trim();
+
+        // Aggiorniamo i valori tramite il controller
+        boolean success = controller.aggiornaVolo(
+                numeroVoloOriginale, nuovoNumeroVolo, nuovaCompagnia,
+                nuovoOrario, nuovaData, nuovoRitardo, nuovoStato,
+                nuovaPartenza, nuovaDestinazione
+        );
+
+        if (success) {
+            // (Callback) per aggiornare la tabella (ci troviamo in VoliAdmin)
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
+
+            // Salvate le modifiche (Evento "Salva") mostriamo un messaggio all'utente!
+            JOptionPane.showMessageDialog(this,
+                    "Volo modificato con successo!",
+                    "Successo",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            dispose();      // Finito, non ci serve più!
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Errore durante la modifica del volo!",
+                    "Errore",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        panel1 = new JPanel();
+        panel1.setLayout(new GridBagLayout());
+        panel1.setMaximumSize(new Dimension(450, 400));
+        panel1.setMinimumSize(new Dimension(450, 400));
+        panel1.setPreferredSize(new Dimension(450, 400));
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel1.add(buttonPanel, gbc);
+        btnSalva = new JButton();
+        Font btnSalvaFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, btnSalva.getFont());
+        if (btnSalvaFont != null) btnSalva.setFont(btnSalvaFont);
+        btnSalva.setMaximumSize(new Dimension(80, 35));
+        btnSalva.setMinimumSize(new Dimension(80, 35));
+        btnSalva.setPreferredSize(new Dimension(80, 35));
+        btnSalva.setText("Salva");
+        buttonPanel.add(btnSalva);
+        btnAnnulla = new JButton();
+        Font btnAnnullaFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, btnAnnulla.getFont());
+        if (btnAnnullaFont != null) btnAnnulla.setFont(btnAnnullaFont);
+        btnAnnulla.setMaximumSize(new Dimension(80, 35));
+        btnAnnulla.setMinimumSize(new Dimension(80, 35));
+        btnAnnulla.setPreferredSize(new Dimension(80, 35));
+        btnAnnulla.setText("Annulla");
+        buttonPanel.add(btnAnnulla);
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setMaximumSize(new Dimension(450, 400));
+        mainPanel.setMinimumSize(new Dimension(450, 400));
+        mainPanel.setPreferredSize(new Dimension(450, 400));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel1.add(mainPanel, gbc);
+        final JLabel label1 = new JLabel();
+        Font label1Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label1.getFont());
+        if (label1Font != null) label1.setFont(label1Font);
+        label1.setText("Numero Volo:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label1, gbc);
+        final JLabel label2 = new JLabel();
+        Font label2Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label2.getFont());
+        if (label2Font != null) label2.setFont(label2Font);
+        label2.setText("Compagnia:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label2, gbc);
+        txtNumeroVolo = new JTextField();
+        Font txtNumeroVoloFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtNumeroVolo.getFont());
+        if (txtNumeroVoloFont != null) txtNumeroVolo.setFont(txtNumeroVoloFont);
+        txtNumeroVolo.setMaximumSize(new Dimension(200, 30));
+        txtNumeroVolo.setMinimumSize(new Dimension(200, 30));
+        txtNumeroVolo.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtNumeroVolo, gbc);
+        txtCompagnia = new JTextField();
+        Font txtCompagniaFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtCompagnia.getFont());
+        if (txtCompagniaFont != null) txtCompagnia.setFont(txtCompagniaFont);
+        txtCompagnia.setMaximumSize(new Dimension(200, 30));
+        txtCompagnia.setMinimumSize(new Dimension(200, 30));
+        txtCompagnia.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtCompagnia, gbc);
+        final JLabel label3 = new JLabel();
+        Font label3Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label3.getFont());
+        if (label3Font != null) label3.setFont(label3Font);
+        label3.setText("Orario:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label3, gbc);
+        final JLabel label4 = new JLabel();
+        Font label4Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label4.getFont());
+        if (label4Font != null) label4.setFont(label4Font);
+        label4.setText("Data:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label4, gbc);
+        txtOrario = new JTextField();
+        Font txtOrarioFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtOrario.getFont());
+        if (txtOrarioFont != null) txtOrario.setFont(txtOrarioFont);
+        txtOrario.setMaximumSize(new Dimension(200, 30));
+        txtOrario.setMinimumSize(new Dimension(200, 30));
+        txtOrario.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtOrario, gbc);
+        txtData = new JTextField();
+        Font txtDataFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtData.getFont());
+        if (txtDataFont != null) txtData.setFont(txtDataFont);
+        txtData.setMaximumSize(new Dimension(200, 30));
+        txtData.setMinimumSize(new Dimension(200, 30));
+        txtData.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtData, gbc);
+        final JLabel label5 = new JLabel();
+        Font label5Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label5.getFont());
+        if (label5Font != null) label5.setFont(label5Font);
+        label5.setText("Ritardo (min):");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label5, gbc);
+        final JLabel label6 = new JLabel();
+        Font label6Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label6.getFont());
+        if (label6Font != null) label6.setFont(label6Font);
+        label6.setText("Stato:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label6, gbc);
+        txtStato = new JTextField();
+        Font txtStatoFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtStato.getFont());
+        if (txtStatoFont != null) txtStato.setFont(txtStatoFont);
+        txtStato.setMaximumSize(new Dimension(200, 30));
+        txtStato.setMinimumSize(new Dimension(200, 30));
+        txtStato.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtStato, gbc);
+        final JLabel label7 = new JLabel();
+        Font label7Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label7.getFont());
+        if (label7Font != null) label7.setFont(label7Font);
+        label7.setText("Partenza:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label7, gbc);
+        final JLabel label8 = new JLabel();
+        Font label8Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label8.getFont());
+        if (label8Font != null) label8.setFont(label8Font);
+        label8.setText("Destinazione:");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(label8, gbc);
+        txtPartenza = new JTextField();
+        Font txtPartenzaFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtPartenza.getFont());
+        if (txtPartenzaFont != null) txtPartenza.setFont(txtPartenzaFont);
+        txtPartenza.setMaximumSize(new Dimension(200, 30));
+        txtPartenza.setMinimumSize(new Dimension(200, 30));
+        txtPartenza.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtPartenza, gbc);
+        txtDestinazione = new JTextField();
+        Font txtDestinazioneFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtDestinazione.getFont());
+        if (txtDestinazioneFont != null) txtDestinazione.setFont(txtDestinazioneFont);
+        txtDestinazione.setMaximumSize(new Dimension(200, 30));
+        txtDestinazione.setMinimumSize(new Dimension(200, 30));
+        txtDestinazione.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(txtDestinazione, gbc);
+        spnRitardo = new JSpinner();
+        Font spnRitardoFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, spnRitardo.getFont());
+        if (spnRitardoFont != null) spnRitardo.setFont(spnRitardoFont);
+        spnRitardo.setMaximumSize(new Dimension(200, 30));
+        spnRitardo.setMinimumSize(new Dimension(200, 30));
+        spnRitardo.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(spnRitardo, gbc);
+        topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout(0, 0));
+        topPanel.setMaximumSize(new Dimension(450, 70));
+        topPanel.setMinimumSize(new Dimension(450, 70));
+        topPanel.setPreferredSize(new Dimension(450, 70));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.SOUTH;
+        panel1.add(topPanel, gbc);
+        dialogTitle = new JLabel();
+        Font dialogTitleFont = this.$$$getFont$$$("JetBrains Mono SemiBold", Font.BOLD, 22, dialogTitle.getFont());
+        if (dialogTitleFont != null) dialogTitle.setFont(dialogTitleFont);
+        dialogTitle.setHorizontalAlignment(0);
+        dialogTitle.setHorizontalTextPosition(0);
+        dialogTitle.setText("Modifica del Volo");
+        dialogTitle.setVerticalAlignment(3);
+        dialogTitle.setVerticalTextPosition(3);
+        topPanel.add(dialogTitle, BorderLayout.CENTER);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return panel1;
+    }
+}

@@ -24,6 +24,7 @@ public class VoliAdmin {
     private JPanel bottomPanel;
     private JButton btnUpdateFlight;
     private JLabel spacerBypass;
+    private JButton btnUpdateGate;
 
     private DefaultTableModel tableModel;       // Nel codice impostiamo anche la tabella di visualizzazione dei voli, commentata di seguito!
 
@@ -64,6 +65,47 @@ public class VoliAdmin {
                 frameDash.setVisible(true);
             }
         });
+
+        // Listener per il pulsante "Modifica Volo"
+        btnUpdateFlight.addActionListener(e -> {
+            int selectedRow = tabellaVoli.getSelectedRow();
+            if (selectedRow >= 0) {
+                String numeroVolo = (String) tableModel.getValueAt(selectedRow, 0);
+                if (!"N/A".equals(numeroVolo)) {
+                    // Dialog creato e presente nel package GUI (DialogModificaVolo)
+                    new DialogModificaVolo(FrameFlightlist, numeroVolo, this::loadVoliAdmin);       // Nota: "this::loadVoliAdmin" è il Runnable! (onSaveCallback), commentato nei dialog
+                    // Nello specifico "this::loadVoliAdmin" è una method reference.
+                    // È un modo alternativo (ma più efficiente) per dire: "quando il dialog finisce, esegui questo metodo" (in questo caso loadVoliAdmin)
+                }
+            } else {
+                JOptionPane.showMessageDialog(FrameFlightlist,
+                        "Seleziona un volo dalla tabella per modificarlo.",
+                        "Nessun volo selezionato",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+
+        // Listener per il pulsante "Aggiorna Gate"
+        btnUpdateGate.addActionListener(e -> {
+            int selectedRow = tabellaVoli.getSelectedRow();
+            if (selectedRow >= 0) {
+                String numeroVolo = (String) tableModel.getValueAt(selectedRow, 0);
+                if (!"N/A".equals(numeroVolo)) {
+                    // Apriamo il Dialog creato, equivalente al commento effettuato per il primo Listener (UpdateFlight)
+                    new DialogAggiornaGate(FrameFlightlist, numeroVolo, this::loadVoliAdmin);       // Nota: vedi commento sopra, ha funzionalità equivalente (UpdateFlight)
+                }
+            } else {
+                JOptionPane.showMessageDialog(FrameFlightlist,
+                        "Seleziona un volo dalla tabella per aggiornare il gate.",
+                        "Nessun volo selezionato",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+
+
+
     }
 
     // Metodo per la modifica (in questo caso estetica) dei vari pulsanti
@@ -71,7 +113,7 @@ public class VoliAdmin {
         // Impostiamo i pulsanti con lo stesso stile utilizzato nelle altre interfacce!
         Color sfondoLeggermenteScuro = new Color(214, 214, 214);
 
-        // Pulsante UPDATE FLIGHT
+        // Pulsante "Aggiorna Volo"
         btnUpdateFlight.setBackground(sfondoLeggermenteScuro);
         btnUpdateFlight.setForeground(new Color(78, 78, 78));
         btnUpdateFlight.setFocusPainted(false);
@@ -80,7 +122,16 @@ public class VoliAdmin {
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         btnUpdateFlight.setOpaque(true);
 
-        // Pulsante HOMEPAGE
+        // Pulsante "Aggiorna Gate"
+        btnUpdateGate.setBackground(sfondoLeggermenteScuro);
+        btnUpdateGate.setForeground(new Color(78, 78, 78));
+        btnUpdateGate.setFocusPainted(false);
+        btnUpdateGate.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 15, 5, 15)));
+        btnUpdateGate.setOpaque(true);
+
+        // Pulsante "Homepage"
         btnHomepage.setBackground(sfondoLeggermenteScuro);
         btnHomepage.setForeground(new Color(78, 78, 78));
         btnHomepage.setFocusPainted(false);
@@ -93,14 +144,17 @@ public class VoliAdmin {
 
     // Metodo per la configurazione della tabella di visualizzazione dei voli (per un admin)
     private void setupTable() {
-        String[] colonne = {"Numero Volo", "Compagnia", "Data", "Orario", "Stato", "Tipo"};
-        tableModel = new DefaultTableModel(colonne, 0) {
+        String[] columnNames = {"Numero Volo", "Compagnia", "Partenza", "Destinazione", "Data", "Orario", "Stato", "Tipo", "Gate"};
+
+        tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;           // Rende la tabella non editabile
+                return false;       // Tabella non editabile
             }
         };
+
         tabellaVoli.setModel(tableModel);
+
         /* IMPORTANTE! Non dobbiamo dare all'utente la possibilità di selezionare più di un volo
          * Più selezioni contemporanee creeranno problemi difficilmente gestibili dopo il click sul btn "Prenota".
          */
@@ -114,29 +168,44 @@ public class VoliAdmin {
         var voli = controller.getTuttiIVoli();              // Richiamiamo il metodo esistente, sviluppato nel Controller
 
         if (voli == null || voli.isEmpty()) {               // Verifichiamo se ci sono voli
-            tableModel.addRow(new Object[]{"N/A", "Nessun volo", "presente", "nel sistema", "", ""});
-            btnUpdateFlight.setEnabled(false);      // In tal caso, non permettiamo all'admin di cliccare il pulsante "modifica Volo"
-        }
-        else {
-            for (var volo : voli) {     // L'utilizzo di var ci permette di non avere problemi, visto che non importiamo la classe volo, essendo classe del package model!
+            tableModel.addRow(new Object[]{"N/A", "Nessun volo", "presente", "nel sistema", "", "", "", "", ""});
+            btnUpdateFlight.setEnabled(false);      // In tal caso, non permettiamo all'amministratore di cliccare il pulsante "Modifica Volo"
+            btnUpdateGate.setEnabled(false);        // Stesso discorso per il pulsante "Aggiorna Gate"
+        } else {
+            for (var volo : voli) {                 // L'utilizzo di var ci permette di non avere problemi, siccome che non importiamo la classe volo, essendo classe del package model!
                 String orarioCompleto = volo.getOrarioPrevisto();
                 if (volo.getRitardo() > 0) {
                     orarioCompleto += " (+" + volo.getRitardo() + " min)";
                 }
 
+                // Otteniamo il gate (se è un volo in partenza)
+                String gateInfo = "";
+                if (controller.isVoloInPartenza(volo)) {
+                    Short gate = controller.getGateImbarco(volo);
+                    gateInfo = gate != null ? "Gate " + gate : "Non assegnato";
+                } else {
+                    gateInfo = "N/A";
+                }
+
                 Object[] row = {
                         volo.getNumeroVolo(),
                         volo.getCompagniaAerea(),
+                        volo.getPartenza(),
+                        volo.getDestinazione(),
                         volo.getData(),
                         orarioCompleto,
                         volo.getStato(),
-                        volo.getTipoVolo()
+                        controller.getTipoVolo(volo),
+                        gateInfo
+
                 };
                 tableModel.addRow(row);
             }
             btnUpdateFlight.setEnabled(true);
+            btnUpdateGate.setEnabled(true);
         }
     }
+
 
 
 
@@ -166,23 +235,23 @@ public class VoliAdmin {
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel1.setMaximumSize(new Dimension(800, 650));
-        panel1.setMinimumSize(new Dimension(800, 650));
-        panel1.setPreferredSize(new Dimension(800, 650));
+        panel1.setMaximumSize(new Dimension(990, 700));
+        panel1.setMinimumSize(new Dimension(990, 700));
+        panel1.setPreferredSize(new Dimension(990, 700));
         topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 75));
-        topPanel.setMaximumSize(new Dimension(720, 120));
-        topPanel.setMinimumSize(new Dimension(720, 120));
-        topPanel.setPreferredSize(new Dimension(720, 120));
+        topPanel.setMaximumSize(new Dimension(900, 120));
+        topPanel.setMinimumSize(new Dimension(900, 120));
+        topPanel.setPreferredSize(new Dimension(900, 120));
         panel1.add(topPanel);
         listaVoli = new JLabel();
         Font listaVoliFont = this.$$$getFont$$$("JetBrains Mono SemiBold", Font.BOLD, 32, listaVoli.getFont());
         if (listaVoliFont != null) listaVoli.setFont(listaVoliFont);
         listaVoli.setHorizontalAlignment(10);
         listaVoli.setHorizontalTextPosition(10);
-        listaVoli.setMaximumSize(new Dimension(630, 40));
-        listaVoli.setMinimumSize(new Dimension(630, 40));
-        listaVoli.setPreferredSize(new Dimension(630, 40));
+        listaVoli.setMaximumSize(new Dimension(820, 40));
+        listaVoli.setMinimumSize(new Dimension(820, 40));
+        listaVoli.setPreferredSize(new Dimension(820, 40));
         listaVoli.setText("Lista Voli");
         listaVoli.setVerticalAlignment(3);
         listaVoli.setVerticalTextPosition(3);
@@ -201,16 +270,16 @@ public class VoliAdmin {
         topPanel.add(btnHomepage);
         midPanel = new JPanel();
         midPanel.setLayout(new BorderLayout(0, 0));
-        midPanel.setMaximumSize(new Dimension(720, 350));
-        midPanel.setMinimumSize(new Dimension(720, 350));
-        midPanel.setPreferredSize(new Dimension(720, 350));
+        midPanel.setMaximumSize(new Dimension(900, 420));
+        midPanel.setMinimumSize(new Dimension(900, 420));
+        midPanel.setPreferredSize(new Dimension(900, 420));
         panel1.add(midPanel);
         scrollPane = new JScrollPane();
         Font scrollPaneFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, scrollPane.getFont());
         if (scrollPaneFont != null) scrollPane.setFont(scrollPaneFont);
-        scrollPane.setMaximumSize(new Dimension(710, 340));
-        scrollPane.setMinimumSize(new Dimension(710, 340));
-        scrollPane.setPreferredSize(new Dimension(710, 340));
+        scrollPane.setMaximumSize(new Dimension(890, 410));
+        scrollPane.setMinimumSize(new Dimension(890, 410));
+        scrollPane.setPreferredSize(new Dimension(890, 410));
         midPanel.add(scrollPane, BorderLayout.CENTER);
         tabellaVoli = new JTable();
         tabellaVoli.setAutoCreateRowSorter(true);
@@ -222,17 +291,29 @@ public class VoliAdmin {
         scrollPane.setViewportView(tabellaVoli);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        bottomPanel.setMaximumSize(new Dimension(720, 100));
-        bottomPanel.setMinimumSize(new Dimension(720, 100));
-        bottomPanel.setPreferredSize(new Dimension(720, 100));
+        bottomPanel.setMaximumSize(new Dimension(900, 100));
+        bottomPanel.setMinimumSize(new Dimension(900, 100));
+        bottomPanel.setPreferredSize(new Dimension(900, 100));
         panel1.add(bottomPanel);
         spacerBypass = new JLabel();
         spacerBypass.setHorizontalAlignment(2);
-        spacerBypass.setMaximumSize(new Dimension(570, 40));
-        spacerBypass.setMinimumSize(new Dimension(570, 40));
-        spacerBypass.setPreferredSize(new Dimension(570, 40));
+        spacerBypass.setMaximumSize(new Dimension(625, 40));
+        spacerBypass.setMinimumSize(new Dimension(625, 40));
+        spacerBypass.setPreferredSize(new Dimension(625, 40));
         spacerBypass.setText("");
         bottomPanel.add(spacerBypass);
+        btnUpdateGate = new JButton();
+        Font btnUpdateGateFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 14, btnUpdateGate.getFont());
+        if (btnUpdateGateFont != null) btnUpdateGate.setFont(btnUpdateGateFont);
+        btnUpdateGate.setHorizontalAlignment(0);
+        btnUpdateGate.setHorizontalTextPosition(0);
+        btnUpdateGate.setMaximumSize(new Dimension(130, 40));
+        btnUpdateGate.setMinimumSize(new Dimension(130, 40));
+        btnUpdateGate.setPreferredSize(new Dimension(130, 40));
+        btnUpdateGate.setText("Aggiorna Gate");
+        btnUpdateGate.setVerticalAlignment(0);
+        btnUpdateGate.setVerticalTextPosition(0);
+        bottomPanel.add(btnUpdateGate);
         btnUpdateFlight = new JButton();
         Font btnUpdateFlightFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 14, btnUpdateFlight.getFont());
         if (btnUpdateFlightFont != null) btnUpdateFlight.setFont(btnUpdateFlightFont);

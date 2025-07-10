@@ -3,7 +3,6 @@ package GUI;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.Controller;
-import model.Ticket;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -22,10 +21,10 @@ public class ModificaTicketDialog extends JDialog {
     private JButton btnAnnulla;
 
     private Controller controller;
-    private Ticket ticket;
+    private Object ticket;
     private boolean modificaEffettuata;
 
-    public ModificaTicketDialog(JDialog parent, Ticket ticket) {
+    public ModificaTicketDialog(JDialog parent, Object ticket) {
         super(parent, "Modifica Ticket", true);
 
         this.controller = Controller.getInstance();
@@ -38,8 +37,9 @@ public class ModificaTicketDialog extends JDialog {
         setLocationRelativeTo(parent);
         setResizable(false);
 
-        // Carichiamo i dati del ticket nei campi (DATI DI PARTENZA, IMPORTANTE!)
-        loadTicketData();
+        // Carichiamo i dati del ticket nei campi (DATI DI PARTENZA, IMPORTANTE!) e la formattazione dei pulsanti
+        loadTickets();
+        setupButtons();
 
         // Configuriamo i listeners
         btnSalva.addActionListener(new ActionListener() {
@@ -94,12 +94,18 @@ public class ModificaTicketDialog extends JDialog {
         });
     }
 
-    private void loadTicketData() {
-        // Popoliamo i campi con i dati ATTUALI del ticket!!!
-        nomeField.setText(ticket.getNome());
-        cognomeField.setText(ticket.getCognome());
-        documentoField.setText(ticket.getNumeroDocumento());
-        dataNascitaField.setText(ticket.getDataNascita());
+    private void loadTickets() {
+        // Popoliamo i campi con i dati ATTUALI del ticket (tramite controller)
+        String[] dettagli = controller.getDettagliTicket(ticket);
+
+        if (dettagli != null) {
+            nomeField.setText(dettagli[0]);      // nome
+            cognomeField.setText(dettagli[1]);   // cognome
+            documentoField.setText(dettagli[2]); // documento
+            dataNascitaField.setText(dettagli[3]); // data nascita
+            // dettagli[4] è il posto assegnato, il quale non è modificabile...
+
+        }
     }
 
     private void onSalva() {
@@ -120,7 +126,7 @@ public class ModificaTicketDialog extends JDialog {
         }
 
         // Validazione del formato data, implementato con controlli base, anche se potremmo in futuro "migliorarlo".
-        if (!isValidDate(nuovaDataNascita)) {
+        if (!controller.isValidDateFormat(nuovaDataNascita)) {
             JOptionPane.showMessageDialog(this,
                     "Formato data non valido! Usa il formato: dd/mm/yyyy",
                     "Errore di validazione",
@@ -129,9 +135,12 @@ public class ModificaTicketDialog extends JDialog {
             return;
         }
 
+        String[] dettagliAttuali = controller.getDettagliTicket(ticket);
+        String postoAttuale = dettagliAttuali != null ? dettagliAttuali[4] : "";
+
         // Effettua la modifica tramite il controller
-        if (controller.modificaTicket(ticket, nuovoNome, nuovoCognome,
-                nuovoDocumento, nuovaDataNascita)) {
+        if (controller.aggiornaTicket(ticket, nuovoNome, nuovoCognome,
+                nuovoDocumento, nuovaDataNascita, postoAttuale)) {
             modificaEffettuata = true;
             JOptionPane.showMessageDialog(this,
                     "Ticket modificato con successo!",
@@ -164,34 +173,46 @@ public class ModificaTicketDialog extends JDialog {
         dispose();
     }
 
-    private boolean hasUnsavedChanges() {
-        // Controlla se i valori nei campi sono diversi da quelli originali
-        return !nomeField.getText().trim().equals(ticket.getNome()) ||
-                !cognomeField.getText().trim().equals(ticket.getCognome()) ||
-                !documentoField.getText().trim().equals(ticket.getNumeroDocumento()) ||
-                !dataNascitaField.getText().trim().equals(ticket.getDataNascita());
+    private void setupButtons() {
+        // Impostiamo i pulsanti con lo stesso stile utilizzato nelle altre interfacce!
+        Color sfondoLeggermenteScuro = new Color(214, 214, 214);
+
+        // Pulsante SALVA
+        btnSalva.setBackground(sfondoLeggermenteScuro);
+        btnSalva.setForeground(new Color(78, 78, 78));
+        btnSalva.setFocusPainted(false);
+        btnSalva.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        btnSalva.setOpaque(true);
+
+        // Pulsante ANNULLA
+        btnAnnulla.setBackground(sfondoLeggermenteScuro);
+        btnAnnulla.setForeground(new Color(78, 78, 78));
+        btnAnnulla.setFocusPainted(false);
+        btnAnnulla.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        btnAnnulla.setOpaque(true);
+
+
     }
 
-    private boolean isValidDate(String date) {
-        // Validazione formato dd/mm/yyyy
-        if (date.length() != 10) return false;
-        if (date.charAt(2) != '/' || date.charAt(5) != '/') return false;
+    private boolean hasUnsavedChanges() {
+        // Qui controlliamo se i valori nei campi sono diversi da quelli originali
+        String[] dettagliOriginali = controller.getDettagliTicket(ticket);
 
-        try {
-            String[] parts = date.split("/");
-            if (parts.length != 3) return false;
-
-            int day = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]);
-            int year = Integer.parseInt(parts[2]);
-
-            return day >= 1 && day <= 31 &&
-                    month >= 1 && month <= 12 &&
-                    year >= 1900 && year <= 2024;
-        } catch (NumberFormatException e) {
+        if (dettagliOriginali == null) {
             return false;
         }
+
+
+        return !nomeField.getText().trim().equals(dettagliOriginali[0]) ||
+                !cognomeField.getText().trim().equals(dettagliOriginali[1]) ||
+                !documentoField.getText().trim().equals(dettagliOriginali[2]) ||
+                !dataNascitaField.getText().trim().equals(dettagliOriginali[3]);
     }
+
 
     public boolean isModificaEffettuata() {
         return modificaEffettuata;

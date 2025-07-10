@@ -24,7 +24,6 @@ public class AreaPrivataAdmin {
     private JLabel emailValue;
     private JPanel bottomPanel;
     private JButton btnHomepage;
-    private JLabel spacerBypass;
     private JButton btnModificaDati;
 
     public AreaPrivataAdmin(JFrame frameDash) {
@@ -76,17 +75,6 @@ public class AreaPrivataAdmin {
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         btnHomepage.setOpaque(true);
-
-        // Pulsante MODIFICA PRENOTAZIONE
-        btnModificaDati.setBackground(sfondoLeggermenteScuro);
-        btnModificaDati.setForeground(new Color(78, 78, 78));
-        btnModificaDati.setFocusPainted(false);
-        btnModificaDati.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        btnModificaDati.setOpaque(true);
-
-
     }
 
     private void loadUserInfo() {
@@ -113,9 +101,9 @@ public class AreaPrivataAdmin {
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
         panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel1.setMaximumSize(new Dimension(700, 500));
-        panel1.setMinimumSize(new Dimension(700, 500));
-        panel1.setPreferredSize(new Dimension(700, 500));
+        panel1.setMaximumSize(new Dimension(630, 380));
+        panel1.setMinimumSize(new Dimension(630, 380));
+        panel1.setPreferredSize(new Dimension(630, 380));
         topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout(5, 2));
         topPanel.setMaximumSize(new Dimension(620, 125));
@@ -147,7 +135,9 @@ public class AreaPrivataAdmin {
         subText.setVerticalTextPosition(0);
         topPanel.add(subText, BorderLayout.SOUTH);
         infoPanel = new JPanel();
-        infoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(5, 0, 5, 100), 10, 0));
+        infoPanel.setLayout(new GridBagLayout());
+        Font infoPanelFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 14, infoPanel.getFont());
+        if (infoPanelFont != null) infoPanel.setFont(infoPanelFont);
         infoPanel.setMaximumSize(new Dimension(620, 120));
         infoPanel.setMinimumSize(new Dimension(620, 120));
         infoPanel.setPreferredSize(new Dimension(620, 120));
@@ -159,25 +149,50 @@ public class AreaPrivataAdmin {
         label1.setText("Username: ");
         label1.setVerticalAlignment(0);
         label1.setVerticalTextPosition(0);
-        infoPanel.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, 30), new Dimension(300, 30), new Dimension(300, 30), 0, false));
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.SOUTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        infoPanel.add(label1, gbc);
         usernameValue = new JLabel();
         Font usernameValueFont = this.$$$getFont$$$("JetBrains Mono Light", Font.PLAIN, 16, usernameValue.getFont());
         if (usernameValueFont != null) usernameValue.setFont(usernameValueFont);
         usernameValue.setText("miaUsername");
-        infoPanel.add(usernameValue, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_SOUTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, 30), new Dimension(300, 30), new Dimension(300, 30), 0, false));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.SOUTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        infoPanel.add(usernameValue, gbc);
         emailValue = new JLabel();
         Font emailValueFont = this.$$$getFont$$$("JetBrains Mono Light", Font.PLAIN, 16, emailValue.getFont());
         if (emailValueFont != null) emailValue.setFont(emailValueFont);
         emailValue.setText("miaEmail");
-        infoPanel.add(emailValue, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, 30), new Dimension(300, 30), new Dimension(300, 30), 0, false));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        infoPanel.add(emailValue, gbc);
         final JLabel label2 = new JLabel();
         Font label2Font = this.$$$getFont$$$("JetBrains Mono SemiBold", Font.PLAIN, 16, label2.getFont());
         if (label2Font != null) label2.setFont(label2Font);
         label2.setHorizontalAlignment(2);
         label2.setText("Email: ");
-        infoPanel.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, 30), new Dimension(300, 30), new Dimension(300, 30), 0, false));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        infoPanel.add(label2, gbc);
         bottomPanel = new JPanel();
-        bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         bottomPanel.setMaximumSize(new Dimension(620, 80));
         bottomPanel.setMinimumSize(new Dimension(620, 80));
         bottomPanel.setPreferredSize(new Dimension(620, 80));
@@ -191,18 +206,6 @@ public class AreaPrivataAdmin {
         btnHomepage.setPreferredSize(new Dimension(90, 40));
         btnHomepage.setText("Homepage");
         bottomPanel.add(btnHomepage);
-        spacerBypass = new JLabel();
-        spacerBypass.setMaximumSize(new Dimension(435, 0));
-        spacerBypass.setMinimumSize(new Dimension(435, 0));
-        spacerBypass.setPreferredSize(new Dimension(435, 0));
-        spacerBypass.setText("");
-        bottomPanel.add(spacerBypass);
-        btnModificaDati = new JButton();
-        btnModificaDati.setMaximumSize(new Dimension(80, 40));
-        btnModificaDati.setMinimumSize(new Dimension(80, 40));
-        btnModificaDati.setPreferredSize(new Dimension(80, 40));
-        btnModificaDati.setText("Modifica");
-        bottomPanel.add(btnModificaDati);
     }
 
     /**

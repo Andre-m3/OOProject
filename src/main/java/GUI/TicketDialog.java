@@ -1,20 +1,68 @@
 package GUI;
 
-import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.Controller;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.util.Locale;
 
-public class TicketDialog {
+public class TicketDialog extends JDialog {
     private JFrame Tickets;
     private Controller controller;
     private JPanel panel1;
-    private JPanel topPanel;
+    private JPanel titlePanel;
+    private JLabel lblTitolo;
+    private JScrollPane scrollPane;
+    private JTable ticketsTable;
+    private JPanel buttonPanel;
+    private JButton btnChiudi;
+    private JPanel mainPanel;
+    private JLabel spacerBypass;
+    private String codicePrenotazione;
 
-    public TicketDialog(JFrame frameDash) {
-        controller = Controller.getInstance();
-        Tickets = new JFrame();
+    public TicketDialog(JFrame parent, String codicePrenotazione) {
+        // Come titolo aggiungiamo il codice della relativa prenotazione interessata!
+        super(parent, "Tickets della Prenotazione: " + codicePrenotazione, true);
+        this.codicePrenotazione = codicePrenotazione;
+        this.controller = Controller.getInstance();
+
+        setContentPane(panel1);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setSize(700, 400);
+        setLocationRelativeTo(parent);
+
+        loadTickets();
+        setupEvents();
+    }
+
+    private void loadTickets() {
+        String[] colonne = {"Nome", "Cognome", "Numero Documento", "Data Nascita", "Posto Assegnato"};
+        String[][] ticketsData = controller.getTicketsPrenotazione(codicePrenotazione);
+
+        if (ticketsData == null || ticketsData.length == 0) {
+            Object[][] emptyData = {{"Nessun ticket trovato", "", "", "", ""}};
+            ticketsTable.setModel(new DefaultTableModel(emptyData, colonne));
+        } else {
+            DefaultTableModel model = new DefaultTableModel(ticketsData, colonne) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            ticketsTable.setModel(model);
+        }
+    }
+
+    private void setupEvents() {
+        btnChiudi.addActionListener(e -> dispose());
+
+        // Chiudi anche con ESC
+        getRootPane().registerKeyboardAction(e -> dispose(),
+                KeyStroke.getKeyStroke("ESCAPE"), JComponent.WHEN_IN_FOCUSED_WINDOW);
+
     }
 
 
@@ -34,13 +82,89 @@ public class TicketDialog {
      */
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
-        panel1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel1.setMaximumSize(new Dimension(600, 400));
-        panel1.setMinimumSize(new Dimension(600, 400));
-        panel1.setPreferredSize(new Dimension(600, 400));
-        topPanel = new JPanel();
-        topPanel.setLayout(new BorderLayout(0, 0));
-        panel1.add(topPanel);
+        panel1.setLayout(new BorderLayout(0, 0));
+        panel1.setMaximumSize(new Dimension(700, 400));
+        panel1.setMinimumSize(new Dimension(700, 400));
+        panel1.setPreferredSize(new Dimension(700, 400));
+        titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout(0, 0));
+        titlePanel.setMaximumSize(new Dimension(700, 60));
+        titlePanel.setMinimumSize(new Dimension(700, 60));
+        titlePanel.setPreferredSize(new Dimension(700, 60));
+        panel1.add(titlePanel, BorderLayout.NORTH);
+        lblTitolo = new JLabel();
+        Font lblTitoloFont = this.$$$getFont$$$("JetBrains Mono SemiBold", Font.BOLD, 22, lblTitolo.getFont());
+        if (lblTitoloFont != null) lblTitolo.setFont(lblTitoloFont);
+        lblTitolo.setHorizontalAlignment(0);
+        lblTitolo.setHorizontalTextPosition(0);
+        lblTitolo.setText("Tickets della Prenotazione");
+        lblTitolo.setVerticalAlignment(0);
+        lblTitolo.setVerticalTextPosition(0);
+        titlePanel.add(lblTitolo, BorderLayout.CENTER);
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        buttonPanel.setMaximumSize(new Dimension(700, 80));
+        buttonPanel.setMinimumSize(new Dimension(700, 80));
+        buttonPanel.setPreferredSize(new Dimension(700, 80));
+        panel1.add(buttonPanel, BorderLayout.SOUTH);
+        spacerBypass = new JLabel();
+        spacerBypass.setMaximumSize(new Dimension(560, 17));
+        spacerBypass.setMinimumSize(new Dimension(560, 17));
+        spacerBypass.setPreferredSize(new Dimension(560, 17));
+        spacerBypass.setText("");
+        buttonPanel.add(spacerBypass);
+        btnChiudi = new JButton();
+        Font btnChiudiFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, btnChiudi.getFont());
+        if (btnChiudiFont != null) btnChiudi.setFont(btnChiudiFont);
+        btnChiudi.setHorizontalAlignment(0);
+        btnChiudi.setHorizontalTextPosition(10);
+        btnChiudi.setMaximumSize(new Dimension(85, 35));
+        btnChiudi.setMinimumSize(new Dimension(85, 35));
+        btnChiudi.setPreferredSize(new Dimension(85, 35));
+        btnChiudi.setText("Chiudi");
+        btnChiudi.setVerticalAlignment(0);
+        btnChiudi.setVerticalTextPosition(0);
+        buttonPanel.add(btnChiudi);
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        mainPanel.setMaximumSize(new Dimension(700, 260));
+        mainPanel.setMinimumSize(new Dimension(700, 260));
+        mainPanel.setPreferredSize(new Dimension(700, 260));
+        panel1.add(mainPanel, BorderLayout.WEST);
+        scrollPane = new JScrollPane();
+        scrollPane.setMaximumSize(new Dimension(680, 250));
+        scrollPane.setMinimumSize(new Dimension(680, 250));
+        scrollPane.setPreferredSize(new Dimension(650, 250));
+        mainPanel.add(scrollPane);
+        ticketsTable = new JTable();
+        ticketsTable.setAutoResizeMode(4);
+        ticketsTable.setCellSelectionEnabled(false);
+        ticketsTable.setColumnSelectionAllowed(false);
+        Font ticketsTableFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, ticketsTable.getFont());
+        if (ticketsTableFont != null) ticketsTable.setFont(ticketsTableFont);
+        scrollPane.setViewportView(ticketsTable);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
     }
 
     /**

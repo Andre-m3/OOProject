@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 
 public class Utente {
+
+    // NB: Non possono esistere due utenti con la stessa username o email!
     private String email;
     private String username;
     private String password;

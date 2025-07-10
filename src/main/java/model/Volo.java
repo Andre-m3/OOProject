@@ -93,6 +93,7 @@ public class Volo {
         return listaVoli;
     }
 
+
     @Override
     public String toString() {
         return "- Volo: " + this.getCompagniaAerea() + " " + this.getNumeroVolo()

@@ -3,8 +3,6 @@ package GUI;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.Controller;
-import model.Prenotazione;
-import model.Ticket;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -30,14 +28,12 @@ public class ModificaPrenotazioneDialog extends JDialog {
     private JPanel bottomPanel;
     private JButton btnElimina;
     private JButton btnChiudi;
-    private JButton buttonOK;
-    private JButton buttonCancel;
 
     private Controller controller;
-    private Prenotazione prenotazione;
+    private Object prenotazione;
     private DefaultListModel<String> ticketsListModel;
 
-    public ModificaPrenotazioneDialog(JFrame parent, Prenotazione prenotazione) {
+    public ModificaPrenotazioneDialog(JFrame parent, Object prenotazione) {
         super(parent, "Modifica Prenotazione", true);
 
         this.controller = Controller.getInstance();
@@ -55,25 +51,68 @@ public class ModificaPrenotazioneDialog extends JDialog {
         ticketsList.setModel(ticketsListModel);
 
         loadDatiPrenotazione();
+        setupButtons();
 
         btnElimina.addActionListener(e -> eliminaPrenotazione());
         btnModificaTicket.addActionListener(e -> modificaTicketSelezionato());
         btnChiudi.addActionListener(e -> dispose());
     }
 
-    private void loadDatiPrenotazione() {
-        codiceLabel.setText(prenotazione.getCodicePrenotazione());
-        voloLabel.setText(prenotazione.getCodiceVolo());
-        dataLabel.setText(prenotazione.getDataVolo());
-        trattaLabel.setText(prenotazione.getPartenzaDestinazione());
-        statoLabel.setText(prenotazione.getStato());
+    private void setupButtons() {
+        // Impostiamo i pulsanti con lo stesso stile utilizzato nelle altre interfacce!
+        Color sfondoLeggermenteScuro = new Color(214, 214, 214);
 
-        // Carichiamo i ticket
-        ticketsListModel.clear();
-        for (Ticket ticket : prenotazione.getTickets()) {
-            ticketsListModel.addElement(ticket.getNome() + " " + ticket.getCognome() +
-                    " - " + ticket.getNumeroDocumento());
+        // Pulsante ELIMINA
+        btnElimina.setBackground(sfondoLeggermenteScuro);
+        btnElimina.setForeground(new Color(78, 78, 78));
+        btnElimina.setFocusPainted(false);
+        btnElimina.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        btnElimina.setOpaque(true);
+
+        // Pulsante CHIUDI
+        btnChiudi.setBackground(sfondoLeggermenteScuro);
+        btnChiudi.setForeground(new Color(78, 78, 78));
+        btnChiudi.setFocusPainted(false);
+        btnChiudi.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        btnChiudi.setOpaque(true);
+
+        // Pulsante MODIFICA
+        btnModificaTicket.setBackground(sfondoLeggermenteScuro);
+        btnModificaTicket.setForeground(new Color(78, 78, 78));
+        btnModificaTicket.setFocusPainted(false);
+        btnModificaTicket.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        btnModificaTicket.setOpaque(true);
+
+
+    }
+
+    private void loadDatiPrenotazione() {
+        String[] dettagli = controller.getDettagliPrenotazioneDialog(prenotazione);
+
+        if (dettagli != null) {
+            codiceLabel.setText(dettagli[0]);
+            voloLabel.setText(dettagli[1]);
+            dataLabel.setText(dettagli[2]);
+            trattaLabel.setText(dettagli[3]);
+            statoLabel.setText(dettagli[4]);
         }
+
+        // Carichiamo i tickets tramite il controller
+        ticketsListModel.clear();
+        String[] ticketsFormattati = controller.getTicketsFormattati(prenotazione);
+
+        for (String ticketFormattato : ticketsFormattati) {
+            ticketsListModel.addElement(ticketFormattato);
+        }
+
+        // Abilita/disabilita il pulsante modifica ticket
+        btnModificaTicket.setEnabled(ticketsFormattati.length > 0);
     }
 
     private void eliminaPrenotazione() {
@@ -109,13 +148,22 @@ public class ModificaPrenotazioneDialog extends JDialog {
             return;
         }
 
-        Ticket ticketSelezionato = prenotazione.getTickets().get(selectedIndex);
+        // Ottengo il ticket selezionato tramite il controller
+        Object ticketSelezionato = controller.getTicketPerIndice(prenotazione, selectedIndex);
 
-        // Apre il dialog di modifica
+        if (ticketSelezionato == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Errore nel recupero del ticket selezionato.",
+                    "Errore",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Apriamo il dialog di modifica
         ModificaTicketDialog dialog = new ModificaTicketDialog(this, ticketSelezionato);
         dialog.setVisible(true);
 
-        // Se sono state effettuate modifiche, ricarica la lista
+        // Se sono state effettuate modifiche, ricarichiamo la lista così da mostrarle SUBITO (come conseguenza)
         if (dialog.isModificaEffettuata()) {
             loadDatiPrenotazione();
         }
@@ -195,6 +243,7 @@ public class ModificaPrenotazioneDialog extends JDialog {
         ticketsList = new JList();
         Font ticketsListFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 18, ticketsList.getFont());
         if (ticketsListFont != null) ticketsList.setFont(ticketsListFont);
+        ticketsList.setSelectionMode(0);
         scrollPane1.setViewportView(ticketsList);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -256,4 +305,5 @@ public class ModificaPrenotazioneDialog extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
     }
+
 }

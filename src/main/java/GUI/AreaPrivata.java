@@ -3,15 +3,15 @@ package GUI;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import controller.Controller;
-import model.Prenotazione;
-import model.UtenteGenerico;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class AreaPrivata {
@@ -28,11 +28,10 @@ public class AreaPrivata {
     private JLabel emailValue;
     private JLabel bookingText;
     private JButton btnTickets;
-    private JList prenotazioniList;
     private JLabel spacerBypass;
     private JButton btnHomepage;
     private JButton btnModificaPrenotazione;
-    private DefaultListModel<String> prenotazioniListModel;
+    private JTable tabellaPrenotazioni;
 
     public AreaPrivata(JFrame frameDash) {
 
@@ -53,16 +52,11 @@ public class AreaPrivata {
         loadUserInfo();
         loadPrenotazioni();
 
-        btnTickets.addActionListener(e -> {
-            FrameAreaPersonale.setVisible(false);
-            new TicketDialog(FrameAreaPersonale);
-        });
-
 
         // Aggiungiamo il listener per il pulsante Homepage
         btnHomepage.addActionListener(e -> {
-            FrameAreaPersonale.dispose();
             frameDash.setVisible(true);
+            FrameAreaPersonale.dispose();
         });
 
         /* Questa volta necessitiamo di un WindowListener
@@ -76,20 +70,14 @@ public class AreaPrivata {
             }
         });
 
+
         /* Il pulsante "Modifica Prenotazione" dovrà modificare esclusivamente la prenotazione selezionata
          * In poche parole, l'utente potrà selezionare dalla lista delle prenotazioni personali direttamente quella da modificare
          * Così cliccando sul pulsante "Modifica Prenotazione", riusciremo a passare al Dialog esattamente quella prenotazione
          * Questo ci garantisce un approccio più "user-friendly", il che è meglio!
          */
         btnModificaPrenotazione.addActionListener(e -> modificaPrenotazioneSelezionata());
-
-        FrameAreaPersonale.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                frameDash.setVisible(true);
-            }
-        });
-
+        btnTickets.addActionListener(e -> visualizzaTickets());
 
     }
 
@@ -134,33 +122,62 @@ public class AreaPrivata {
     }
 
     private void loadPrenotazioni() {
-        // Inizializza il modello della lista
-        prenotazioniListModel = new DefaultListModel<>();
-        prenotazioniList.setModel(prenotazioniListModel);
+        // Definisci le colonne della tabella
+        String[] colonne = {
+                "Codice Prenotazione",
+                "Passeggeri",
+                "Stato Prenotazione",
+                "Volo",
+                "Tratta",
+                "Stato Volo",
+                "Orario",
+                "Ritardo"
+        };
 
-        // Carica le prenotazioni dell'utente. L'amministratore non avrà prenotazioni, in quanto non puo prenotare un volo. Quindi sarà istanza di UtenteGenerico
-        var utente = (UtenteGenerico) controller.getUtenteLoggato();
-        prenotazioniListModel.clear();
+        // Ottieni i dati delle prenotazioni tramite il controller
+        Object[][] dati = controller.getDatiPrenotazioniUtente();
 
-        if (utente.getPrenotazioni().isEmpty()) {
-            prenotazioniListModel.addElement("Nessuna prenotazione trovata");
-            btnModificaPrenotazione.setEnabled(false);
-        } else {
-            for (Prenotazione prenotazione : utente.getPrenotazioni()) {
-                String prenotazioneInfo = String.format("[%s] %s - %s (%s)",
-                        prenotazione.getCodicePrenotazione(),
-                        prenotazione.getCodiceVolo(),
-                        prenotazione.getPartenzaDestinazione(),
-                        prenotazione.getStato());
-                prenotazioniListModel.addElement(prenotazioneInfo);
+        // Crea il modello della tabella (non editabile)
+        DefaultTableModel modelloTabella = new DefaultTableModel(dati, colonne) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
             }
-            btnModificaPrenotazione.setEnabled(true);
+        };
+
+        tabellaPrenotazioni.setModel(modelloTabella);
+        tabellaPrenotazioni.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // Abilita/disabilita i pulsanti in base alle prenotazioni disponibili
+        int numeroPrenotazioni = controller.getNumeroPrenotazioniUtente();
+        boolean hasPrenotazioni = numeroPrenotazioni > 0;
+        btnModificaPrenotazione.setEnabled(hasPrenotazioni);
+        btnTickets.setEnabled(hasPrenotazioni);
+
+    }
+
+    private void visualizzaTickets() {
+        int selectedRow = tabellaPrenotazioni.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(tabellaPrenotazioni,
+                    "Seleziona una prenotazione per visualizzare i ticket.",
+                    "Nessuna Selezione",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        // Ottieni il codice prenotazione dalla riga selezionata
+        String codicePrenotazione = (String) tabellaPrenotazioni.getValueAt(selectedRow, 0);
+
+        // Apri il dialog per visualizzare i ticket
+        TicketDialog dialog = new TicketDialog(FrameAreaPersonale, codicePrenotazione);
+        dialog.setVisible(true);
     }
 
     private void modificaPrenotazioneSelezionata() {
-        int selectedIndex = prenotazioniList.getSelectedIndex();
-        if (selectedIndex == -1) {
+        int selectedRow = tabellaPrenotazioni.getSelectedRow();
+        if (selectedRow == -1) {
             JOptionPane.showMessageDialog(FrameAreaPersonale,
                     "Seleziona una prenotazione da modificare.",
                     "Nessuna prenotazione selezionata",
@@ -168,9 +185,8 @@ public class AreaPrivata {
             return;
         }
 
-        // Controlla se non ci sono prenotazioni
-        var utente = (UtenteGenerico) controller.getUtenteLoggato();
-        if (utente.getPrenotazioni().isEmpty()) {
+        // Controlliamo se non ci sono prenotazioni! Importante verificare questa condizione. È utile non verificare la condizione inversa.
+        if (controller.getNumeroPrenotazioniUtente() == 0) {
             JOptionPane.showMessageDialog(FrameAreaPersonale,
                     "Non hai prenotazioni da modificare.",
                     "Nessuna prenotazione",
@@ -179,7 +195,19 @@ public class AreaPrivata {
         }
 
         // Ora otteniamo "le informazioni" della prenotazione selezionata
-        Prenotazione prenotazioneSelezionata = utente.getPrenotazioni().get(selectedIndex);
+        String codicePrenotazione = (String) tabellaPrenotazioni.getValueAt(selectedRow, 0);
+
+        // Otteniamo (tramite il controller...) la prenotazione selezionata
+        var prenotazioneSelezionata = controller.getPrenotazionePerCodice(codicePrenotazione);
+
+        // Verifichiamo se la prenotazione selezionata esiste
+        if (prenotazioneSelezionata == null) {
+            JOptionPane.showMessageDialog(FrameAreaPersonale,
+                    "Errore nel recupero della prenotazione.",
+                    "Errore",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         // Adesso non ci resta che aprire il dialog di modifica, passando insieme al frame anche la prenotazione selezionata!
         ModificaPrenotazioneDialog dialog = new ModificaPrenotazioneDialog(FrameAreaPersonale, prenotazioneSelezionata);
@@ -285,8 +313,8 @@ public class AreaPrivata {
         bookingPanel.add(bookingText, BorderLayout.NORTH);
         final JScrollPane scrollPane1 = new JScrollPane();
         bookingPanel.add(scrollPane1, BorderLayout.CENTER);
-        prenotazioniList = new JList();
-        scrollPane1.setViewportView(prenotazioniList);
+        tabellaPrenotazioni = new JTable();
+        scrollPane1.setViewportView(tabellaPrenotazioni);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         bottomPanel.setMaximumSize(new Dimension(705, 80));

@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.DialogInserisciVolo">
+  <grid id="cbd77" binding="panel1" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+    <constraints>
+      <xy x="48" y="54" width="600" height="500"/>
+    </constraints>
+    <properties>
+      <maximumSize width="600" height="500"/>
+      <minimumSize width="600" height="500"/>
+      <preferredSize width="600" height="500"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="4b73b" binding="topPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints/>
+        <properties>
+          <maximumSize width="580" height="60"/>
+          <minimumSize width="580" height="60"/>
+          <preferredSize width="580" height="60"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="6357c" class="javax.swing.JLabel" binding="labelTitolo">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="24" style="1"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Inserisci Nuovo Volo"/>
+              <verticalAlignment value="3"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="50889" binding="fieldsPanel" layout-manager="GridBagLayout">
+        <constraints/>
+        <properties>
+          <maximumSize width="580" height="340"/>
+          <minimumSize width="580" height="340"/>
+          <preferredSize width="580" height="340"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="91a82" binding="numeroVoloPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="708c3" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Numero Volo:"/>
+                </properties>
+              </component>
+              <component id="654f1" class="javax.swing.JTextField" binding="txtNumeroVolo">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="f17c9" binding="compagniaPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="1"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="18838" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Compagnia Aerea:"/>
+                </properties>
+              </component>
+              <component id="406e7" class="javax.swing.JTextField" binding="txtCompagnia">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="fdb86" binding="orarioPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="2"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="3403" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Orario (HH:MM):"/>
+                </properties>
+              </component>
+              <component id="ba289" class="javax.swing.JTextField" binding="txtOrario">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="6b146" binding="dataPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="3"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="9493a" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Data (DD-MM-YYYY):"/>
+                </properties>
+              </component>
+              <component id="74e1a" class="javax.swing.JTextField" binding="txtData">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="6e1fd" binding="statoPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="4"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="50187" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Stato:"/>
+                </properties>
+              </component>
+              <component id="f916d" class="javax.swing.JComboBox" binding="cbStato">
+                <constraints/>
+                <properties>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="d1088" binding="partenzaPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="5"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="6622c" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Partenza:"/>
+                </properties>
+              </component>
+              <component id="97bab" class="javax.swing.JTextField" binding="txtPartenza">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="8a8b2" binding="destinazionePanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="6"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="13853" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Destinazione:"/>
+                </properties>
+              </component>
+              <component id="d7f44" class="javax.swing.JTextField" binding="txtDestinazione">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="8bf34" binding="gatePanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0" ipady="7"/>
+            </constraints>
+            <properties>
+              <maximumSize width="560" height="35"/>
+              <minimumSize width="560" height="35"/>
+              <preferredSize width="560" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="b1837" class="javax.swing.JLabel">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <maximumSize width="180" height="25"/>
+                  <minimumSize width="180" height="25"/>
+                  <preferredSize width="180" height="25"/>
+                  <text value="Gate (opzionale):"/>
+                </properties>
+              </component>
+              <component id="93547" class="javax.swing.JComboBox" binding="cbGate">
+                <constraints/>
+                <properties>
+                  <maximumSize width="300" height="30"/>
+                  <minimumSize width="300" height="30"/>
+                  <preferredSize width="300" height="30"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="26dfa" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints/>
+        <properties>
+          <maximumSize width="580" height="60"/>
+          <minimumSize width="580" height="60"/>
+          <preferredSize width="580" height="60"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="fe080" class="javax.swing.JButton" binding="btnSalva">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="80" height="35"/>
+              <minimumSize width="80" height="35"/>
+              <preferredSize width="80" height="35"/>
+              <text value="Salva"/>
+            </properties>
+          </component>
+          <component id="6a086" class="javax.swing.JButton" binding="btnAnnulla">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="80" height="35"/>
+              <minimumSize width="80" height="35"/>
+              <preferredSize width="80" height="35"/>
+              <text value="Annulla"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

@@ -46,7 +46,7 @@ public class LandingPageLogin {
     }
 
     public LandingPageLogin() {
-        controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!!!        // Rendiamo il testo "Registrati qui..." cliccabile
+        controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!
 
         setupButtons();
 

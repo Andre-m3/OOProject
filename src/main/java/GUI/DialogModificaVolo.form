@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.DialogModificaVolo">
+  <grid id="cbd77" binding="panel1" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="48" y="54" width="450" height="400"/>
+    </constraints>
+    <properties>
+      <maximumSize width="450" height="400"/>
+      <minimumSize width="450" height="400"/>
+      <preferredSize width="450" height="400"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="94766" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="e7465" class="javax.swing.JButton" binding="btnSalva">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="80" height="35"/>
+              <minimumSize width="80" height="35"/>
+              <preferredSize width="80" height="35"/>
+              <text value="Salva"/>
+            </properties>
+          </component>
+          <component id="5723f" class="javax.swing.JButton" binding="btnAnnulla">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="80" height="35"/>
+              <minimumSize width="80" height="35"/>
+              <preferredSize width="80" height="35"/>
+              <text value="Annulla"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="e3588" binding="mainPanel" layout-manager="GridBagLayout">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <maximumSize width="450" height="400"/>
+          <minimumSize width="450" height="400"/>
+          <preferredSize width="450" height="400"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="7043f" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Numero Volo:"/>
+            </properties>
+          </component>
+          <component id="c66a6" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Compagnia:"/>
+            </properties>
+          </component>
+          <component id="914c" class="javax.swing.JTextField" binding="txtNumeroVolo">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="96106" class="javax.swing.JTextField" binding="txtCompagnia">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="cfda2" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Orario:"/>
+            </properties>
+          </component>
+          <component id="eb385" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Data:"/>
+            </properties>
+          </component>
+          <component id="bff89" class="javax.swing.JTextField" binding="txtOrario">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="f7404" class="javax.swing.JTextField" binding="txtData">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="c5427" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Ritardo (min):"/>
+            </properties>
+          </component>
+          <component id="d8712" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Stato:"/>
+            </properties>
+          </component>
+          <component id="5d65d" class="javax.swing.JTextField" binding="txtStato">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="ff0d2" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Partenza:"/>
+            </properties>
+          </component>
+          <component id="8a216" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Destinazione:"/>
+            </properties>
+          </component>
+          <component id="73abd" class="javax.swing.JTextField" binding="txtPartenza">
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="bb6ed" class="javax.swing.JTextField" binding="txtDestinazione">
+            <constraints>
+              <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="4b560" class="javax.swing.JSpinner" binding="spnRitardo">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="8aa29" binding="topPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <maximumSize width="450" height="70"/>
+          <minimumSize width="450" height="70"/>
+          <preferredSize width="450" height="70"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="f9ffe" class="javax.swing.JLabel" binding="dialogTitle">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="22" style="1"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Modifica del Volo"/>
+              <verticalAlignment value="3"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="GUI.DialogDatiPasseggero">
+  <grid id="cbd77" binding="panel1" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="48" y="54" width="450" height="300"/>
+    </constraints>
+    <properties>
+      <maximumSize width="450" height="300"/>
+      <minimumSize width="450" height="300"/>
+      <preferredSize width="450" height="300"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="7a0c3" binding="topPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties>
+          <maximumSize width="450" height="50"/>
+          <minimumSize width="450" height="50"/>
+          <preferredSize width="450" height="50"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="136da" class="javax.swing.JLabel" binding="dialogTitle">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font name="JetBrains Mono SemiBold" size="18" style="1"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Dati Passeggero"/>
+              <verticalAlignment value="3"/>
+              <verticalTextPosition value="3"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="9d181" binding="mainPanel" layout-manager="GridBagLayout">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <maximumSize width="450" height="200"/>
+          <minimumSize width="450" height="200"/>
+          <preferredSize width="450" height="200"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="b09f8" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Nome:"/>
+            </properties>
+          </component>
+          <component id="4ca8d" class="javax.swing.JTextField" binding="txtNome">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <horizontalAlignment value="10"/>
+              <inheritsPopupMenu value="false"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="80507" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Cognome:"/>
+            </properties>
+          </component>
+          <component id="40271" class="javax.swing.JTextField" binding="txtCognome">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="383c9" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Numero Documento:"/>
+            </properties>
+          </component>
+          <component id="f9a95" class="javax.swing.JTextField" binding="txtDocumento">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+            </properties>
+          </component>
+          <component id="973a1" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <text value="Data Nascita:"/>
+            </properties>
+          </component>
+          <component id="f44fc" class="javax.swing.JTextField" binding="txtDataNascita">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="200" height="30"/>
+              <minimumSize width="200" height="30"/>
+              <preferredSize width="200" height="30"/>
+              <text value=""/>
+              <toolTipText value="Formato: dd/mm/yyyy"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="6542c" binding="buttonPanel" layout-manager="FlowLayout" hgap="5" vgap="0" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties>
+          <maximumSize width="450" height="50"/>
+          <minimumSize width="450" height="50"/>
+          <preferredSize width="450" height="50"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="8c8f0" class="javax.swing.JButton" binding="btnConferma">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="90" height="35"/>
+              <minimumSize width="90" height="35"/>
+              <preferredSize width="90" height="35"/>
+              <text value="Conferma"/>
+            </properties>
+          </component>
+          <component id="cb589" class="javax.swing.JButton" binding="btnAnnulla">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="12" style="0"/>
+              <maximumSize width="90" height="35"/>
+              <minimumSize width="90" height="35"/>
+              <preferredSize width="90" height="35"/>
+              <text value="Annulla"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

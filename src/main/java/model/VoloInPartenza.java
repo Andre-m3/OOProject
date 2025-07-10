@@ -2,24 +2,20 @@ package model;
 
 public class VoloInPartenza extends Volo{
     private Short gateImbarco;          // Short è Wrapped, non Primitivo!
-    private String aeroportoDestinazione;
 
     // Abbiamo un primo Costruttore che accetta l'inserimento del Gate Imbarco (Short)
     public VoloInPartenza(String numeroVolo, String compagniaAerea, String orarioPrevisto,
-                          String data, int ritardo, String stato, String tipoVolo,
-                          Short gateImbarco, String aeroportoDestinazione) {
-        super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, tipoVolo);
+                          String data, int ritardo, String stato, String destinazione,
+                          Short gateImbarco) {
+        super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, "Napoli", destinazione);
         this.gateImbarco = gateImbarco;
-        this.aeroportoDestinazione = aeroportoDestinazione;
     }
 
-    // Abbiamo un secondo Costruttore che accetta l'omissione del Gate (settato automaticamente a null)
+    // Costruttore che omette il Gate (settato automaticamente a null)
     public VoloInPartenza(String numeroVolo, String compagniaAerea, String orarioPrevisto,
-                          String data, int ritardo, String stato, String tipoVolo,
-                          String aeroportoDestinazione) {
-        super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, tipoVolo);
+                          String data, int ritardo, String stato, String destinazione) {
+        super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, "Napoli", destinazione);
         this.gateImbarco = null;
-        this.aeroportoDestinazione = aeroportoDestinazione;
     }
 
     public Short getGateImbarco() {
@@ -29,22 +25,14 @@ public class VoloInPartenza extends Volo{
         this.gateImbarco = gateImbarco;
     }
 
-    public String getAeroportoDestinazione() {
-        return aeroportoDestinazione;
-    }
-    public void setAeroportoDestinazione(String aeroportoDestinazione) {
-        this.aeroportoDestinazione = aeroportoDestinazione;
-    }
-
     @Override
     public String toString() {
         return super.toString()
                 + "\n- TipoVolo: Partenza"
-                + "\n- Destinazione: " + this.getAeroportoDestinazione()
                 + "\n- Orario Partenza: " + this.getOrarioPrevisto()
                 + "\n- Ritardo: " + this.getRitardo() + " minuti"
                 + "\n- Gate Imbarco: " + (this.getGateImbarco() == null ? "non assegnato" : this.getGateImbarco()) + "\n";
-                    // Effettua un controllo sul gate. Se non è presente (quindi null) non visualizziamo nulla, altrimenti visualizziamo il valore del gate
     }
+
 
 }
