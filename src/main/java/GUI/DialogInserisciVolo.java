@@ -60,20 +60,12 @@ public class DialogInserisciVolo extends JDialog {
         setVisible(true);
     }
 
-    // MODIFICARE IN BASE ALL'ENUMERAZIONE IMPOSTATA!
     private void setupComboBoxes() {
         // Configurazione ComboBox Stato
-        String[] statiVolo = {
-                "Programmato",
-                "In Orario",
-                "In Ritardo",
-                "Cancellato",
-                "Atterrato"
-        };
-
-        DefaultComboBoxModel<String> statoModel = new DefaultComboBoxModel<>(statiVolo);
-        cbStato.setModel(statoModel);
-        cbStato.setSelectedItem("Programmato"); // Valore predefinito
+        String[] statiDisponibili = controller.getStatiVoloDisponibili();
+        for (String stato : statiDisponibili) {
+            cbStato.addItem(stato);
+        }
 
         // Configurazione ComboBox Gate
         String[] gateOptions = {
@@ -130,43 +122,30 @@ public class DialogInserisciVolo extends JDialog {
         String partenza = txtPartenza.getText().trim();
         String destinazione = txtDestinazione.getText().trim();
 
-        // Gestiamo il Gate (opzionale, non è obbligatorio inserirlo)
-        Short gateImbarco = null;
+        // Gestiamo il Gate
+        Short gate = null;
         String selectedGate = (String) cbGate.getSelectedItem();
         if (!"Nessun gate".equals(selectedGate)) {
+            // Facciamo in modo che la stringa "gate 3" (3 numero generico) sia "troncata" per far rimanere solo il numero e poter fare il cast in Short
             String numeroGate = selectedGate.replace("Gate ", "");
-            gateImbarco = Short.parseShort(numeroGate);
+            gate = Short.parseShort(numeroGate);
         }
 
-        // Inserimento tramite controller, non bisogna importare le classi del package model all'interno delle interfacce!
-        boolean success = controller.inserisciVolo(
-                numeroVolo, compagnia, orario, data,
-                stato, partenza, destinazione, gateImbarco
-        );
+        // Inseriamo il volo tramite il metodo apposito presente nel Controller
+        boolean success = controller.inserisciVolo(numeroVolo, compagnia, orario, data,
+                stato, partenza, destinazione, gate);
 
+        // Verifichiamo se l'aggiunta ha avuto successo, così da poter mostrare un messaggio all'utente tramite MessageDialog
         if (success) {
-            // Esegue l'azione passata dal parent (aggiorna lista voli)
-            // Lo abbiamo commentato in modo più specifico e attendo nei dialog precedenti!
+            JOptionPane.showMessageDialog(this, "Volo inserito con successo!");
             if (onSaveCallback != null) {
                 onSaveCallback.run();
             }
-
-            JOptionPane.showMessageDialog(this,
-                    "Volo inserito con successo!",
-                    "Successo",
-                    JOptionPane.INFORMATION_MESSAGE);
-
             dispose();
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "Errore durante l'inserimento del volo!\n" +
-                            "Verifica che:\n" +
-                            "- Il numero volo non esista già\n" +
-                            "- Tutti i dati siano corretti\n" +
-                            "- Hai i permessi di amministratore",
-                    "Errore",
-                    JOptionPane.ERROR_MESSAGE);
+            mostraErrore("Errore durante l'inserimento del volo");
         }
+
     }
 
     // Qui validiamo i campi, per essere sicuri che non siano stati fatti errori (umani, dall'amministratore in questo caso) in fase di inserimento per ciascun campo

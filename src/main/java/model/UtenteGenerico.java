@@ -28,7 +28,7 @@ public class UtenteGenerico extends Utente {
         // Mostra voli disponibili per la prenotazione
         ArrayList<Volo> voliDisponibili = new ArrayList<>();
         for (Volo volo : Volo.getListaVoli()) {
-            if ("PROGRAMMATO".equalsIgnoreCase(volo.getStato())) {
+            if (volo.getStato() == StatoVolo.PROGRAMMATO) {
                 voliDisponibili.add(volo);
             }
         }
@@ -85,7 +85,7 @@ public class UtenteGenerico extends Utente {
                 voloSelezionato.getNumeroVolo(),
                 voloSelezionato.getData(),
                 tratta,
-                "CONFERMATA",
+                StatoPrenotazione.CONFERMATA,
                 numeroPasseggeri
         );
 

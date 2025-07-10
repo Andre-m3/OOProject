@@ -5,7 +5,7 @@ public class VoloInPartenza extends Volo{
 
     // Abbiamo un primo Costruttore che accetta l'inserimento del Gate Imbarco (Short)
     public VoloInPartenza(String numeroVolo, String compagniaAerea, String orarioPrevisto,
-                          String data, int ritardo, String stato, String destinazione,
+                          String data, int ritardo, StatoVolo stato, String destinazione,
                           Short gateImbarco) {
         super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, "Napoli", destinazione);
         this.gateImbarco = gateImbarco;
@@ -13,7 +13,7 @@ public class VoloInPartenza extends Volo{
 
     // Costruttore che omette il Gate (settato automaticamente a null)
     public VoloInPartenza(String numeroVolo, String compagniaAerea, String orarioPrevisto,
-                          String data, int ritardo, String stato, String destinazione) {
+                          String data, int ritardo, StatoVolo stato, String destinazione) {
         super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, "Napoli", destinazione);
         this.gateImbarco = null;
     }

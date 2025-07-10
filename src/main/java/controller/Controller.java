@@ -40,15 +40,15 @@ public class Controller {
 
         // Aggiuntai di alcuni voli per testing
         // Voli in partenza da Napoli
-        Volo.aggiungiVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, "ATTERRATO", "Milano", (short) 5));
-        Volo.aggiungiVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, "RITARDATO", "Roma", (short) 12));
-        Volo.aggiungiVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, "PROGRAMMATO", "Monaco"));
-        Volo.aggiungiVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, "RITARDATO", "Londra", (short) 8));
+        Volo.aggiungiVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, StatoVolo.ATTERRATO, "Milano", (short) 5));
+        Volo.aggiungiVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, StatoVolo.IN_RITARDO, "Roma", (short) 12));
+        Volo.aggiungiVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, StatoVolo.PROGRAMMATO, "Monaco"));
+        Volo.aggiungiVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, StatoVolo.IN_RITARDO, "Londra", (short) 8));
 
         // Voli in arrivo a Napoli
-        Volo.aggiungiVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, "PROGRAMMATO", "Dubai"));
-        Volo.aggiungiVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, "RITARDATO", "Parigi"));
-        Volo.aggiungiVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, "PROGRAMMATO", "Amsterdam"));
+        Volo.aggiungiVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, StatoVolo.PROGRAMMATO, "Dubai"));
+        Volo.aggiungiVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, StatoVolo.IN_RITARDO, "Parigi"));
+        Volo.aggiungiVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, StatoVolo.PROGRAMMATO, "Amsterdam"));
     }
 
     /**
@@ -176,18 +176,11 @@ public class Controller {
      * @return true se il volo è prenotabile, false altrimenti
      */
     public boolean isVoloPrenotabile(String numeroVolo) {
-        ArrayList<Volo> voli = Volo.getListaVoli();
-
-        for (Volo volo : voli) {
-            if (volo.getNumeroVolo().equals(numeroVolo)) {
-                // Un volo è disponibile alla prenotazione se è PROGRAMMATO
-                String stato = volo.getStato();
-                return stato.equals("PROGRAMMATO");
-            }
-        }
-
-        return false;
+        // Un volo è disponibile alla prenotazione SOLO in Stato PROGRAMMATO
+        Volo volo = getVoloPerNumero(numeroVolo);
+        return volo != null && volo.getStato() == StatoVolo.PROGRAMMATO;
     }
+
 
     /**
      * Ottiene il gate di imbarco per un volo in partenza
@@ -229,7 +222,7 @@ public class Controller {
      * @param compagniaAerea Compagnia aerea
      * @param orarioPrevisto Orario previsto
      * @param data Data del volo
-     * @param stato Stato del volo
+     * @param stato Stato del volo (come stringa)
      * @param partenza Aeroporto di partenza
      * @param destinazione Aeroporto di destinazione
      * @param gateImbarco Gate di imbarco (opzionale, solo per voli in partenza)
@@ -238,35 +231,32 @@ public class Controller {
     public boolean inserisciVolo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
                                  String data, String stato, String partenza, String destinazione,
                                  Short gateImbarco) {
-
         if (!isUtenteAdmin()) {
             return false;
         }
 
         try {
-            Volo nuovoVolo;
+            // Convertiamo la stringa in enum
+            StatoVolo statoVolo = StatoVolo.valueOf(stato.toUpperCase());
 
+            // Determiniamo se è un volo in partenza o in arrivo
             if ("Napoli".equalsIgnoreCase(partenza)) {
                 // Volo in partenza da Napoli
                 if (gateImbarco != null) {
-                    nuovoVolo = new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
-                            data, 0, stato, destinazione, gateImbarco);
+                    Volo.aggiungiVolo(new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
+                            data, 0, statoVolo, destinazione, gateImbarco));
                 } else {
-                    nuovoVolo = new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
-                            data, 0, stato, destinazione);
+                    Volo.aggiungiVolo(new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
+                            data, 0, statoVolo, destinazione));
                 }
             } else {
                 // Volo in arrivo a Napoli
-                nuovoVolo = new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto,
-                        data, 0, stato, partenza);
+                Volo.aggiungiVolo(new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto,
+                        data, 0, statoVolo, partenza));
             }
-
-
-            Volo.aggiungiVolo(nuovoVolo);
             return true;
-
-        } catch (Exception e) {
-            return false;
+        } catch (IllegalArgumentException e) {
+            return false; // Stato non valido
         }
     }
 
@@ -309,7 +299,7 @@ public class Controller {
 
         // Trova il volo
         Volo volo = getVoloPerNumero(codiceVolo);
-        if (volo == null || !"PROGRAMMATO".equalsIgnoreCase(volo.getStato())) {
+        if (volo == null || volo.getStato() != StatoVolo.PROGRAMMATO) {
             return null;
         }
 
@@ -323,7 +313,7 @@ public class Controller {
                 codiceVolo,
                 volo.getData(),
                 tratta,
-                "CONFERMATA",
+                StatoPrenotazione.CONFERMATA,
                 numeroPasseggeri
         );
 
@@ -598,7 +588,7 @@ public class Controller {
                         prenotazione.getCodiceVolo(),
                         prenotazione.getDataVolo(),
                         prenotazione.getPartenzaDestinazione(),
-                        prenotazione.getStato(),
+                        prenotazione.getStato().toString(),
                         String.valueOf(prenotazione.getNumeroPasseggeri())
                 };
             }
@@ -648,7 +638,7 @@ public class Controller {
                 p.getCodiceVolo(),
                 p.getDataVolo(),
                 p.getPartenzaDestinazione(),
-                p.getStato()
+                p.getStato().toString()
         };
     }
 
@@ -781,7 +771,7 @@ public class Controller {
                         volo.getOrarioPrevisto(),
                         volo.getData(),
                         String.valueOf(volo.getRitardo()),
-                        volo.getStato(),
+                        volo.getStato().toString(),
                         volo.getPartenza(),
                         volo.getDestinazione()
                 };
@@ -811,6 +801,8 @@ public class Controller {
             return false;
         }
 
+        StatoVolo statoEnum = StatoVolo.valueOf(nuovoStato.toUpperCase());
+
         for (Volo volo : Volo.getListaVoli()) {
             if (volo.getNumeroVolo().equals(numeroVoloOriginale)) {
                 volo.setNumeroVolo(nuovoNumeroVolo);
@@ -818,7 +810,7 @@ public class Controller {
                 volo.setOrarioPrevisto(nuovoOrario);
                 volo.setData(nuovaData);
                 volo.setRitardo(nuovoRitardo);
-                volo.setStato(nuovoStato);
+                volo.setStato(statoEnum);
                 volo.setPartenza(nuovaPartenza);
                 volo.setDestinazione(nuovaDestinazione);
                 return true;
@@ -841,5 +833,53 @@ public class Controller {
         }
         return null;
     }
+
+
+    /**
+     * Metodi per gestire gli stati senza esporre gli enum alle GUI
+     */
+
+    // Metodi per gestire gli Stati del Volo (enum StatoVolo in package "model")
+    public String[] getStatiVoloDisponibili() {
+        StatoVolo[] stati = StatoVolo.values();
+        String[] statiString = new String[stati.length];
+        for (int i = 0; i < stati.length; i++) {
+            statiString[i] = stati[i].toString();
+        }
+        return statiString;
+    }
+    public boolean isStatoVoloValido(String stato) {
+        try {
+            StatoVolo.valueOf(stato.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+    private StatoVolo stringToStatoVolo(String stato) {
+        return StatoVolo.valueOf(stato.toUpperCase());
+    }
+
+    // Metodi per gestire gli Stati della Prenotazione (enum StatoPrenotazione in package "model")
+    public String[] getStatiPrenotazioneDisponibili() {
+        StatoPrenotazione[] stati = StatoPrenotazione.values();
+        String[] statiString = new String[stati.length];
+        for (int i = 0; i < stati.length; i++) {
+            statiString[i] = stati[i].toString();
+        }
+        return statiString;
+    }
+    public boolean isStatoPrenotazioneValido(String stato) {
+        try {
+            StatoPrenotazione.valueOf(stato.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+    private StatoPrenotazione stringToStatoPrenotazione(String stato) {
+        return StatoPrenotazione.valueOf(stato.toUpperCase());
+    }
+
 
 }

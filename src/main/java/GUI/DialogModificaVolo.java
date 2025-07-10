@@ -17,7 +17,6 @@ public class DialogModificaVolo extends JDialog {
     private JTextField txtOrario;
     private JTextField txtData;
     private JSpinner spnRitardo;
-    private JTextField txtStato;
     private JTextField txtPartenza;
     private JTextField txtDestinazione;
     private JPanel buttonPanel;
@@ -25,6 +24,7 @@ public class DialogModificaVolo extends JDialog {
     private JButton btnAnnulla;
     private JPanel topPanel;
     private JLabel dialogTitle;
+    private JComboBox cbStato;
 
     private Controller controller;
     private String numeroVoloOriginale;
@@ -40,21 +40,16 @@ public class DialogModificaVolo extends JDialog {
         this.numeroVoloOriginale = numeroVolo;
         this.onSaveCallback = onSaveCallback;
 
-        // Così facendo otterremo i dati del volo tramite il controller (se esiste)
-        String[] datiVolo = controller.getDatiVolo(numeroVolo);
-        if (datiVolo == null) {
-            JOptionPane.showMessageDialog(this,
-                    "Volo non trovato!",
-                    "Errore",
-                    JOptionPane.ERROR_MESSAGE);
-            dispose();
-            return;
-        }       // Ha senso verificare se esista o meno, visto che l'utente seleziona il volo da una tabella di voli esistenti?
-
         setContentPane(panel1);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(parent);
+
+        // Così facendo otterremo i dati del volo tramite il controller
+        String[] datiVolo = controller.getDatiVolo(numeroVolo);
+
+        // Impostiamo la ComboBox dello Stato del volo prima di precompilare i dati. Cosi avremo anche lo stato attuale del volo gia precompilato.
+        setupComboBox();
 
         // Metodo che precompila i campi con i valori gia esistenti, così l'utente sa per certo cosa sta modificando!
         precompilaCampi(datiVolo);
@@ -65,17 +60,26 @@ public class DialogModificaVolo extends JDialog {
         setVisible(true);
     }
 
+    private void setupComboBox() {
+        // Popola combo box stato usando il controller
+        String[] statiDisponibili = controller.getStatiVoloDisponibili();
+        cbStato.removeAllItems();
+        for (String stato : statiDisponibili) {
+            cbStato.addItem(stato);
+        }
+    }
+
+
     private void precompilaCampi(String[] datiVolo) {
         txtNumeroVolo.setText(datiVolo[0]);
         txtCompagnia.setText(datiVolo[1]);
         txtOrario.setText(datiVolo[2]);
         txtData.setText(datiVolo[3]);
         spnRitardo.setValue(Integer.parseInt(datiVolo[4]));
-        txtStato.setText(datiVolo[5]);
+        cbStato.setSelectedItem(datiVolo[5]);
         txtPartenza.setText(datiVolo[6]);
         txtDestinazione.setText(datiVolo[7]);
     }
-
 
     // Cosa facciamo quando viene cliccato il tasto "Salva" oppure "Annulla"? (Listeners)
     // Essendo solo due, e di lettura semplice, li carichiamo tramite metodo, per averli più compatti e visibili
@@ -91,7 +95,7 @@ public class DialogModificaVolo extends JDialog {
         String nuovoOrario = txtOrario.getText().trim();
         String nuovaData = txtData.getText().trim();
         int nuovoRitardo = (Integer) spnRitardo.getValue();
-        String nuovoStato = txtStato.getText().trim();
+        String nuovoStato = (String) cbStato.getSelectedItem();
         String nuovaPartenza = txtPartenza.getText().trim();
         String nuovaDestinazione = txtDestinazione.getText().trim();
 
@@ -283,18 +287,6 @@ public class DialogModificaVolo extends JDialog {
         gbc.gridy = 5;
         gbc.anchor = GridBagConstraints.WEST;
         mainPanel.add(label6, gbc);
-        txtStato = new JTextField();
-        Font txtStatoFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, txtStato.getFont());
-        if (txtStatoFont != null) txtStato.setFont(txtStatoFont);
-        txtStato.setMaximumSize(new Dimension(200, 30));
-        txtStato.setMinimumSize(new Dimension(200, 30));
-        txtStato.setPreferredSize(new Dimension(200, 30));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 5;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        mainPanel.add(txtStato, gbc);
         final JLabel label7 = new JLabel();
         Font label7Font = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 12, label7.getFont());
         if (label7Font != null) label7.setFont(label7Font);
@@ -349,6 +341,16 @@ public class DialogModificaVolo extends JDialog {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         mainPanel.add(spnRitardo, gbc);
+        cbStato = new JComboBox();
+        cbStato.setMaximumSize(new Dimension(200, 30));
+        cbStato.setMinimumSize(new Dimension(200, 30));
+        cbStato.setPreferredSize(new Dimension(200, 30));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        mainPanel.add(cbStato, gbc);
         topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout(0, 0));
         topPanel.setMaximumSize(new Dimension(450, 70));
@@ -398,4 +400,5 @@ public class DialogModificaVolo extends JDialog {
     public JComponent $$$getRootComponent$$$() {
         return panel1;
     }
+
 }

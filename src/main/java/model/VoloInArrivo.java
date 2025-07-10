@@ -3,7 +3,7 @@ package model;
 public class VoloInArrivo extends Volo{
 
     public VoloInArrivo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
-                        String data, int ritardo, String stato, String origine) {
+                        String data, int ritardo, StatoVolo stato, String origine) {
         super(numeroVolo, compagniaAerea, orarioPrevisto, data, ritardo, stato, origine, "Napoli");
     }
 

@@ -10,7 +10,7 @@ import controller.Controller;
 public class UserDashboard {
     private JFrame FrameUser;
     private JPanel buttonPanel;
-    private JButton btnPrenotaVolo;
+    private JButton btnViewOpt;
     private JButton btnAreaPersonale;
     private JButton btnViewVoli;
     private JButton btnLogout;
@@ -73,13 +73,13 @@ public class UserDashboard {
          */
 
         Color sfondoLeggermenteScuro = new Color(214, 214, 214);                // Colore sfondo pulsante
-        btnPrenotaVolo.setBackground(sfondoLeggermenteScuro);
-        btnPrenotaVolo.setForeground(new Color(78, 78, 78));                   // Colore testo pulsante
-        btnPrenotaVolo.setFocusPainted(false);
-        btnPrenotaVolo.setBorder(BorderFactory.createCompoundBorder(                    // Colore, spessore e spaziatura del bordo del pulsante
+        btnViewOpt.setBackground(sfondoLeggermenteScuro);
+        btnViewOpt.setForeground(new Color(78, 78, 78));                   // Colore testo pulsante
+        btnViewOpt.setFocusPainted(false);
+        btnViewOpt.setBorder(BorderFactory.createCompoundBorder(                    // Colore, spessore e spaziatura del bordo del pulsante
                 BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
-        btnPrenotaVolo.setOpaque(true);
+        btnViewOpt.setOpaque(true);
 
         btnAreaPersonale.setBackground(sfondoLeggermenteScuro);
         btnAreaPersonale.setForeground(new Color(78, 78, 78));                  // Colore testo pulsante
@@ -174,17 +174,17 @@ public class UserDashboard {
         gbc.gridx = 0;
         gbc.gridy = 0;
         buttonPanel.add(panel3, gbc);
-        btnPrenotaVolo = new JButton();
-        Font btnPrenotaVoloFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnPrenotaVolo.getFont());
-        if (btnPrenotaVoloFont != null) btnPrenotaVolo.setFont(btnPrenotaVoloFont);
-        btnPrenotaVolo.setHideActionText(false);
-        btnPrenotaVolo.setHorizontalTextPosition(0);
-        btnPrenotaVolo.setMargin(new Insets(0, 0, 0, 0));
-        btnPrenotaVolo.setMaximumSize(new Dimension(150, 125));
-        btnPrenotaVolo.setMinimumSize(new Dimension(150, 125));
-        btnPrenotaVolo.setPreferredSize(new Dimension(150, 125));
-        btnPrenotaVolo.setText("Prenota Volo");
-        panel3.add(btnPrenotaVolo, BorderLayout.NORTH);
+        btnViewOpt = new JButton();
+        Font btnViewOptFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnViewOpt.getFont());
+        if (btnViewOptFont != null) btnViewOpt.setFont(btnViewOptFont);
+        btnViewOpt.setHideActionText(false);
+        btnViewOpt.setHorizontalTextPosition(0);
+        btnViewOpt.setMargin(new Insets(0, 0, 0, 0));
+        btnViewOpt.setMaximumSize(new Dimension(150, 125));
+        btnViewOpt.setMinimumSize(new Dimension(150, 125));
+        btnViewOpt.setPreferredSize(new Dimension(150, 125));
+        btnViewOpt.setText("Opzioni di Ricerca");
+        panel3.add(btnViewOpt, BorderLayout.NORTH);
         btnAreaPersonale = new JButton();
         Font btnAreaPersonaleFont = this.$$$getFont$$$("Droid Sans Mono", Font.PLAIN, 16, btnAreaPersonale.getFont());
         if (btnAreaPersonaleFont != null) btnAreaPersonale.setFont(btnAreaPersonaleFont);

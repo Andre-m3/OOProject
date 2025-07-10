@@ -3,7 +3,8 @@ package model;
 import java.util.ArrayList;
 
 public class Volo {
-    // Lista statica che conterrà tutti i voli
+
+    // Lista statica che conterrà tutti i voli, è momentanea e verrà eliminata a breve, appena verrà incluso il Database
     private static ArrayList<Volo> listaVoli = new ArrayList<>();
 
     private String numeroVolo;      // Codice Alfanumerico [a-zA-Z0-9]
@@ -11,12 +12,12 @@ public class Volo {
     private String orarioPrevisto;
     private String data;
     private int ritardo;            // espresso in minuti!
-    private String stato;
+    private StatoVolo stato;
     private String partenza;        // Aeroporto di partenza
     private String destinazione;    // Aeroporto di destinazione
 
     public Volo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
-                String data, int ritardo, String stato, String partenza, String destinazione) {
+                String data, int ritardo, StatoVolo stato, String partenza, String destinazione) {
         this.numeroVolo = numeroVolo;
         this.compagniaAerea = compagniaAerea;
         this.orarioPrevisto = orarioPrevisto;
@@ -62,10 +63,10 @@ public class Volo {
         this.ritardo = ritardo;
     }
 
-    public String getStato() {
+    public StatoVolo getStato() {
         return stato;
     }
-    public void setStato(String stato) {
+    public void setStato(StatoVolo stato) {
         this.stato = stato;
     }
 
@@ -82,6 +83,7 @@ public class Volo {
     public void setDestinazione(String destinazione) {
         this.destinazione = destinazione;
     }
+
 
     // Metodo per aggiungere un volo alla lista
     public static void aggiungiVolo(Volo volo) {

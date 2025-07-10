@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Prenotazione {
 
     // Costante che definisce il numero massimo di passeggeri per prenotazione
-    public static final int MAX_PASSEGGERI = 10;
+    public static final int MAX_PASSEGGERI = 9;
     // Contatore statico per generare codici prenotazione progressivi
     private static int contatoreCodici = 20000;
 
@@ -13,12 +13,12 @@ public class Prenotazione {
     private String codiceVolo;
     private String dataVolo;
     private String partenzaDestinazione;
-    private String stato;
+    private StatoPrenotazione stato;
     private int numeroPasseggeri;
     private ArrayList<Ticket> tickets;
     
     public Prenotazione(String codicePrenotazione, String codiceVolo, String dataVolo,
-                        String partenzaDestinazione, String stato, int numeroPasseggeri) {
+                        String partenzaDestinazione, StatoPrenotazione stato, int numeroPasseggeri) {
         this.codicePrenotazione = codicePrenotazione;
         this.codiceVolo = codiceVolo;
         this.dataVolo = dataVolo;
@@ -56,10 +56,10 @@ public class Prenotazione {
         this.partenzaDestinazione = partenzaDestinazione;
     }
 
-    public String getStato() {
+    public StatoPrenotazione getStato() {
         return stato;
     }
-    public void setStato(String stato) {
+    public void setStato(StatoPrenotazione stato) {
         this.stato = stato;
     }
 
