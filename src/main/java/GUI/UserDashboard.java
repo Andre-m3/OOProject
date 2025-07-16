@@ -39,7 +39,18 @@ public class UserDashboard {
 
         setupButtons();
 
-        // Listener per il pulsante Visualizza Voli
+
+        // Listener per il pulsante "Opzioni di Ricerca"
+        btnViewOpt.addActionListener(e -> {
+            FrameUser.setVisible(false);    // Nascondi la dashboard admin
+            new OpzioniRicerca(FrameUser);        // Apri l'interfaccia VoliAdmin passando il frame
+            /* Non facciamo il dispose, è inutile cancellare l'istanza della dashboard, per poi ricrearla.
+             * L'utente ci tornerà per forza qui! Di conseguenza, possiamo semplicemente nasconderla (setVisible(false))
+             * e riaprirla (setVisible(true)) quando necessario.
+             */
+        });
+
+        // Listener per il pulsante "Visualizza Voli"
         btnViewVoli.addActionListener(e -> {
             FrameUser.setVisible(false);    // Nascondi la dashboard admin
             new VoliUser(FrameUser);        // Apri l'interfaccia VoliAdmin passando il frame
@@ -49,13 +60,13 @@ public class UserDashboard {
              */
         });
 
-        // Listener per il pulsante Area Personale
+        // Listener per il pulsante "Area Personale"
         btnAreaPersonale.addActionListener(e -> {
             FrameUser.setVisible(false);        // Nascondiamo la dashboard admin
             new AreaPrivata(FrameUser);         // Apriamo l'interfaccia AreaPrivata passando il frame
         });
 
-        // Aggiungiamo funzionalità al pulsante logout
+        // Aggiungiamo funzionalità al pulsante "logout"
         btnLogout.addActionListener(e -> {
             controller.logout();
             FrameUser.dispose();
@@ -105,6 +116,9 @@ public class UserDashboard {
                 BorderFactory.createEmptyBorder(5, 15, 5, 15)));
         btnLogout.setOpaque(true);
     }
+
+
+
 
 
     {

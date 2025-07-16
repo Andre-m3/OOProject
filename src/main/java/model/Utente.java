@@ -34,11 +34,11 @@ public class Utente {
      * Ottiene la password dell'utente (solo per controlli interni)
      * @return La password dell'utente
      */
+    public String getPassword() {
+        return password;
+    }
     public void setPassword(String password) {
         this.password = password;
-    }
-    protected String getPassword() {
-        return password;
     }
 
     /**

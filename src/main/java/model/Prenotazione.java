@@ -11,21 +11,17 @@ public class Prenotazione {
 
     private String codicePrenotazione;
     private String codiceVolo;
-    private String dataVolo;
-    private String partenzaDestinazione;
     private StatoPrenotazione stato;
     private int numeroPasseggeri;
-    private ArrayList<Ticket> tickets;
-    
-    public Prenotazione(String codicePrenotazione, String codiceVolo, String dataVolo,
-                        String partenzaDestinazione, StatoPrenotazione stato, int numeroPasseggeri) {
+    private String email;
+
+    public Prenotazione(String codicePrenotazione, String codiceVolo,
+                        StatoPrenotazione stato, int numeroPasseggeri, String email) {
         this.codicePrenotazione = codicePrenotazione;
         this.codiceVolo = codiceVolo;
-        this.dataVolo = dataVolo;
-        this.partenzaDestinazione = partenzaDestinazione;
         this.stato = stato;
         this.numeroPasseggeri = numeroPasseggeri;
-        this.tickets = new ArrayList<>();
+        this.email = email;
     }
 
     public String getCodicePrenotazione() {
@@ -42,20 +38,6 @@ public class Prenotazione {
         this.codiceVolo = codiceVolo;
     }
 
-    public String getDataVolo() {
-        return dataVolo;
-    }
-    public void setDataVolo(String dataVolo) {
-        this.dataVolo = dataVolo;
-    }
-
-    public String getPartenzaDestinazione() {
-        return partenzaDestinazione;
-    }
-    public void setPartenzaDestinazione(String partenzaDestinazione) {
-        this.partenzaDestinazione = partenzaDestinazione;
-    }
-
     public StatoPrenotazione getStato() {
         return stato;
     }
@@ -70,15 +52,15 @@ public class Prenotazione {
         this.numeroPasseggeri = numeroPasseggeri;
     }
 
-    public ArrayList<Ticket> getTickets() {
-        return tickets;
+    public String getEmail() {
+        return email;
     }
-    public void aggiungiTicket(Ticket ticket) {
-        this.tickets.add(ticket);
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     // Metodo statico MOMENTANEO per generare un nuovo codice prenotazione (in assenza di un db)
-    public static String generaNuovoCodice() {      // Essendo statico (progressivo) non dovrebbero mai ripetersi codici uguali
+    public static String generaNuovoCodice() {
         contatoreCodici++;
         return "P" + contatoreCodici;
     }
@@ -87,10 +69,8 @@ public class Prenotazione {
     public String toString() {
         return "Prenotazione: " + codicePrenotazione +
                 "\n- Volo: " + codiceVolo +
-                "\n- Data: " + dataVolo +
-                "\n- Tratta: " + partenzaDestinazione +
                 "\n- Stato: " + stato +
-                "\n- Passeggeri: " + numeroPasseggeri;
+                "\n- Passeggeri: " + numeroPasseggeri +
+                "\n- Email: " + email;
     }
-
 }

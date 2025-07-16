@@ -1,4 +1,4 @@
-package Database;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,8 +10,8 @@ public class ConnessioneDatabase {
     private static ConnessioneDatabase instance;
     public Connection connection = null;
     private String nome = "postgres";
-    private String password = "password";
-    private String url = "jdbc:postgresql://localhost:5433/Borsa";
+    private String password = "Admin3!";
+    private String url = "jdbc:postgresql://localhost:5432/gestione_voli";      // La porta fornita dal fork di git era 5433 (ma quella corretta per noi è 5432)
     private String driver = "org.postgresql.Driver";
 
     // COSTRUTTORE

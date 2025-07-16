@@ -1,6 +1,7 @@
 package controller;
 
 import model.*;
+import dao.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -287,7 +288,7 @@ public class Controller {
     /**
      * Crea una nuova prenotazione per un volo (disponibile solo per utenti generici)
      */
-    public Prenotazione creaPrenotazione(String codiceVolo, int numeroPasseggeri) {
+    public Prenotazione creaPrenotazione(String codiceVolo, int numeroPasseggeri, String email) {
 
         if (!(utenteLoggato instanceof UtenteGenerico)) {
             return null;
@@ -311,10 +312,9 @@ public class Controller {
         Prenotazione nuovaPrenotazione = new Prenotazione(
                 codicePrenotazione,
                 codiceVolo,
-                volo.getData(),
-                tratta,
                 StatoPrenotazione.CONFERMATA,
-                numeroPasseggeri
+                numeroPasseggeri,
+                email
         );
 
         // Aggiungi la prenotazione all'utente
@@ -543,7 +543,7 @@ public class Controller {
             dati[i][1] = prenotazione.getNumeroPasseggeri();
             dati[i][2] = prenotazione.getStato().toString();
             dati[i][3] = prenotazione.getCodiceVolo();
-            dati[i][4] = prenotazione.getPartenzaDestinazione();
+            dati[i][4] = prenotazione.getEmail();
             dati[i][5] = datiVolo != null ? datiVolo[5] : "N/A";
             dati[i][6] = datiVolo != null ? datiVolo[2] : "N/A";
             dati[i][7] = datiVolo != null ?
@@ -586,10 +586,9 @@ public class Controller {
                 return new String[] {
                         prenotazione.getCodicePrenotazione(),
                         prenotazione.getCodiceVolo(),
-                        prenotazione.getDataVolo(),
-                        prenotazione.getPartenzaDestinazione(),
                         prenotazione.getStato().toString(),
                         String.valueOf(prenotazione.getNumeroPasseggeri())
+                        prenotazione.getEmail()
                 };
             }
         }
@@ -636,9 +635,9 @@ public class Controller {
         return new String[] {
                 p.getCodicePrenotazione(),
                 p.getCodiceVolo(),
-                p.getDataVolo(),
-                p.getPartenzaDestinazione(),
-                p.getStato().toString()
+                p.getStato().toString(),
+                String.valueOf(p.getNumeroPasseggeri()),
+                p.getEmail()
         };
     }
 
@@ -880,6 +879,164 @@ public class Controller {
     private StatoPrenotazione stringToStatoPrenotazione(String stato) {
         return StatoPrenotazione.valueOf(stato.toUpperCase());
     }
+
+
+
+
+
+
+    /**
+     * Ottiene i voli che partono da una specifica città per visualizzazione in tabella
+     * @param citta La città di partenza
+     * @return Array bidimensionale con i dati dei voli
+     */
+    public Object[][] getVoliInPartenza(String citta) {
+        ArrayList<Object[]> risultati = new ArrayList<>();
+
+        for (Volo volo : Volo.getListaVoli()) {
+            // Cerca tutti i voli che partono dalla città specificata
+            if (volo.getPartenza().equalsIgnoreCase(citta)) {
+                String orarioCompleto = volo.getOrarioPrevisto();
+                if (volo.getRitardo() > 0) {
+                    orarioCompleto += " (+" + volo.getRitardo() + " min)";
+                }
+
+                // Se è un volo in partenza (da Napoli), mostra anche il gate
+                if (volo instanceof VoloInPartenza) {
+                    Short gate = ((VoloInPartenza) volo).getGateImbarco();
+                    String gateStr = (gate != null) ? gate.toString() : "Non assegnato";
+
+                    Object[] row = {
+                            volo.getNumeroVolo(),
+                            volo.getCompagniaAerea(),
+                            volo.getDestinazione(),
+                            volo.getData(),
+                            orarioCompleto,
+                            volo.getStato(),
+                            gateStr
+                    };
+                    risultati.add(row);
+                } else {
+                    // Per voli in arrivo che hanno partenza diversa da Napoli (caso raro)
+                    Object[] row = {
+                            volo.getNumeroVolo(),
+                            volo.getCompagniaAerea(),
+                            volo.getDestinazione(),
+                            volo.getData(),
+                            orarioCompleto,
+                            volo.getStato(),
+                            "N/A"
+                    };
+                    risultati.add(row);
+                }
+            }
+        }
+
+        return risultati.toArray(new Object[0][]);
+    }
+
+    /**
+     * Ottiene i voli che arrivano verso una specifica città per visualizzazione in tabella
+     * @param citta La città di destinazione
+     * @return Array bidimensionale con i dati dei voli
+     */
+    public Object[][] getVoliInArrivo(String citta) {
+        ArrayList<Object[]> risultati = new ArrayList<>();
+
+        for (Volo volo : Volo.getListaVoli()) {
+            // Cerca tutti i voli che arrivano alla città specificata
+            if (volo.getDestinazione().equalsIgnoreCase(citta)) {
+                String orarioCompleto = volo.getOrarioPrevisto();
+                if (volo.getRitardo() > 0) {
+                    orarioCompleto += " (+" + volo.getRitardo() + " min)";
+                }
+
+                Object[] row = {
+                        volo.getNumeroVolo(),
+                        volo.getCompagniaAerea(),
+                        volo.getPartenza(),
+                        volo.getData(),
+                        orarioCompleto,
+                        volo.getStato()
+                };
+                risultati.add(row);
+            }
+        }
+
+        return risultati.toArray(new Object[0][]);
+    }
+
+    /**
+     * Conta i voli in partenza da una specifica città
+     * @param citta La città di partenza
+     * @return Numero di voli trovati
+     */
+    public int contaVoliInPartenza(String citta) {
+        int count = 0;
+        for (Volo volo : Volo.getListaVoli()) {
+            if (volo.getPartenza().equalsIgnoreCase(citta)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Conta i voli in arrivo verso una specifica città
+     * @param citta La città di destinazione
+     * @return Numero di voli trovati
+     */
+    public int contaVoliInArrivo(String citta) {
+        int count = 0;
+        for (Volo volo : Volo.getListaVoli()) {
+            if (volo.getDestinazione().equalsIgnoreCase(citta)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Ottiene le colonne per la tabella dei voli in partenza
+     * @return Array con i nomi delle colonne
+     */
+    public String[] getColonneVoliPartenza() {
+        return new String[]{"Numero Volo", "Compagnia", "Destinazione", "Data", "Orario", "Stato", "Gate"};
+    }
+
+    /**
+     * Ottiene le colonne per la tabella dei voli in arrivo
+     * @return Array con i nomi delle colonne
+     */
+    public String[] getColonneVoliArrivo() {
+        return new String[]{"Numero Volo", "Compagnia", "Provenienza", "Data", "Orario", "Stato"};
+    }
+
+    public String getTrattaDelVolo(String codiceVolo) {
+        // Validazione parametro input
+        if (codiceVolo == null || codiceVolo.trim().isEmpty()) {
+            return "Codice volo non valido";
+        }
+
+        // Controllo inizializzazione DAO
+        if (voloDAO == null) {
+            return "Servizio non disponibile";
+        }
+
+        try {
+            Volo volo = voloDAO.getVoloPerNumero(codiceVolo);
+            if (volo != null) {
+                return volo.getPartenza() + " → " + volo.getDestinazione();
+            }
+            return "Tratta non disponibile";
+        } catch (Exception e) {
+            // Log dell'errore
+            System.err.println("Errore durante il recupero del volo: " + e.getMessage());
+            return "Errore nel recupero delle informazioni";
+        }
+    }
+
+
 
 
 }
