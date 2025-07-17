@@ -7,6 +7,7 @@ import model.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,25 +26,44 @@ public class ImplementazioneVoloDAO implements VoloDAO{
 
     @Override
     public boolean inserisciVolo(Volo volo) {
-        String sql = "INSERT INTO voli (numero_volo, compagnia_aerea, orario_previsto, data_volo, stato, partenza, destinazione, gate_imbarco, tipo_volo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO voli (numero_volo, compagnia_aerea, orario_previsto, data_volo, stato, partenza, destinazione, gate_imbarco, tipo_volo) VALUES (?, ?, ?, ?, ?::stato_volo, ?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, volo.getNumeroVolo());
             stmt.setString(2, volo.getCompagniaAerea());
-            stmt.setTime(3, Time.valueOf(volo.getOrarioPrevisto()));
-            stmt.setDate(4, Date.valueOf(volo.getData()));
+
+            // Dobbiamo gestire l'orario. Ci viene chiesto di passare anche i secondi (informazione pero omessa dall'amministratore in fase di inserimento!)
+            String orario = volo.getOrarioPrevisto();
+            if (orario.length() == 5) {     // formato HH:MM
+                orario += ":00";            // diventa HH:MM:SS
+            }
+            stmt.setTime(3, Time.valueOf(orario));      // Passiamo quindi l'orario comprensivo di "secondi" (--> formato hh.mm.ss nel database)
+
+            // Anche la data va osservata. Dobbiamo passare un formato del tipo "YYYY-MM-DD".
+            // Si potrebbe gestire diversamente, modificando il "datestyle" di postgres. Però per la nostra applicazione si è preferito un approccio base.
+            // Di conseguenza, siccome l'utente ha inserito una data "DD-MM-YYYY" (per facilitare l'input), noi andremo a riconvertirla nel formato "YYYY-MM-DD"!
+            String dataString = volo.getData();
+            LocalDate dataConvertita = convertiDataDaStringa(dataString);
+            stmt.setDate(4, Date.valueOf(dataConvertita));
+
             stmt.setString(5, volo.getStato().toString());
             stmt.setString(6, volo.getPartenza());
             stmt.setString(7, volo.getDestinazione());
 
-            // Gate imbarco solo per voli in partenza
+            // Gate imbarco solo per voli in partenza (gestito anche in caso non venga inserito alcun gate inizialmente)
             if (volo instanceof VoloInPartenza) {
-                stmt.setShort(8, ((VoloInPartenza) volo).getGateImbarco());
+                Short gateImbarco = ((VoloInPartenza) volo).getGateImbarco();
+                if (gateImbarco != null) {
+                    stmt.setShort(8, gateImbarco);
+                } else {
+                    stmt.setNull(8, Types.SMALLINT);
+                }
                 stmt.setString(9, "PARTENZA");
             } else {
                 stmt.setNull(8, Types.SMALLINT);
                 stmt.setString(9, "ARRIVO");
             }
+
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -135,18 +155,33 @@ public class ImplementazioneVoloDAO implements VoloDAO{
 
     @Override
     public boolean aggiornaVolo(Volo volo) {
-        String sql = "UPDATE voli SET compagnia_aerea = ?, orario_previsto = ?, data_volo = ?, stato = ?, partenza = ?, destinazione = ?, gate_imbarco = ? WHERE numero_volo = ?";
+        String sql = "UPDATE voli SET compagnia_aerea = ?, orario_previsto = ?, data_volo = ?, stato = ?::stato_volo, partenza = ?, destinazione = ?, gate_imbarco = ? WHERE numero_volo = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, volo.getCompagniaAerea());
-            stmt.setTime(2, Time.valueOf(volo.getOrarioPrevisto()));
-            stmt.setDate(3, Date.valueOf(volo.getData()));
+            // Notiamo le stesse problematiche viste prima nel metodo "inserisci volo" (linee di codice copiate, commenti compresi)
+            // Dobbiamo gestire l'orario. Ci viene chiesto di passare anche i secondi (informazione pero omessa dall'amministratore in fase di inserimento!)
+            String orario = volo.getOrarioPrevisto();
+            if (orario.length() == 5) {         // formato HH:MM
+                orario += ":00";                // diventa HH:MM:SS
+            }
+            stmt.setTime(2, Time.valueOf(orario));          // Passiamo quindi l'orario comprensivo di "secondi" (--> formato hh.mm.ss)
+
+            String dataString = volo.getData();
+            LocalDate dataConvertita = convertiDataDaStringa(dataString);
+            stmt.setDate(3, Date.valueOf(dataConvertita));
+
             stmt.setString(4, volo.getStato().toString());
             stmt.setString(5, volo.getPartenza());
             stmt.setString(6, volo.getDestinazione());
 
             if (volo instanceof VoloInPartenza) {
-                stmt.setShort(7, ((VoloInPartenza) volo).getGateImbarco());
+                Short gateImbarco = ((VoloInPartenza) volo).getGateImbarco();
+                if (gateImbarco != null) {
+                    stmt.setShort(7, gateImbarco);
+                } else {
+                    stmt.setNull(7, Types.SMALLINT);
+                }
             } else {
                 stmt.setNull(7, Types.SMALLINT);
             }
@@ -164,7 +199,7 @@ public class ImplementazioneVoloDAO implements VoloDAO{
 
     @Override
     public boolean aggiornaStatoVolo(String numeroVolo, StatoVolo nuovoStato) {
-        String sql = "UPDATE voli SET stato = ? WHERE numero_volo = ?";
+        String sql = "UPDATE voli SET stato = ?::stato_volo WHERE numero_volo = ?";     // abbiamo effettuato cast esplicito per passare un valore di tipo stato_volo (enum presente anche nel database)
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, nuovoStato.toString());
@@ -236,8 +271,16 @@ public class ImplementazioneVoloDAO implements VoloDAO{
     private Volo creaVolodalResultSet(ResultSet rs) throws SQLException {
         String numeroVolo = rs.getString("numero_volo");
         String compagniaAerea = rs.getString("compagnia_aerea");
-        LocalTime orarioPrevisto = rs.getTime("orario_previsto").toLocalTime();
-        LocalDate dataVolo = rs.getDate("data_volo").toLocalDate();
+
+        // Gestiamo l'orario (formato TIME)
+        Time orarioTime = rs.getTime("orario_previsto");
+        String orarioPrevisto = orarioTime.toLocalTime().toString().substring(0, 5);        //HH:MM (quindi 5) substring essere sicuri di non star prendendo valori "errati"
+
+        // Gestiamo la data (formato DATE)
+        Date dataVolo = rs.getDate("data_volo");
+        String dataFormattata = formatDataPerModello(dataVolo.toLocalDate());
+
+        int ritardo = rs.getInt("ritardo");
         StatoVolo stato = StatoVolo.valueOf(rs.getString("stato"));
         String partenza = rs.getString("partenza");
         String destinazione = rs.getString("destinazione");
@@ -249,13 +292,43 @@ public class ImplementazioneVoloDAO implements VoloDAO{
                 gateImbarco = null;
             }
 
-            return new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto.toString(),
-                    dataVolo.toString(), stato, partenza, destinazione, gateImbarco);
+            return new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
+                    dataFormattata, ritardo, stato, destinazione, gateImbarco);
         } else {
 
-            return new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto.toString(),
-                    dataVolo.toString(), stato, partenza, destinazione);
+            return new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto,
+                    dataFormattata, ritardo, stato, partenza);
         }
 
     }
+
+
+
+    /**
+     * Formatta una LocalDate nel formato DD-MM-YYYY per il modello
+     * @param data LocalDate da formattare
+     * @return Stringa nel formato DD-MM-YYYY
+     */
+    private String formatDataPerModello(LocalDate data) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return data.format(formatter);
+    }
+
+    /**
+     * Converte una stringa di data dal formato DD-MM-YYYY a LocalDate
+     * @param dataString Data in formato DD-MM-YYYY
+     * @return LocalDate convertita
+     */
+    private LocalDate convertiDataDaStringa(String dataString) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            return LocalDate.parse(dataString, formatter);
+        } catch (Exception e) {
+            System.out.println("Errore nel parsing della data: " + dataString);
+            return LocalDate.now(); // Fallback
+        }
+    }
+
+
+
 }

@@ -1,10 +1,16 @@
 package controller;
 
+import implementazioniPostgresDAO.*;
 import model.*;
 import dao.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Controller che fa da intermediario tra il pacchetto GUI e il pacchetto model.
@@ -12,45 +18,59 @@ import java.util.Random;
  */
 public class Controller {
 
-    private static Controller instance = null;      // Singleton instance
+    private static Controller instance = null;      // istanza Singleton
     private Utente utenteLoggato;                   // Utente corrente
-    private ArrayList<Utente> utentiRegistrati;     // Lista degli utenti registrati
+
+    // DAO per l'accesso ai dati
+    private VoloDAO voloDAO = new ImplementazioneVoloDAO();
+    private UtenteDAO utenteDAO = new ImplementazioneUtenteDAO();
+    private PrenotazioneDAO prenotazioneDAO = new ImplementazionePrenotazioneDAO();
+    private TicketDAO ticketDAO = new ImplementazioneTicketDAO();
 
     /**
-     * Costruttore privato per il pattern
+     * Costruttore privato per il pattern Singleton
      */
-    public Controller() {
-        // Inizializzazione di una lista provvisoria per creare due utenti registrati di default
-        utentiRegistrati = new ArrayList<>();
-
-        // Creazione utenti di default per testing
-        UtenteGenerico utente = new UtenteGenerico(
-                "user@example.com",
-                "user",
-                "password123"
-        );
-
-        Amministratore admin = new Amministratore(
-                "admin@example.com",
-                "admin",
-                "admin123"
-        );
-
-        utentiRegistrati.add(utente);
-        utentiRegistrati.add(admin);
-
-        // Aggiuntai di alcuni voli per testing
-        // Voli in partenza da Napoli
-        Volo.aggiungiVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, StatoVolo.ATTERRATO, "Milano", (short) 5));
-        Volo.aggiungiVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, StatoVolo.IN_RITARDO, "Roma", (short) 12));
-        Volo.aggiungiVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, StatoVolo.PROGRAMMATO, "Monaco"));
-        Volo.aggiungiVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, StatoVolo.IN_RITARDO, "Londra", (short) 8));
-
-        // Voli in arrivo a Napoli
-        Volo.aggiungiVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, StatoVolo.PROGRAMMATO, "Dubai"));
-        Volo.aggiungiVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, StatoVolo.IN_RITARDO, "Parigi"));
-        Volo.aggiungiVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, StatoVolo.PROGRAMMATO, "Amsterdam"));
+    private Controller() {
+        // Inizializza utenti di default nel database se non esistono
+        // inizializzaUtentiDefault();
+        // Inizializza voli di default nel database se non esistono
+        // inizializzaVoliDefault();
     }
+
+    /**
+     * Inizializza utenti di default nel database
+     */
+//    private void inizializzaUtentiDefault() {
+//        // Verifica se gli utenti esistono già
+//        if (utenteDAO.getUtentePerUsername("user") == null) {
+//            UtenteGenerico utente = new UtenteGenerico("user@example.com", "user", "password123");
+//            utenteDAO.inserisciUtente(utente);
+//        }
+//
+//        if (utenteDAO.getUtentePerUsername("admin") == null) {
+//            Amministratore admin = new Amministratore("admin@example.com", "admin", "admin123");
+//            utenteDAO.inserisciUtente(admin);
+//        }
+//    }
+
+    /**
+     * Inizializza voli di default nel database
+     */
+//    private void inizializzaVoliDefault() {
+//        // Verifica se i voli esistono già
+//        if (voloDAO.getVoloPerNumero("AZ123") == null) {
+//            // Voli in partenza da Napoli
+//            voloDAO.inserisciVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, StatoVolo.ATTERRATO, "Milano", (short) 5));
+//            voloDAO.inserisciVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, StatoVolo.IN_RITARDO, "Roma", (short) 12));
+//            voloDAO.inserisciVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, StatoVolo.PROGRAMMATO, "Monaco", (short) 3));
+//            voloDAO.inserisciVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, StatoVolo.IN_RITARDO, "Londra", (short) 8));
+//
+//            // Voli in arrivo a Napoli
+//            voloDAO.inserisciVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, StatoVolo.PROGRAMMATO, "Dubai"));
+//            voloDAO.inserisciVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, StatoVolo.IN_RITARDO, "Parigi"));
+//            voloDAO.inserisciVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, StatoVolo.PROGRAMMATO, "Amsterdam"));
+//        }
+//    }
 
     /**
      * Restituisce l'istanza singleton del controller
@@ -70,21 +90,13 @@ public class Controller {
      * @return true se il login è avvenuto con successo, false altrimenti
      */
     public boolean login(String emailUsername, String password) {
-        for (Utente utente : utentiRegistrati) {
-            if (utente.getUsername().equals(emailUsername) || utente.getEmail().equals(emailUsername)) {
-                // Verifica la password
-                if (utente.verificaPassword(password)) {
-                    utenteLoggato = utente;
-                    return true;
-                } else {
-                    // Password errata
-                    return false;
-                }
-            }
+        if (emailUsername == null || password == null ||
+                emailUsername.trim().isEmpty() || password.trim().isEmpty()) {
+            return false;
         }
 
-        // Utente non trovato
-        return false;
+        utenteLoggato = utenteDAO.getUtentePerCredenziali(emailUsername, password);
+        return utenteLoggato != null;
     }
 
     /**
@@ -103,24 +115,25 @@ public class Controller {
      * @return true se la registrazione è avvenuta con successo, false altrimenti
      */
     public boolean registraUtente(String email, String username, String password, boolean isAdmin) {
-        // Controlla se l'utente esiste già
-        for (Utente utente : utentiRegistrati) {
-            if (utente.getUsername().equals(username) || utente.getEmail().equals(email)) {
-                return false;       // Username o Email gia utilizzati!
-            }
+        if (email == null || username == null || password == null ||
+                email.trim().isEmpty() || username.trim().isEmpty() || password.trim().isEmpty()) {
+            return false;
         }
 
-        // Crea il nuovo utente
+        // Verifica se l'utente esiste già
+        if (utenteDAO.esisteUtente(username, email)) {
+            return false;
+        }
+
+        // Crea l'utente appropriato
         Utente nuovoUtente;
-        if (isAdmin) {      // Vediamo se si tratta di un nuovo admin o un nuovo user
+        if (isAdmin) {
             nuovoUtente = new Amministratore(email, username, password);
         } else {
             nuovoUtente = new UtenteGenerico(email, username, password);
         }
 
-        // Aggiungi l'utente alla lista
-        utentiRegistrati.add(nuovoUtente);
-        return true;
+        return utenteDAO.inserisciUtente(nuovoUtente);
     }
 
     /**
@@ -136,9 +149,8 @@ public class Controller {
      * @return true se l'utente è un amministratore, false altrimenti
      */
     public boolean isUtenteAdmin() {
-        return utenteLoggato instanceof Amministratore;
+        return utenteLoggato != null && utenteLoggato instanceof Amministratore;
     }
-
 
     /**
      * Determina il tipo di un volo (Partenza/Arrivo) in base alla sua istanza
@@ -150,25 +162,17 @@ public class Controller {
             return "Partenza";
         } else if (volo instanceof VoloInArrivo) {
             return "Arrivo";
-        } else {
-            // Per voli generici, determina in base a partenza/destinazione
-            if ("Napoli".equalsIgnoreCase(volo.getPartenza())) {
-                return "Partenza";
-            } else if ("Napoli".equalsIgnoreCase(volo.getDestinazione())) {
-                return "Arrivo";
-            } else {
-                return "Generico";
-            }
         }
+        return "Sconosciuto";
     }
 
     /**
-     * Verifica se un volo è in partenza da Napoli
+     * Verifica se un volo è in partenza
      * @param volo Il volo da controllare
      * @return true se è un volo in partenza
      */
     public boolean isVoloInPartenza(Volo volo) {
-        return volo instanceof VoloInPartenza || "Napoli".equalsIgnoreCase(volo.getPartenza());
+        return volo instanceof VoloInPartenza;
     }
 
     /**
@@ -177,11 +181,9 @@ public class Controller {
      * @return true se il volo è prenotabile, false altrimenti
      */
     public boolean isVoloPrenotabile(String numeroVolo) {
-        // Un volo è disponibile alla prenotazione SOLO in Stato PROGRAMMATO
-        Volo volo = getVoloPerNumero(numeroVolo);
+        Volo volo = voloDAO.getVoloPerNumero(numeroVolo);
         return volo != null && volo.getStato() == StatoVolo.PROGRAMMATO;
     }
-
 
     /**
      * Ottiene il gate di imbarco per un volo in partenza
@@ -202,9 +204,8 @@ public class Controller {
      * @return true se l'aggiornamento è riuscito
      */
     public boolean setGateImbarco(Volo volo, Short nuovoGate) {
-        if (volo instanceof VoloInPartenza) {
-            ((VoloInPartenza) volo).setGateImbarco(nuovoGate);
-            return true;
+        if (volo instanceof VoloInPartenza && isUtenteAdmin()) {
+            return voloDAO.aggiornaGateImbarco(volo.getNumeroVolo(), nuovoGate);
         }
         return false;
     }
@@ -214,20 +215,12 @@ public class Controller {
      * @return Lista di voli
      */
     public ArrayList<Volo> getListaVoli() {
-        return Volo.getListaVoli();
+        List<Volo> voli = voloDAO.getVoliDisponibili();
+        return new ArrayList<>(voli);
     }
 
     /**
      * Inserisce un nuovo volo (disponibile solo per amministratori)
-     * @param numeroVolo Numero del volo
-     * @param compagniaAerea Compagnia aerea
-     * @param orarioPrevisto Orario previsto
-     * @param data Data del volo
-     * @param stato Stato del volo (come stringa)
-     * @param partenza Aeroporto di partenza
-     * @param destinazione Aeroporto di destinazione
-     * @param gateImbarco Gate di imbarco (opzionale, solo per voli in partenza)
-     * @return true se l'inserimento è avvenuto con successo, false altrimenti
      */
     public boolean inserisciVolo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
                                  String data, String stato, String partenza, String destinazione,
@@ -237,317 +230,195 @@ public class Controller {
         }
 
         try {
-            // Convertiamo la stringa in enum
             StatoVolo statoVolo = StatoVolo.valueOf(stato.toUpperCase());
 
-            // Determiniamo se è un volo in partenza o in arrivo
+            Volo nuovoVolo;
             if ("Napoli".equalsIgnoreCase(partenza)) {
                 // Volo in partenza da Napoli
-                if (gateImbarco != null) {
-                    Volo.aggiungiVolo(new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
-                            data, 0, statoVolo, destinazione, gateImbarco));
-                } else {
-                    Volo.aggiungiVolo(new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
-                            data, 0, statoVolo, destinazione));
-                }
+                nuovoVolo = new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
+                        data, 0, statoVolo, destinazione, gateImbarco);
             } else {
                 // Volo in arrivo a Napoli
-                Volo.aggiungiVolo(new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto,
-                        data, 0, statoVolo, partenza));
+                nuovoVolo = new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto,
+                        data, 0, statoVolo, partenza);
             }
-            return true;
+
+            return voloDAO.inserisciVolo(nuovoVolo);
         } catch (IllegalArgumentException e) {
-            return false; // Stato non valido
+            return false;
         }
     }
 
     /**
      * Aggiorna il gate di imbarco di un volo in partenza (disponibile solo per amministratori)
-     * @param numeroVolo Numero del volo
-     * @param nuovoGate Nuovo gate di imbarco
-     * @return true se l'aggiornamento è avvenuto con successo, false altrimenti
      */
     public boolean aggiornaGateImbarco(String numeroVolo, Short nuovoGate) {
         if (!isUtenteAdmin()) {
             return false;
         }
-
-        // Cerca il volo
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getNumeroVolo().equals(numeroVolo) && volo instanceof VoloInPartenza) {
-                VoloInPartenza voloPartenza = (VoloInPartenza) volo;
-                voloPartenza.setGateImbarco(nuovoGate);
-                return true;
-            }
-        }
-
-        return false;  // Volo non trovato o non è un volo in partenza
+        return voloDAO.aggiornaGateImbarco(numeroVolo, nuovoGate);
     }
 
-
     /**
-     * Crea una nuova prenotazione per un volo (disponibile solo per utenti generici)
+     * Crea una nuova prenotazione per un volo
      */
     public Prenotazione creaPrenotazione(String codiceVolo, int numeroPasseggeri, String email) {
-
-        if (!(utenteLoggato instanceof UtenteGenerico)) {
+        if (utenteLoggato == null || !isVoloPrenotabile(codiceVolo)) {
             return null;
         }
 
-        if (numeroPasseggeri <= 0 || numeroPasseggeri > Prenotazione.MAX_PASSEGGERI) {
-            return null;
-        }
+        String codicePrenotazione = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String dataPrenotazione = LocalDate.now().toString();
 
-        // Trova il volo
-        Volo volo = getVoloPerNumero(codiceVolo);
-        if (volo == null || volo.getStato() != StatoVolo.PROGRAMMATO) {
-            return null;
-        }
-
-        // Crea la stringa della tratta
-        String tratta = volo.getPartenza() + " → " + volo.getDestinazione();
-
-        // Crea la prenotazione
-        String codicePrenotazione = Prenotazione.generaNuovoCodice();
-        Prenotazione nuovaPrenotazione = new Prenotazione(
-                codicePrenotazione,
-                codiceVolo,
-                StatoPrenotazione.CONFERMATA,
-                numeroPasseggeri,
-                email
-        );
-
-        // Aggiungi la prenotazione all'utente
-        ((UtenteGenerico) utenteLoggato).setPrenotazione(nuovaPrenotazione);
-
-        return nuovaPrenotazione;
+        return new Prenotazione(codicePrenotazione, codiceVolo, StatoPrenotazione.CONFERMATA,
+                                numeroPasseggeri, email);
     }
 
     /**
      * Aggiunge un ticket a una prenotazione esistente
-     * @param prenotazione Prenotazione a cui aggiungere il ticket
-     * @param nome Nome del passeggero
-     * @param cognome Cognome del passeggero
-     * @param numeroDocumento Numero documento del passeggero
-     * @param dataNascita Data di nascita del passeggero
-     * @param postoAssegnato Posto assegnato al passeggero
-     * @return true se l'aggiunta è avvenuta con successo, false altrimenti
      */
     public boolean aggiungiTicket(Prenotazione prenotazione, String nome, String cognome,
                                   String numeroDocumento, String dataNascita, String postoAssegnato) {
-        if (!(utenteLoggato instanceof UtenteGenerico)) {
+        if (prenotazione == null) {
             return false;
         }
 
-        // Verifica se la prenotazione appartiene all'utente loggato
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-        boolean prenotazioneTrovata = false;
+        Ticket nuovoTicket = new Ticket(nome, cognome, numeroDocumento, dataNascita,
+                postoAssegnato, prenotazione.getCodicePrenotazione());
 
-        for (Prenotazione p : utente.getPrenotazioni()) {
-            if (p.getCodicePrenotazione().equals(prenotazione.getCodicePrenotazione())) {
-                prenotazioneTrovata = true;
-                break;
-            }
-        }
-
-        if (!prenotazioneTrovata) {
-            return false;  // Prenotazione non trovata o non appartiene all'utente
-        }
-
-        // Verifica se c'è spazio per altri ticket
-        if (prenotazione.getTickets().size() >= prenotazione.getNumeroPasseggeri()) {
-            return false;  // Numero massimo di ticket raggiunto
-        }
-
-        // Crea e aggiungi il ticket
-        Ticket ticket = new Ticket(
-                nome,
-                cognome,
-                numeroDocumento,
-                dataNascita,
-                postoAssegnato,
-                prenotazione.getCodicePrenotazione()
-        );
-
-        prenotazione.aggiungiTicket(ticket);
-        return true;
+        return ticketDAO.inserisciTicket(nuovoTicket);
     }
 
     /**
      * Ottiene un volo per numero
-     * @param numeroVolo Numero del volo da cercare
-     * @return Il volo trovato o null se non esiste
      */
     public Volo getVoloPerNumero(String numeroVolo) {
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getNumeroVolo().equals(numeroVolo)) {
-                return volo;
-            }
-        }
-
-        return null;  // Volo non trovato
+        return voloDAO.getVoloPerNumero(numeroVolo);
     }
 
     /**
-     * Ottiene tutti i voli per l'amministratore (sia passati che futuri)
-     * In via temporanea, è disponibile anche all'utente generico (visualizza voli)
-     * Ottenere anche i voli passati potrebbe risultare utile a un amministratore!
-     * @return Lista di tutti i voli
+     * Ottiene tutti i voli per l'amministratore
      */
     public ArrayList<Volo> getTuttiIVoli() {
-        return Volo.getListaVoli();
+        List<Volo> voli = voloDAO.getTuttiVoli();
+        return new ArrayList<>(voli);
     }
 
     /**
      * Completa una prenotazione aggiungendo tutti i ticket necessari
-     * @param codiceVolo Codice del volo
-     * @param numeroPasseggeri Numero di passeggeri
-     * @param datiPasseggeri Array di dati dei passeggeri [nome, cognome, documento, dataNascita] per ogni passeggero
-     * @return Il codice della prenotazione creata o null se fallita
      */
     public String completaPrenotazione(String codiceVolo, int numeroPasseggeri, String[][] datiPasseggeri) {
-        // Crea la prenotazione
-        Prenotazione prenotazione = creaPrenotazione(codiceVolo, numeroPasseggeri);
-        if (prenotazione == null) {
+        if (utenteLoggato == null || !isVoloPrenotabile(codiceVolo)) {
             return null;
         }
 
-        // Aggiungi tutti i ticket
-        for (int i = 0; i < datiPasseggeri.length; i++) {
+        // Crea la prenotazione
+        Prenotazione nuovaPrenotazione = creaPrenotazione(codiceVolo, numeroPasseggeri, utenteLoggato.getEmail());
+        if (nuovaPrenotazione == null) {
+            return null;
+        }
+
+        // Inserisci la prenotazione nel database
+        if (!prenotazioneDAO.inserisciPrenotazione(nuovaPrenotazione)) {
+            return null;
+        }
+
+        // Aggiungi i ticket
+        for (int i = 0; i < numeroPasseggeri; i++) {
             String nome = datiPasseggeri[i][0];
             String cognome = datiPasseggeri[i][1];
             String documento = datiPasseggeri[i][2];
             String dataNascita = datiPasseggeri[i][3];
-
-            // Genera posto casuale
             String posto = generaPostoCasuale();
 
-            boolean ticketAggiunto = aggiungiTicket(prenotazione, nome, cognome, documento, dataNascita, posto);
-            if (!ticketAggiunto) {
-                return null; // Fallimento nella creazione del ticket
+            if (!aggiungiTicket(nuovaPrenotazione, nome, cognome, documento, dataNascita, posto)) {
+                return null;
             }
         }
 
-        return prenotazione.getCodicePrenotazione();
+        return nuovaPrenotazione.getCodicePrenotazione();
     }
 
     /**
      * Valida il formato di una data
-     * @param data Data da validare nel formato dd/mm/yyyy
-     * @return true se la data è valida, false altrimenti
      */
     public boolean isValidDateFormat(String data) {
-        // Controllo base del formato dd/mm/yyyy
-        if (data == null || data.length() != 10) return false;
-        if (data.charAt(2) != '/' || data.charAt(5) != '/') return false;
-
         try {
-            String[] parti = data.split("/");
-            if (parti.length != 3) return false;
-
-            int giorno = Integer.parseInt(parti[0]);
-            int mese = Integer.parseInt(parti[1]);
-            int anno = Integer.parseInt(parti[2]);
-
-            // Validazione base dei valori
-            if (giorno < 1 || giorno > 31) return false;
-            if (mese < 1 || mese > 12) return false;
-            if (anno < 1900 || anno > 2030) return false;
-
-            // Validazione più specifica per i mesi
-            if (mese == 2) { // Febbraio
-                boolean bisestile = (anno % 4 == 0 && anno % 100 != 0) || (anno % 400 == 0);
-                if (giorno > (bisestile ? 29 : 28)) return false;
-            } else if (mese == 4 || mese == 6 || mese == 9 || mese == 11) { // Mesi con 30 giorni
-                if (giorno > 30) return false;
-            }
-
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate.parse(data, formatter);
             return true;
-        } catch (NumberFormatException e) {
+        } catch (DateTimeParseException e) {
             return false;
         }
     }
 
     /**
      * Genera un posto casuale da A1 a T6
-     * @return Posto alfanumerico casuale
      */
     private String generaPostoCasuale() {
-        // Lettere da 'A' a 'T' (20 lettere, che corrispondono a 20 ipotetiche file dell'aereo)
-        char[] lettere = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'};
-
-        // Numeri da 1 a 6
-        int[] numeri = {1, 2, 3, 4, 5, 6};
-
         Random random = new Random();
-        char lettera = lettere[random.nextInt(lettere.length)];
-        int numero = numeri[random.nextInt(numeri.length)];
-
-        return lettera + String.valueOf(numero);
-
+        char lettera = (char) ('A' + random.nextInt(20)); // A-T
+        int numero = random.nextInt(6) + 1; // 1-6
+        return String.valueOf(lettera) + numero;
     }
 
     /**
      * Ottiene i dettagli dei ticket di una prenotazione
-     * @param codicePrenotazione Codice della prenotazione
-     * @return Array di array con i dettagli dei ticket [nome, cognome, documento, dataNascita, posto]
      */
     public String[][] getTicketsPrenotazione(String codicePrenotazione) {
-        if (!(utenteLoggato instanceof UtenteGenerico)) {
-            return null;
+        List<Ticket> tickets = ticketDAO.getTicketsPerPrenotazione(codicePrenotazione);
+
+        String[][] risultato = new String[tickets.size()][5];
+        for (int i = 0; i < tickets.size(); i++) {
+            Ticket ticket = tickets.get(i);
+            risultato[i][0] = ticket.getNome();
+            risultato[i][1] = ticket.getCognome();
+            risultato[i][2] = ticket.getNumeroDocumento();
+            risultato[i][3] = ticket.getDataNascita();
+            risultato[i][4] = ticket.getPostoAssegnato();
         }
 
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-        for (Prenotazione prenotazione : utente.getPrenotazioni()) {
-            if (prenotazione.getCodicePrenotazione().equals(codicePrenotazione)) {
-                ArrayList<Ticket> tickets = prenotazione.getTickets();
-                String[][] risultato = new String[tickets.size()][5];
-
-                for (int i = 0; i < tickets.size(); i++) {
-                    Ticket ticket = tickets.get(i);
-                    risultato[i][0] = ticket.getNome();
-                    risultato[i][1] = ticket.getCognome();
-                    risultato[i][2] = ticket.getNumeroDocumento();
-                    risultato[i][3] = ticket.getDataNascita();
-                    risultato[i][4] = ticket.getPostoAssegnato();
-                }
-
-                return risultato;
-            }
-        }
-        return null;
+        return risultato;
     }
-
-
 
     /**
      * Ottiene i dati delle prenotazioni dell'utente loggato per la visualizzazione in tabella
-     * @return Array bidimensionale con i dati delle prenotazioni
      */
     public Object[][] getDatiPrenotazioniUtente() {
-        if (utenteLoggato == null || !(utenteLoggato instanceof UtenteGenerico)) {
-            return new Object[0][8]; // Tabella vuota
+        if (utenteLoggato == null) {
+            return new Object[0][0];
         }
 
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-        ArrayList<Prenotazione> prenotazioni = utente.getPrenotazioni();
+        List<Prenotazione> prenotazioni = prenotazioneDAO.getPrenotazioniPerUtente(utenteLoggato.getEmail());
 
         Object[][] dati = new Object[prenotazioni.size()][8];
-
         for (int i = 0; i < prenotazioni.size(); i++) {
-            Prenotazione prenotazione = prenotazioni.get(i);
-            String[] datiVolo = getDatiVolo(prenotazione.getCodiceVolo());
+            Prenotazione p = prenotazioni.get(i);
 
-            dati[i][0] = prenotazione.getCodicePrenotazione();
-            dati[i][1] = prenotazione.getNumeroPasseggeri();
-            dati[i][2] = prenotazione.getStato().toString();
-            dati[i][3] = prenotazione.getCodiceVolo();
-            dati[i][4] = prenotazione.getEmail();
-            dati[i][5] = datiVolo != null ? datiVolo[5] : "N/A";
-            dati[i][6] = datiVolo != null ? datiVolo[2] : "N/A";
-            dati[i][7] = datiVolo != null ?
-                    (Integer.parseInt(datiVolo[4]) > 0 ? datiVolo[4] + " min" : "Nessun ritardo") : "N/A";
+            // Otteniamo i dettagli del volo
+            Volo volo = voloDAO.getVoloPerNumero(p.getCodiceVolo());
+
+            String tratta = "";
+            String statoVolo = "";
+            String orario = "";
+            String ritardo = "";            // In caso di errore con il volo ( == null ), avremo stringhe vuote, il che è "accettabile" rispetto a valori sporchi o non corretti!
+
+            if (volo != null) {
+                tratta = volo.getPartenza() + " → " + volo.getDestinazione();
+                statoVolo = volo.getStato().toString();
+                orario = volo.getOrarioPrevisto();
+                ritardo = volo.getRitardo() > 0 ? "+" + volo.getRitardo() + " min" : "";        // Se non c'è ritardo, non visualizziamo dettagli in quelal casella!
+            }
+
+            dati[i][0] = p.getCodicePrenotazione();        // Codice Prenotazione
+            dati[i][1] = p.getNumeroPasseggeri();          // Numero Passeggeri
+            dati[i][2] = p.getStato().toString();          // Stato Prenotazione
+            dati[i][3] = p.getCodiceVolo();                // Numero Volo
+            dati[i][4] = tratta;                           // Tratta
+            dati[i][5] = statoVolo;                        // Stato Volo
+            dati[i][6] = orario;                           // Orario
+            dati[i][7] = ritardo;                          // Ritardo
+
         }
 
         return dati;
@@ -555,242 +426,182 @@ public class Controller {
 
     /**
      * Ottiene il numero di prenotazioni dell'utente loggato
-     * @return Numero di prenotazioni
      */
     public int getNumeroPrenotazioniUtente() {
-        if (utenteLoggato == null || !(utenteLoggato instanceof UtenteGenerico)) {
+        if (utenteLoggato == null) {
             return 0;
         }
 
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-        return utente.getPrenotazioni().size();
+        List<Prenotazione> prenotazioni = prenotazioneDAO.getPrenotazioniPerUtente(utenteLoggato.getEmail());
+        return prenotazioni.size();
     }
-
 
     /**
      * Ottiene i dettagli di una prenotazione per codice
-     * @param codicePrenotazione Codice della prenotazione
-     * @return Array con i dettagli della prenotazione o null se non trovata
-     * [codice, volo, data, tratta, stato, numeroPasseggeri]
      */
     public String[] getDettagliPrenotazione(String codicePrenotazione) {
-        if (!(utenteLoggato instanceof UtenteGenerico)) {
+
+        // Otteniamo i dettagli della prenotazione (e verifichiamo che esista)
+        Prenotazione prenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
+        if (prenotazione == null) {
             return null;
         }
 
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-
-        // Cerchiamo la prenotazione tra quelle dell'utente
-        for (Prenotazione prenotazione : utente.getPrenotazioni()) {
-            if (prenotazione.getCodicePrenotazione().equals(codicePrenotazione)) {
-                return new String[] {
-                        prenotazione.getCodicePrenotazione(),
-                        prenotazione.getCodiceVolo(),
-                        prenotazione.getStato().toString(),
-                        String.valueOf(prenotazione.getNumeroPasseggeri())
-                        prenotazione.getEmail()
-                };
-            }
+        // Stessa cosa per il volo, otteniamo i dettagli e verifichiamo l'esistenza
+        Volo volo = voloDAO.getVoloPerNumero(prenotazione.getCodiceVolo());
+        String tratta = "";
+        String dataVolo = "";
+        if (volo != null) {
+            tratta = volo.getPartenza() + " → " + volo.getDestinazione();
+            dataVolo = volo.getData();
         }
 
-        return null; // Prenotazione non trovata
-    }
 
-    /**
-     * Ottiene una prenotazione per codice (per compatibilità con i dialog esistenti)
-     * @param codicePrenotazione Codice della prenotazione
-     * @return La prenotazione trovata o null se non esiste
-     */
-    public Prenotazione getPrenotazionePerCodice(String codicePrenotazione) {
-        if (utenteLoggato == null || !(utenteLoggato instanceof UtenteGenerico)) {
-            return null;
-        }
-
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-        ArrayList<Prenotazione> prenotazioni = utente.getPrenotazioni();
-
-        for (Prenotazione prenotazione : prenotazioni) {
-            if (prenotazione.getCodicePrenotazione().equals(codicePrenotazione)) {
-                return prenotazione;
-            }
-        }
-
-        return null;
-    }
-
-
-
-
-    /**
-     * Ottiene i dettagli di una prenotazione per la visualizzazione nel dialog
-     * @param prenotazione La prenotazione (passata come Object per evitare import)
-     * @return Array con i dettagli [codice, volo, data, tratta, stato]
-     */
-    public String[] getDettagliPrenotazioneDialog(Object prenotazione) {
-        if (!(prenotazione instanceof Prenotazione)) {
-            return null;
-        }
-
-        Prenotazione p = (Prenotazione) prenotazione;
         return new String[] {
-                p.getCodicePrenotazione(),
-                p.getCodiceVolo(),
-                p.getStato().toString(),
-                String.valueOf(p.getNumeroPasseggeri()),
-                p.getEmail()
+                prenotazione.getCodicePrenotazione(),
+                prenotazione.getCodiceVolo(),
+                dataVolo,
+                tratta,
+                prenotazione.getStato().toString(),
+                String.valueOf(prenotazione.getNumeroPasseggeri())
         };
     }
 
+    /**
+     * Ottiene una prenotazione per codice
+     */
+    public Prenotazione getPrenotazionePerCodice(String codicePrenotazione) {
+        return prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
+    }
+
+    /**
+     * Ottiene i dettagli di una prenotazione per la visualizzazione nel dialog
+     */
+    public String[] getDettagliPrenotazioneDialog(Object prenotazione) {
+        if (prenotazione instanceof Prenotazione) {
+            Prenotazione p = (Prenotazione) prenotazione;
+            return new String[] {
+                    p.getCodicePrenotazione(),
+                    p.getCodiceVolo(),
+                    p.getStato().toString(),
+                    String.valueOf(p.getNumeroPasseggeri()),
+                    p.getEmail()
+            };
+        }
+        return null;
+    }
 
     /**
      * Ottiene la lista dei ticket di una prenotazione formattata per la visualizzazione
-     * @param prenotazione La prenotazione (passata come Object)
-     * @return Array di stringhe con i dati dei ticket formattati
      */
     public String[] getTicketsFormattati(Object prenotazione) {
-        if (prenotazione == null || !(prenotazione instanceof Prenotazione)) {
-            return new String[0];
+        if (prenotazione instanceof Prenotazione) {
+            Prenotazione p = (Prenotazione) prenotazione;
+            List<Ticket> tickets = ticketDAO.getTicketsPerPrenotazione(p.getCodicePrenotazione());
+
+            String[] risultato = new String[tickets.size()];
+            for (int i = 0; i < tickets.size(); i++) {
+                Ticket ticket = tickets.get(i);
+                risultato[i] = ticket.getNome() + " " + ticket.getCognome() + " - Posto: " + ticket.getPostoAssegnato();
+            }
+            return risultato;
         }
-
-        Prenotazione p = (Prenotazione) prenotazione;
-        ArrayList<Ticket> tickets = p.getTickets();
-        String[] ticketsFormattati = new String[tickets.size()];
-
-        for (int i = 0; i < tickets.size(); i++) {
-            Ticket ticket = tickets.get(i);
-            ticketsFormattati[i] = ticket.getNome() + " " + ticket.getCognome() +
-                    " - " + ticket.getNumeroDocumento();
-        }
-
-        return ticketsFormattati;
+        return new String[0];
     }
 
     /**
      * Ottiene un ticket specifico da una prenotazione per indice
-     * @param prenotazione La prenotazione (passata come Object)
-     * @param indice L'indice del ticket nella lista
-     * @return Il ticket o null se non trovato
      */
     public Object getTicketPerIndice(Object prenotazione, int indice) {
-        if (prenotazione == null || !(prenotazione instanceof Prenotazione)) {
-            return null;
-        }
+        if (prenotazione instanceof Prenotazione) {
+            Prenotazione p = (Prenotazione) prenotazione;
+            List<Ticket> tickets = ticketDAO.getTicketsPerPrenotazione(p.getCodicePrenotazione());
 
-        Prenotazione p = (Prenotazione) prenotazione;
-        ArrayList<Ticket> tickets = p.getTickets();
-
-        if (indice < 0 || indice >= tickets.size()) {
-            return null;
-        }
-
-        return tickets.get(indice);
-    }
-
-    /**
-     * Elimina una prenotazione dell'utente loggato
-     * @param prenotazione La prenotazione da eliminare (passata come Object)
-     * @return true se l'eliminazione è avvenuta con successo, false altrimenti
-     */
-    public boolean eliminaPrenotazione(Object prenotazione) {
-        if (!(utenteLoggato instanceof UtenteGenerico) || prenotazione == null || !(prenotazione instanceof Prenotazione)) {
-            return false;
-        }
-
-        UtenteGenerico utente = (UtenteGenerico) utenteLoggato;
-        Prenotazione p = (Prenotazione) prenotazione;
-
-        return utente.getPrenotazioni().remove(p);
-    }
-
-
-    /**
-     * Aggiorna i dati di un ticket
-     * @param ticket Il ticket da aggiornare (passato come Object)
-     * @param nome Nuovo nome
-     * @param cognome Nuovo cognome
-     * @param numeroDocumento Nuovo numero documento
-     * @param dataNascita Nuova data di nascita
-     * @param postoAssegnato Nuovo posto assegnato
-     * @return true se l'aggiornamento è avvenuto con successo, false altrimenti
-     */
-    public boolean aggiornaTicket(Object ticket, String nome, String cognome,
-                                  String numeroDocumento, String dataNascita, String postoAssegnato) {
-        if (ticket == null || !(ticket instanceof Ticket)) {
-            return false;
-        }
-
-        try {
-            Ticket t = (Ticket) ticket;
-            t.setNome(nome);
-            t.setCognome(cognome);
-            t.setNumeroDocumento(numeroDocumento);
-            t.setDataNascita(dataNascita);
-            t.setPostoAssegnato(postoAssegnato);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Ottiene i dettagli di un ticket per la visualizzazione nel dialog di modifica
-     * @param ticket Il ticket (passato come Object)
-     * @return Array con i dettagli [nome, cognome, documento, dataNascita, posto]
-     */
-    public String[] getDettagliTicket(Object ticket) {
-        if (ticket == null || !(ticket instanceof Ticket)) {
-            return null;
-        }
-
-        Ticket t = (Ticket) ticket;
-        return new String[] {
-                t.getNome(),
-                t.getCognome(),
-                t.getNumeroDocumento(),
-                t.getDataNascita(),
-                t.getPostoAssegnato()
-        };
-    }
-
-
-
-    /**
-     * Ottiene i dati di un volo come array di stringhe per la GUI
-     * @param numeroVolo Numero del volo da cercare
-     * @return Array con i dati del volo o null se non trovato
-     * [0] = numeroVolo, [1] = compagnia, [2] = orario, [3] = data,
-     * [4] = ritardo, [5] = stato, [6] = partenza, [7] = destinazione
-     */
-    public String[] getDatiVolo(String numeroVolo) {
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getNumeroVolo().equals(numeroVolo)) {
-                return new String[] {
-                        volo.getNumeroVolo(),
-                        volo.getCompagniaAerea(),
-                        volo.getOrarioPrevisto(),
-                        volo.getData(),
-                        String.valueOf(volo.getRitardo()),
-                        volo.getStato().toString(),
-                        volo.getPartenza(),
-                        volo.getDestinazione()
-                };
+            if (indice >= 0 && indice < tickets.size()) {
+                return tickets.get(indice);
             }
         }
         return null;
     }
 
     /**
+     * Elimina una prenotazione dell'utente loggato
+     */
+    public boolean eliminaPrenotazione(Object prenotazione) {
+        if (utenteLoggato == null || !(prenotazione instanceof Prenotazione)) {
+            return false;
+        }
+
+        Prenotazione p = (Prenotazione) prenotazione;
+
+        // Prima elimina i ticket
+        if (!ticketDAO.eliminaTicketsPerPrenotazione(p.getCodicePrenotazione())) {
+            return false;
+        }
+
+        // Poi elimina la prenotazione
+        return prenotazioneDAO.eliminaPrenotazione(p.getCodicePrenotazione());
+    }
+
+    /**
+     * Aggiorna i dati di un ticket
+     */
+    public boolean aggiornaTicket(Object ticket, String nome, String cognome,
+                                  String numeroDocumento, String dataNascita, String postoAssegnato) {
+        if (!(ticket instanceof Ticket)) {
+            return false;
+        }
+
+        Ticket t = (Ticket) ticket;
+        t.setNome(nome);
+        t.setCognome(cognome);
+        t.setNumeroDocumento(numeroDocumento);
+        t.setDataNascita(dataNascita);
+        // Il posto assegnato non si può cambiare facilmente per vincoli di unicità
+
+        return ticketDAO.aggiornaTicket(t);
+    }
+
+    /**
+     * Ottiene i dettagli di un ticket per la visualizzazione nel dialog di modifica
+     */
+    public String[] getDettagliTicket(Object ticket) {
+        if (ticket instanceof Ticket) {
+            Ticket t = (Ticket) ticket;
+            return new String[] {
+                    t.getNome(),
+                    t.getCognome(),
+                    t.getNumeroDocumento(),
+                    t.getDataNascita(),
+                    t.getPostoAssegnato()
+            };
+        }
+        return null;
+    }
+
+    /**
+     * Ottiene i dati di un volo come array di stringhe per la GUI
+     */
+    public String[] getDatiVolo(String numeroVolo) {
+        Volo volo = voloDAO.getVoloPerNumero(numeroVolo);
+        if (volo == null) {
+            return null;
+        }
+
+        return new String[] {
+                volo.getNumeroVolo(),
+                volo.getCompagniaAerea(),
+                volo.getOrarioPrevisto(),
+                volo.getData(),
+                String.valueOf(volo.getRitardo()),
+                volo.getStato().toString(),
+                volo.getPartenza(),
+                volo.getDestinazione()
+        };
+    }
+
+    /**
      * Aggiorna tutti i dati di un volo (disponibile solo per amministratori)
-     * @param numeroVoloOriginale Numero del volo da modificare
-     * @param nuovoNumeroVolo Nuovo numero volo
-     * @param nuovaCompagnia Nuova compagnia
-     * @param nuovoOrario Nuovo orario
-     * @param nuovaData Nuova data
-     * @param nuovoRitardo Nuovo ritardo
-     * @param nuovoStato Nuovo stato
-     * @param nuovaPartenza Nuova partenza
-     * @param nuovaDestinazione Nuova destinazione
-     * @return true se l'aggiornamento è riuscito
      */
     public boolean aggiornaVolo(String numeroVoloOriginale, String nuovoNumeroVolo,
                                 String nuovaCompagnia, String nuovoOrario, String nuovaData,
@@ -800,53 +611,49 @@ public class Controller {
             return false;
         }
 
-        StatoVolo statoEnum = StatoVolo.valueOf(nuovoStato.toUpperCase());
-
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getNumeroVolo().equals(numeroVoloOriginale)) {
-                volo.setNumeroVolo(nuovoNumeroVolo);
-                volo.setCompagniaAerea(nuovaCompagnia);
-                volo.setOrarioPrevisto(nuovoOrario);
-                volo.setData(nuovaData);
-                volo.setRitardo(nuovoRitardo);
-                volo.setStato(statoEnum);
-                volo.setPartenza(nuovaPartenza);
-                volo.setDestinazione(nuovaDestinazione);
-                return true;
+        try {
+            Volo volo = voloDAO.getVoloPerNumero(numeroVoloOriginale);
+            if (volo == null) {
+                return false;
             }
+
+            // Aggiorna i dati del volo
+            volo.setCompagniaAerea(nuovaCompagnia);
+            volo.setOrarioPrevisto(nuovoOrario);
+            volo.setData(nuovaData);
+            volo.setRitardo(nuovoRitardo);
+            volo.setStato(StatoVolo.valueOf(nuovoStato.toUpperCase()));
+            volo.setPartenza(nuovaPartenza);
+            volo.setDestinazione(nuovaDestinazione);
+
+            return voloDAO.aggiornaVolo(volo);
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 
     /**
      * Ottiene il gate di un volo come stringa
-     * @param numeroVolo Numero del volo
-     * @return Gate come stringa o null se non disponibile
      */
     public String getGateVoloStringa(String numeroVolo) {
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getNumeroVolo().equals(numeroVolo) && volo instanceof VoloInPartenza) {
-                Short gate = ((VoloInPartenza) volo).getGateImbarco();
-                return gate != null ? String.valueOf(gate) : null;
-            }
+        Volo volo = voloDAO.getVoloPerNumero(numeroVolo);
+        if (volo instanceof VoloInPartenza) {
+            Short gate = ((VoloInPartenza) volo).getGateImbarco();
+            return gate != null ? gate.toString() : "N/A";
         }
-        return null;
+        return "N/A";
     }
 
-
-    /**
-     * Metodi per gestire gli stati senza esporre gli enum alle GUI
-     */
-
-    // Metodi per gestire gli Stati del Volo (enum StatoVolo in package "model")
+    // Metodi per gestire gli Stati del Volo
     public String[] getStatiVoloDisponibili() {
         StatoVolo[] stati = StatoVolo.values();
-        String[] statiString = new String[stati.length];
+        String[] risultato = new String[stati.length];
         for (int i = 0; i < stati.length; i++) {
-            statiString[i] = stati[i].toString();
+            risultato[i] = stati[i].toString();
         }
-        return statiString;
+        return risultato;
     }
+
     public boolean isStatoVoloValido(String stato) {
         try {
             StatoVolo.valueOf(stato.toUpperCase());
@@ -855,19 +662,21 @@ public class Controller {
             return false;
         }
     }
+
     private StatoVolo stringToStatoVolo(String stato) {
         return StatoVolo.valueOf(stato.toUpperCase());
     }
 
-    // Metodi per gestire gli Stati della Prenotazione (enum StatoPrenotazione in package "model")
+    // Metodi per gestire gli Stati della Prenotazione
     public String[] getStatiPrenotazioneDisponibili() {
         StatoPrenotazione[] stati = StatoPrenotazione.values();
-        String[] statiString = new String[stati.length];
+        String[] risultato = new String[stati.length];
         for (int i = 0; i < stati.length; i++) {
-            statiString[i] = stati[i].toString();
+            risultato[i] = stati[i].toString();
         }
-        return statiString;
+        return risultato;
     }
+
     public boolean isStatoPrenotazioneValido(String stato) {
         try {
             StatoPrenotazione.valueOf(stato.toUpperCase());
@@ -876,167 +685,159 @@ public class Controller {
             return false;
         }
     }
+
     private StatoPrenotazione stringToStatoPrenotazione(String stato) {
         return StatoPrenotazione.valueOf(stato.toUpperCase());
     }
 
-
-
-
-
-
     /**
      * Ottiene i voli che partono da una specifica città per visualizzazione in tabella
-     * @param citta La città di partenza
-     * @return Array bidimensionale con i dati dei voli
      */
     public Object[][] getVoliInPartenza(String citta) {
-        ArrayList<Object[]> risultati = new ArrayList<>();
+        List<Volo> voli = voloDAO.getTuttiVoli();
+        List<Volo> voliPartenza = new ArrayList<>();
 
-        for (Volo volo : Volo.getListaVoli()) {
-            // Cerca tutti i voli che partono dalla città specificata
-            if (volo.getPartenza().equalsIgnoreCase(citta)) {
-                String orarioCompleto = volo.getOrarioPrevisto();
-                if (volo.getRitardo() > 0) {
-                    orarioCompleto += " (+" + volo.getRitardo() + " min)";
-                }
-
-                // Se è un volo in partenza (da Napoli), mostra anche il gate
-                if (volo instanceof VoloInPartenza) {
-                    Short gate = ((VoloInPartenza) volo).getGateImbarco();
-                    String gateStr = (gate != null) ? gate.toString() : "Non assegnato";
-
-                    Object[] row = {
-                            volo.getNumeroVolo(),
-                            volo.getCompagniaAerea(),
-                            volo.getDestinazione(),
-                            volo.getData(),
-                            orarioCompleto,
-                            volo.getStato(),
-                            gateStr
-                    };
-                    risultati.add(row);
-                } else {
-                    // Per voli in arrivo che hanno partenza diversa da Napoli (caso raro)
-                    Object[] row = {
-                            volo.getNumeroVolo(),
-                            volo.getCompagniaAerea(),
-                            volo.getDestinazione(),
-                            volo.getData(),
-                            orarioCompleto,
-                            volo.getStato(),
-                            "N/A"
-                    };
-                    risultati.add(row);
-                }
+        for (Volo volo : voli) {
+            if (volo instanceof VoloInPartenza && citta.equalsIgnoreCase(volo.getPartenza())) {
+                voliPartenza.add(volo);
             }
         }
 
-        return risultati.toArray(new Object[0][]);
+        Object[][] dati = new Object[voliPartenza.size()][7];
+        for (int i = 0; i < voliPartenza.size(); i++) {
+            Volo volo = voliPartenza.get(i);
+            dati[i][0] = volo.getNumeroVolo();
+            dati[i][1] = volo.getCompagniaAerea();
+            dati[i][2] = volo.getOrarioPrevisto();
+            dati[i][3] = volo.getData();
+            dati[i][4] = volo.getStato().toString();
+            dati[i][5] = volo.getDestinazione();
+            dati[i][6] = getGateVoloStringa(volo.getNumeroVolo());
+        }
+
+        return dati;
     }
 
     /**
      * Ottiene i voli che arrivano verso una specifica città per visualizzazione in tabella
-     * @param citta La città di destinazione
-     * @return Array bidimensionale con i dati dei voli
      */
     public Object[][] getVoliInArrivo(String citta) {
-        ArrayList<Object[]> risultati = new ArrayList<>();
+        List<Volo> voli = voloDAO.getTuttiVoli();
+        List<Volo> voliArrivo = new ArrayList<>();
 
-        for (Volo volo : Volo.getListaVoli()) {
-            // Cerca tutti i voli che arrivano alla città specificata
-            if (volo.getDestinazione().equalsIgnoreCase(citta)) {
-                String orarioCompleto = volo.getOrarioPrevisto();
-                if (volo.getRitardo() > 0) {
-                    orarioCompleto += " (+" + volo.getRitardo() + " min)";
-                }
-
-                Object[] row = {
-                        volo.getNumeroVolo(),
-                        volo.getCompagniaAerea(),
-                        volo.getPartenza(),
-                        volo.getData(),
-                        orarioCompleto,
-                        volo.getStato()
-                };
-                risultati.add(row);
+        for (Volo volo : voli) {
+            if (volo instanceof VoloInArrivo && citta.equalsIgnoreCase(volo.getDestinazione())) {
+                voliArrivo.add(volo);
             }
         }
 
-        return risultati.toArray(new Object[0][]);
+        Object[][] dati = new Object[voliArrivo.size()][6];
+        for (int i = 0; i < voliArrivo.size(); i++) {
+            Volo volo = voliArrivo.get(i);
+            dati[i][0] = volo.getNumeroVolo();
+            dati[i][1] = volo.getCompagniaAerea();
+            dati[i][2] = volo.getOrarioPrevisto();
+            dati[i][3] = volo.getData();
+            dati[i][4] = volo.getStato().toString();
+            dati[i][5] = volo.getPartenza();
+        }
+
+        return dati;
     }
 
     /**
      * Conta i voli in partenza da una specifica città
-     * @param citta La città di partenza
-     * @return Numero di voli trovati
      */
     public int contaVoliInPartenza(String citta) {
-        int count = 0;
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getPartenza().equalsIgnoreCase(citta)) {
-                count++;
-            }
-        }
-        return count;
+        return getVoliInPartenza(citta).length;
     }
 
     /**
      * Conta i voli in arrivo verso una specifica città
-     * @param citta La città di destinazione
-     * @return Numero di voli trovati
      */
     public int contaVoliInArrivo(String citta) {
-        int count = 0;
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getDestinazione().equalsIgnoreCase(citta)) {
-                count++;
-            }
-        }
-        return count;
+        return getVoliInArrivo(citta).length;
     }
 
     /**
      * Ottiene le colonne per la tabella dei voli in partenza
-     * @return Array con i nomi delle colonne
      */
     public String[] getColonneVoliPartenza() {
-        return new String[]{"Numero Volo", "Compagnia", "Destinazione", "Data", "Orario", "Stato", "Gate"};
+        return new String[] {
+                "Numero Volo", "Compagnia", "Orario", "Data", "Stato", "Destinazione", "Gate"
+        };
     }
 
     /**
      * Ottiene le colonne per la tabella dei voli in arrivo
-     * @return Array con i nomi delle colonne
      */
     public String[] getColonneVoliArrivo() {
-        return new String[]{"Numero Volo", "Compagnia", "Provenienza", "Data", "Orario", "Stato"};
+        return new String[] {
+                "Numero Volo", "Compagnia", "Orario", "Data", "Stato", "Provenienza"
+        };
     }
 
+    /**
+     * Ottiene la tratta di un volo
+     */
     public String getTrattaDelVolo(String codiceVolo) {
-        // Validazione parametro input
-        if (codiceVolo == null || codiceVolo.trim().isEmpty()) {
-            return "Codice volo non valido";
+        Volo volo = voloDAO.getVoloPerNumero(codiceVolo);
+        if (volo == null) {
+            return "N/A";
         }
-
-        // Controllo inizializzazione DAO
-        if (voloDAO == null) {
-            return "Servizio non disponibile";
-        }
-
-        try {
-            Volo volo = voloDAO.getVoloPerNumero(codiceVolo);
-            if (volo != null) {
-                return volo.getPartenza() + " → " + volo.getDestinazione();
-            }
-            return "Tratta non disponibile";
-        } catch (Exception e) {
-            // Log dell'errore
-            System.err.println("Errore durante il recupero del volo: " + e.getMessage());
-            return "Errore nel recupero delle informazioni";
-        }
+        return volo.getPartenza() + " → " + volo.getDestinazione();
     }
 
+    // Metodi aggiuntivi che potrebbero essere utili
 
+    /**
+     * Ottiene tutti i voli disponibili utilizzando DAO
+     */
+    public List<Volo> getVoliDisponibili() {
+        return voloDAO.getVoliDisponibili();
+    }
 
+    /**
+     * Login utente specifico per retrocompatibilità
+     */
+    public boolean loginUtente(String emailUsername, String password) {
+        return login(emailUsername, password);
+    }
 
+    /**
+     * Elimina un volo (solo per amministratori)
+     */
+    public boolean eliminaVolo(String numeroVolo) {
+        if (!isUtenteAdmin()) {
+            return false;
+        }
+        return voloDAO.eliminaVolo(numeroVolo);
+    }
+
+    /**
+     * Verifica se un volo esiste
+     */
+    public boolean esisteVolo(String numeroVolo) {
+        return voloDAO.esisteVolo(numeroVolo);
+    }
+
+    /**
+     * Ottiene tutti gli utenti (solo per amministratori)
+     */
+    public List<Utente> getTuttiUtenti() {
+        if (!isUtenteAdmin()) {
+            return new ArrayList<>();
+        }
+        return utenteDAO.getTuttiUtenti();
+    }
+
+    /**
+     * Ottiene tutte le prenotazioni (solo per amministratori)
+     */
+    public List<Prenotazione> getTuttePrenotazioni() {
+        if (!isUtenteAdmin()) {
+            return new ArrayList<>();
+        }
+        return prenotazioneDAO.getTuttePrenotazioni();
+    }
 }

@@ -21,77 +21,77 @@ public class UtenteGenerico extends Utente {
         this.prenotazioni.add(prenotazione);
     }
 
-    public void prenotaVolo() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("=== Prenotazione Volo ===");
-
-        // Mostra voli disponibili per la prenotazione
-        ArrayList<Volo> voliDisponibili = new ArrayList<>();
-        for (Volo volo : Volo.getListaVoli()) {
-            if (volo.getStato() == StatoVolo.PROGRAMMATO) {
-                voliDisponibili.add(volo);
-            }
-        }
-
-        if (voliDisponibili.isEmpty()) {
-            System.out.println("Non ci sono voli disponibili per la prenotazione.");
-            return;
-        }
-
-        System.out.println("Voli disponibili:");
-        for (int i = 0; i < voliDisponibili.size(); i++) {
-            Volo volo = voliDisponibili.get(i);
-            System.out.println((i + 1) + ". " + volo.getCompagniaAerea() + " " + volo.getNumeroVolo()
-                    + " - " + volo.getPartenza() + " → " + volo.getDestinazione()
-                    + " - " + volo.getData() + " " + volo.getOrarioPrevisto());
-        }
-
-        System.out.print("Inserisci il numero del volo da prenotare: ");
-        String numeroVolo = scanner.nextLine();
-
-        // Cerca il volo
-        Volo voloSelezionato = null;
-        for (Volo volo : voliDisponibili) {
-            if (volo.getNumeroVolo().equals(numeroVolo)) {
-                voloSelezionato = volo;
-                break;
-            }
-        }
-
-        if (voloSelezionato == null) {
-            System.out.println("Volo non trovato.");
-            return;
-        }
-
-        System.out.print("Inserisci il numero di passeggeri (1-" + Prenotazione.MAX_PASSEGGERI + "): ");
-        int numeroPasseggeri;
-        try {
-            numeroPasseggeri = Integer.parseInt(scanner.nextLine());
-            if (numeroPasseggeri < 1 || numeroPasseggeri > Prenotazione.MAX_PASSEGGERI) {
-                System.out.println("Numero di passeggeri non valido.");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Formato numero non valido.");
-            return;
-        }
-
-        // Crea la prenotazione
-        String tratta = voloSelezionato.getPartenza() + " → " + voloSelezionato.getDestinazione();
-        String codicePrenotazione = Prenotazione.generaNuovoCodice();
-
-        Prenotazione nuovaPrenotazione = new Prenotazione(
-                codicePrenotazione,
-                voloSelezionato.getNumeroVolo(),
-                voloSelezionato.getData(),
-                tratta,
-                StatoPrenotazione.CONFERMATA,
-                numeroPasseggeri
-        );
-
-        this.setPrenotazione(nuovaPrenotazione);
-        System.out.println("Prenotazione creata con successo! Codice: " + codicePrenotazione);
-    }
+//    public void prenotaVolo() {
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.println("=== Prenotazione Volo ===");
+//
+//        // Mostra voli disponibili per la prenotazione
+//        ArrayList<Volo> voliDisponibili = new ArrayList<>();
+//        for (Volo volo : Volo.getListaVoli()) {
+//            if (volo.getStato() == StatoVolo.PROGRAMMATO) {
+//                voliDisponibili.add(volo);
+//            }
+//        }
+//
+//        if (voliDisponibili.isEmpty()) {
+//            System.out.println("Non ci sono voli disponibili per la prenotazione.");
+//            return;
+//        }
+//
+//        System.out.println("Voli disponibili:");
+//        for (int i = 0; i < voliDisponibili.size(); i++) {
+//            Volo volo = voliDisponibili.get(i);
+//            System.out.println((i + 1) + ". " + volo.getCompagniaAerea() + " " + volo.getNumeroVolo()
+//                    + " - " + volo.getPartenza() + " → " + volo.getDestinazione()
+//                    + " - " + volo.getData() + " " + volo.getOrarioPrevisto());
+//        }
+//
+//        System.out.print("Inserisci il numero del volo da prenotare: ");
+//        String numeroVolo = scanner.nextLine();
+//
+//        // Cerca il volo
+//        Volo voloSelezionato = null;
+//        for (Volo volo : voliDisponibili) {
+//            if (volo.getNumeroVolo().equals(numeroVolo)) {
+//                voloSelezionato = volo;
+//                break;
+//            }
+//        }
+//
+//        if (voloSelezionato == null) {
+//            System.out.println("Volo non trovato.");
+//            return;
+//        }
+//
+//        System.out.print("Inserisci il numero di passeggeri (1-" + Prenotazione.MAX_PASSEGGERI + "): ");
+//        int numeroPasseggeri;
+//        try {
+//            numeroPasseggeri = Integer.parseInt(scanner.nextLine());
+//            if (numeroPasseggeri < 1 || numeroPasseggeri > Prenotazione.MAX_PASSEGGERI) {
+//                System.out.println("Numero di passeggeri non valido.");
+//                return;
+//            }
+//        } catch (NumberFormatException e) {
+//            System.out.println("Formato numero non valido.");
+//            return;
+//        }
+//
+//        // Crea la prenotazione
+//        String tratta = voloSelezionato.getPartenza() + " → " + voloSelezionato.getDestinazione();
+//        String codicePrenotazione = Prenotazione.generaNuovoCodice();
+//
+//        Prenotazione nuovaPrenotazione = new Prenotazione(
+//                codicePrenotazione,
+//                voloSelezionato.getNumeroVolo(),
+//                voloSelezionato.getData(),
+//                tratta,
+//                StatoPrenotazione.CONFERMATA,
+//                numeroPasseggeri
+//        );
+//
+//        this.setPrenotazione(nuovaPrenotazione);
+//        System.out.println("Prenotazione creata con successo! Codice: " + codicePrenotazione);
+//    }
 
     public void cercaPrenotazionePerUsername() {
         Scanner scanner = new Scanner(System.in);
@@ -221,42 +221,42 @@ public class UtenteGenerico extends Utente {
         }
     }
 
-    public void visualizzaTicket() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("=== Visualizza Ticket ===");
-
-        if (this.prenotazioni.isEmpty()) {
-            System.out.println("Non hai prenotazioni.");
-            return;
-        }
-
-        mostraPrenotazioniUtente();
-
-        System.out.print("Inserisci il codice della prenotazione: ");
-        String codicePrenotazione = scanner.nextLine();
-
-        Prenotazione prenotazione = null;
-        for (Prenotazione p : this.prenotazioni) {
-            if (p.getCodicePrenotazione().equals(codicePrenotazione)) {
-                prenotazione = p;
-                break;
-            }
-        }
-
-        if (prenotazione == null) {
-            System.out.println("Prenotazione non trovata.");
-            return;
-        }
-
-        if (prenotazione.getTickets().isEmpty()) {
-            System.out.println("Nessun ticket associato a questa prenotazione.");
-            return;
-        }
-
-        System.out.println("=== Ticket della prenotazione " + codicePrenotazione + " ===");
-        for (Ticket ticket : prenotazione.getTickets()) {
-            System.out.println(ticket);
-            System.out.println("---");
-        }
-    }
+//    public void visualizzaTicket() {
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.println("=== Visualizza Ticket ===");
+//
+//        if (this.prenotazioni.isEmpty()) {
+//            System.out.println("Non hai prenotazioni.");
+//            return;
+//        }
+//
+//        mostraPrenotazioniUtente();
+//
+//        System.out.print("Inserisci il codice della prenotazione: ");
+//        String codicePrenotazione = scanner.nextLine();
+//
+//        Prenotazione prenotazione = null;
+//        for (Prenotazione p : this.prenotazioni) {
+//            if (p.getCodicePrenotazione().equals(codicePrenotazione)) {
+//                prenotazione = p;
+//                break;
+//            }
+//        }
+//
+//        if (prenotazione == null) {
+//            System.out.println("Prenotazione non trovata.");
+//            return;
+//        }
+//
+//        if (prenotazione.getTickets().isEmpty()) {
+//            System.out.println("Nessun ticket associato a questa prenotazione.");
+//            return;
+//        }
+//
+//        System.out.println("=== Ticket della prenotazione " + codicePrenotazione + " ===");
+//        for (Ticket ticket : prenotazione.getTickets()) {
+//            System.out.println(ticket);
+//            System.out.println("---");
+//        }
+//    }
 }

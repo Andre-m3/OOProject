@@ -322,8 +322,8 @@ public class VoliUser {
         conferma.append("Volo: ").append(dettagliPrenotazione[1]).append("\n");
         conferma.append("Data: ").append(dettagliPrenotazione[2]).append("\n");
         conferma.append("Tratta: ").append(dettagliPrenotazione[3]).append("\n");
-        conferma.append("Passeggeri: ").append(dettagliPrenotazione[5]).append("\n");
         conferma.append("Stato: ").append(dettagliPrenotazione[4]).append("\n\n");
+        conferma.append("Passeggeri: ").append(dettagliPrenotazione[5]).append("\n");
 
         conferma.append("TICKETS CREATI:\n");
         for (String[] ticket : tickets) {

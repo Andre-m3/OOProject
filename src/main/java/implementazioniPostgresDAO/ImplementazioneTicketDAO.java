@@ -7,6 +7,7 @@ import model.Ticket;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,10 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             stmt.setString(2, ticket.getNome());
             stmt.setString(3, ticket.getCognome());
             stmt.setString(4, ticket.getNumeroDocumento());
-            stmt.setDate(5, Date.valueOf(ticket.getDataNascita()));
+
+            LocalDate dataNascita = convertiDataNascita(ticket.getDataNascita());
+            stmt.setDate(5, Date.valueOf(dataNascita));
+
             stmt.setString(6, ticket.getPostoAssegnato());
 
             int rowsAffected = stmt.executeUpdate();
@@ -134,7 +138,10 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             stmt.setString(1, ticket.getNome());
             stmt.setString(2, ticket.getCognome());
             stmt.setString(3, ticket.getNumeroDocumento());
-            stmt.setDate(4, Date.valueOf(ticket.getDataNascita()));
+
+            LocalDate dataNascita = convertiDataNascita(ticket.getDataNascita());
+            stmt.setDate(4, Date.valueOf(dataNascita));
+
             stmt.setString(5, ticket.getCodicePrenotazione());
             stmt.setString(6, ticket.getPostoAssegnato());
 
@@ -180,6 +187,38 @@ public class ImplementazioneTicketDAO implements TicketDAO {
         }
     }
 
+    /**
+     * Converte una stringa di data in LocalDate gestendo diversi formati
+     * @param dataString Data in formato stringa (può essere DD-MM-YYYY o YYYY-MM-DD)
+     * @return LocalDate convertita
+     */
+    private LocalDate convertiDataNascita(String dataString) {
+        try {
+            // Prova prima il formato YYYY-MM-DD
+            if (dataString.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                return LocalDate.parse(dataString);
+            }
+            // Prova il formato DD-MM-YYYY
+            else if (dataString.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                return LocalDate.parse(dataString, formatter);
+            }
+            // Prova il formato DD/MM/YYYY      [questo è il formato utilizzato per facilitare nel nostro caso l'input all'utente!]
+            else if (dataString.matches("\\d{2}/\\d{2}/\\d{4}")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                return LocalDate.parse(dataString, formatter);
+            }
+            // Fallback: assume formato ISO
+            else {
+                return LocalDate.parse(dataString);
+            }
+        } catch (Exception e) {
+            System.out.println("Errore nel parsing della data di nascita: " + dataString);
+            // Fallback a una data di default per evitare crash
+            return LocalDate.of(1990, 1, 1);
+        }
+    }
+
 
     // Metodo di utilità per creare un oggetto Ticket dal ResultSet
     private Ticket creaTicketDalResultSet(ResultSet rs) throws SQLException {
@@ -192,4 +231,6 @@ public class ImplementazioneTicketDAO implements TicketDAO {
 
         return new Ticket(nome, cognome, numeroDocumento, dataNascita.toString(), postoAssegnato, codicePrenotazione);
     }
+
+
 }

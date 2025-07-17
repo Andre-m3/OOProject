@@ -8,7 +8,7 @@ public interface PrenotazioneDAO {
 
     boolean inserisciPrenotazione(Prenotazione prenotazione);
     Prenotazione getPrenotazionePerCodice(String codicePrenotazione);
-    List<Prenotazione> getPrenotazioniPerUtente(String username);
+    List<Prenotazione> getPrenotazioniPerUtente(String email);
     List<Prenotazione> getPrenotazioniPerVolo(String numeroVolo);
     List<Prenotazione> getTuttePrenotazioni();
     boolean aggiornaPrenotazione(Prenotazione prenotazione);

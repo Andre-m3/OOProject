@@ -70,7 +70,6 @@ public class AreaPrivata {
             }
         });
 
-
         /* Il pulsante "Modifica Prenotazione" dovrà modificare esclusivamente la prenotazione selezionata
          * In poche parole, l'utente potrà selezionare dalla lista delle prenotazioni personali direttamente quella da modificare
          * Così cliccando sul pulsante "Modifica Prenotazione", riusciremo a passare al Dialog esattamente quella prenotazione
@@ -124,10 +123,10 @@ public class AreaPrivata {
     private void loadPrenotazioni() {
         // Definisci le colonne della tabella
         String[] colonne = {
-                "Codice Prenotazione",
+                "Cod. Prenotazione",
                 "Passeggeri",
-                "Stato Prenotazione",
-                "Volo",
+                "Prenotazione",
+                "Cod. Volo",
                 "Tratta",
                 "Stato Volo",
                 "Orario",

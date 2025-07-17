@@ -25,17 +25,14 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
     @Override
     public boolean inserisciPrenotazione(Prenotazione prenotazione) {
-        String sql = "INSERT INTO prenotazioni (codice_prenotazione, email, numero_volo, data_volo, partenza, destinazione, stato, numero_passeggeri) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO prenotazioni (codice_prenotazione, email, numero_volo, stato_prenotazione, numero_passeggeri) VALUES (?, ?, ?, ?::stato_prenotazione, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, prenotazione.getCodicePrenotazione());
-            stmt.setString(2, prenotazione.getUsername());
+            stmt.setString(2, prenotazione.getEmail());
             stmt.setString(3, prenotazione.getCodiceVolo());
-            stmt.setDate(4, Date.valueOf(prenotazione.getDataVolo()));
-            stmt.setString(5, prenotazione.getPartenzaDestinazione());
-            stmt.setString(5, prenotazione.getPartenzaDestinazione());
-            stmt.setString(6, prenotazione.getStato().toString());
-            stmt.setInt(7, prenotazione.getNumeroPasseggeri());
+            stmt.setString(4, prenotazione.getStato().toString());
+            stmt.setInt(5, prenotazione.getNumeroPasseggeri());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -67,12 +64,12 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public List<Prenotazione> getPrenotazioniPerUtente(String username) {
+    public List<Prenotazione> getPrenotazioniPerUtente(String email) {
         List<Prenotazione> prenotazioni = new ArrayList<>();
-        String sql = "SELECT * FROM prenotazioni WHERE username = ? ORDER BY data_volo DESC";
+        String sql = "SELECT * FROM prenotazioni WHERE email = ? ORDER BY codice_prenotazione DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, username);
+            stmt.setString(1, email);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -90,7 +87,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     @Override
     public List<Prenotazione> getPrenotazioniPerVolo(String numeroVolo) {
         List<Prenotazione> prenotazioni = new ArrayList<>();
-        String sql = "SELECT * FROM prenotazioni WHERE numero_volo = ? ORDER BY created_at";
+        String sql = "SELECT * FROM prenotazioni WHERE numero_volo = ? ORDER BY codice_prenotazione";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, numeroVolo);
@@ -111,7 +108,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     @Override
     public List<Prenotazione> getTuttePrenotazioni() {
         List<Prenotazione> prenotazioni = new ArrayList<>();
-        String sql = "SELECT * FROM prenotazioni ORDER BY data_volo DESC, created_at DESC";
+        String sql = "SELECT * FROM prenotazioni ORDER BY codice_prenotazione DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -129,15 +126,14 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
     @Override
     public boolean aggiornaPrenotazione(Prenotazione prenotazione) {
-        String sql = "UPDATE prenotazioni SET numero_volo = ?, data_volo = ?, tratta = ?, stato = ?, numero_passeggeri = ? WHERE codice_prenotazione = ?";
+        String sql = "UPDATE prenotazioni SET email = ?, numero_volo = ?, stato_prenotazione = ?::stato_prenotazione, numero_passeggeri = ? WHERE codice_prenotazione = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, prenotazione.getCodiceVolo());
-            stmt.setDate(2, Date.valueOf(prenotazione.getDataVolo()));
-            stmt.setString(3, prenotazione.getTratta());
-            stmt.setString(4, prenotazione.getStato().toString());
-            stmt.setInt(5, prenotazione.getNumeroPasseggeri());
-            stmt.setString(6, prenotazione.getCodicePrenotazione());
+            stmt.setString(1, prenotazione.getEmail());
+            stmt.setString(2, prenotazione.getCodiceVolo());
+            stmt.setString(3, prenotazione.getStato().toString());
+            stmt.setInt(4, prenotazione.getNumeroPasseggeri());
+            stmt.setString(5, prenotazione.getCodicePrenotazione());
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -150,7 +146,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
     @Override
     public boolean aggiornaStatoPrenotazione(String codicePrenotazione, StatoPrenotazione nuovoStato) {
-        String sql = "UPDATE prenotazioni SET stato = ? WHERE codice_prenotazione = ?";
+        String sql = "UPDATE prenotazioni SET stato_prenotazione = ?::stato_prenotazione WHERE codice_prenotazione = ?";    //casting esplicito!
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, nuovoStato.toString());
@@ -230,13 +226,12 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     private Prenotazione creaPrenotazioneDalResultSet(ResultSet rs) throws SQLException {
         String codicePrenotazione = rs.getString("codice_prenotazione");
         String numeroVolo = rs.getString("numero_volo");
-        LocalDate dataVolo = rs.getDate("data_volo").toLocalDate();
-        String tratta = rs.getString("tratta");
-        StatoPrenotazione stato = StatoPrenotazione.valueOf(rs.getString("stato"));
+        StatoPrenotazione stato = StatoPrenotazione.valueOf(rs.getString("stato_prenotazione")); // Cambiato da "stato"
         int numeroPasseggeri = rs.getInt("numero_passeggeri");
-        String username = rs.getString("username");
+        String email = rs.getString("email");
 
-        return new Prenotazione(codicePrenotazione, numeroVolo, stato, numeroPasseggeri, username);
+
+        return new Prenotazione(codicePrenotazione, numeroVolo, stato, numeroPasseggeri, email);
     }
 
 }
