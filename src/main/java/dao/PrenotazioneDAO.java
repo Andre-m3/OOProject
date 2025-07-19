@@ -1,18 +1,18 @@
 package dao;
 
-import model.Prenotazione;
-import model.StatoPrenotazione;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface PrenotazioneDAO {
 
-    boolean inserisciPrenotazione(Prenotazione prenotazione);
-    Prenotazione getPrenotazionePerCodice(String codicePrenotazione);
-    List<Prenotazione> getPrenotazioniPerUtente(String email);
-    List<Prenotazione> getPrenotazioniPerVolo(String numeroVolo);
-    List<Prenotazione> getTuttePrenotazioni();
-    boolean aggiornaPrenotazione(Prenotazione prenotazione);
-    boolean aggiornaStatoPrenotazione(String codicePrenotazione, StatoPrenotazione nuovoStato);
+    boolean inserisciPrenotazione(String codicePrenotazione, String email, String numeroVolo,
+                                  String stato, int numeroPasseggeri);
+    ArrayList<String> getPrenotazionePerCodice(String codicePrenotazione);
+    ArrayList<ArrayList<String>> getPrenotazioniPerUtente(String email);
+    ArrayList<ArrayList<String>> getPrenotazioniPerVolo(String numeroVolo);
+    ArrayList<ArrayList<String>> getTuttePrenotazioni();
+    boolean aggiornaPrenotazione(String codicePrenotazione, String email, String numeroVolo,
+                                 String stato, int numeroPasseggeri);
+    boolean aggiornaStatoPrenotazione(String codicePrenotazione, String nuovoStato);
     boolean eliminaPrenotazione(String codicePrenotazione);
     boolean esistePrenotazione(String codicePrenotazione);
 }

@@ -1,19 +1,24 @@
 package dao;
 
-import model.Volo;
-import model.StatoVolo;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface VoloDAO {
 
-    boolean inserisciVolo(Volo volo);
-    Volo getVoloPerNumero(String numeroVolo);
-    List<Volo> getTuttiVoli();
-    List<Volo> getVoliDisponibili();
-    List<Volo> getVoliPerStato(StatoVolo stato);
-    boolean aggiornaVolo(Volo volo);
-    boolean aggiornaStatoVolo(String numeroVolo, StatoVolo nuovoStato);
+    boolean inserisciVolo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
+                          String data, String stato, String partenza, String destinazione,
+                          Short gateImbarco, String tipoVolo);
+    ArrayList<String> getVoloPerNumero(String numeroVolo);
+    ArrayList<ArrayList<String>> getTuttiVoli();
+    ArrayList<ArrayList<String>> getVoliDisponibili();
+    ArrayList<ArrayList<String>> getVoliPerStato(String stato);
+    ArrayList<ArrayList<String>> getVoliPerCittaPartenza(String cittaPartenza);
+    ArrayList<ArrayList<String>> getVoliPerCittaDestinazione(String cittaDestinazione);
+    boolean aggiornaVolo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
+                         String data, String stato, String partenza, String destinazione,
+                         Short gateImbarco, int ritardo);
+    boolean aggiornaStatoVolo(String numeroVolo, String nuovoStato);
     boolean aggiornaGateImbarco(String numeroVolo, Short nuovoGate);
     boolean eliminaVolo(String numeroVolo);
     boolean esisteVolo(String numeroVolo);
+
 }

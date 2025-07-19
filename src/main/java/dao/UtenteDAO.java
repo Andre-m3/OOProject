@@ -1,16 +1,16 @@
 package dao;
 
-import model.Utente;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface UtenteDAO {
 
-    boolean inserisciUtente(Utente utente);
-    Utente getUtentePerCredenziali(String emailUsername, String password);
-    Utente getUtentePerUsername(String username);
-    Utente getUtentePerEmail(String email);
+    boolean inserisciUtente(String email, String username, String password, boolean isAdmin);
+    ArrayList<String> getUtentePerCredenziali(String emailUsername, String password);
+    ArrayList<String> getUtentePerUsername(String username);
+    ArrayList<String> getUtentePerEmail(String email);
     boolean esisteUtente(String username, String email);
-    boolean aggiornaUtente(Utente utente);
+    boolean aggiornaUtente(String username, String email, String password, boolean isAdmin);
     boolean eliminaUtente(String username);
-    List<Utente> getTuttiUtenti();
+    ArrayList<ArrayList<String>> getTuttiUtenti();
+
 }

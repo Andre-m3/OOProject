@@ -2,13 +2,10 @@ package implementazioniPostgresDAO;
 
 import dao.PrenotazioneDAO;
 import database.ConnessioneDatabase;
-import model.Prenotazione;
-import model.StatoPrenotazione;
+// NESSUN IMPORT DAL MODEL!
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
@@ -24,15 +21,16 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public boolean inserisciPrenotazione(Prenotazione prenotazione) {
+    public boolean inserisciPrenotazione(String codicePrenotazione, String email, String numeroVolo,
+                                         String stato, int numeroPasseggeri) {
         String sql = "INSERT INTO prenotazioni (codice_prenotazione, email, numero_volo, stato_prenotazione, numero_passeggeri) VALUES (?, ?, ?, ?::stato_prenotazione, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, prenotazione.getCodicePrenotazione());
-            stmt.setString(2, prenotazione.getEmail());
-            stmt.setString(3, prenotazione.getCodiceVolo());
-            stmt.setString(4, prenotazione.getStato().toString());
-            stmt.setInt(5, prenotazione.getNumeroPasseggeri());
+            stmt.setString(1, codicePrenotazione);
+            stmt.setString(2, email);
+            stmt.setString(3, numeroVolo);
+            stmt.setString(4, stato);
+            stmt.setInt(5, numeroPasseggeri);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -44,7 +42,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public Prenotazione getPrenotazionePerCodice(String codicePrenotazione) {
+    public ArrayList<String> getPrenotazionePerCodice(String codicePrenotazione) {
         String sql = "SELECT * FROM prenotazioni WHERE codice_prenotazione = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -53,7 +51,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return creaPrenotazioneDalResultSet(rs);
+                return creaArrayListDalResultSet(rs);
             }
 
         } catch (SQLException e) {
@@ -64,8 +62,8 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public List<Prenotazione> getPrenotazioniPerUtente(String email) {
-        List<Prenotazione> prenotazioni = new ArrayList<>();
+    public ArrayList<ArrayList<String>> getPrenotazioniPerUtente(String email) {
+        ArrayList<ArrayList<String>> prenotazioni = new ArrayList<>();
         String sql = "SELECT * FROM prenotazioni WHERE email = ? ORDER BY codice_prenotazione DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -74,7 +72,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                prenotazioni.add(creaPrenotazioneDalResultSet(rs));
+                prenotazioni.add(creaArrayListDalResultSet(rs));
             }
 
         } catch (SQLException e) {
@@ -85,8 +83,8 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public List<Prenotazione> getPrenotazioniPerVolo(String numeroVolo) {
-        List<Prenotazione> prenotazioni = new ArrayList<>();
+    public ArrayList<ArrayList<String>> getPrenotazioniPerVolo(String numeroVolo) {
+        ArrayList<ArrayList<String>> prenotazioni = new ArrayList<>();
         String sql = "SELECT * FROM prenotazioni WHERE numero_volo = ? ORDER BY codice_prenotazione";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -95,7 +93,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                prenotazioni.add(creaPrenotazioneDalResultSet(rs));
+                prenotazioni.add(creaArrayListDalResultSet(rs));
             }
 
         } catch (SQLException e) {
@@ -106,15 +104,15 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public List<Prenotazione> getTuttePrenotazioni() {
-        List<Prenotazione> prenotazioni = new ArrayList<>();
+    public ArrayList<ArrayList<String>> getTuttePrenotazioni() {
+        ArrayList<ArrayList<String>> prenotazioni = new ArrayList<>();
         String sql = "SELECT * FROM prenotazioni ORDER BY codice_prenotazione DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                prenotazioni.add(creaPrenotazioneDalResultSet(rs));
+                prenotazioni.add(creaArrayListDalResultSet(rs));
             }
 
         } catch (SQLException e) {
@@ -125,15 +123,16 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public boolean aggiornaPrenotazione(Prenotazione prenotazione) {
+    public boolean aggiornaPrenotazione(String codicePrenotazione, String email, String numeroVolo,
+                                        String stato, int numeroPasseggeri) {
         String sql = "UPDATE prenotazioni SET email = ?, numero_volo = ?, stato_prenotazione = ?::stato_prenotazione, numero_passeggeri = ? WHERE codice_prenotazione = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, prenotazione.getEmail());
-            stmt.setString(2, prenotazione.getCodiceVolo());
-            stmt.setString(3, prenotazione.getStato().toString());
-            stmt.setInt(4, prenotazione.getNumeroPasseggeri());
-            stmt.setString(5, prenotazione.getCodicePrenotazione());
+            stmt.setString(1, email);
+            stmt.setString(2, numeroVolo);
+            stmt.setString(3, stato);
+            stmt.setInt(4, numeroPasseggeri);
+            stmt.setString(5, codicePrenotazione);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -145,11 +144,11 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public boolean aggiornaStatoPrenotazione(String codicePrenotazione, StatoPrenotazione nuovoStato) {
-        String sql = "UPDATE prenotazioni SET stato_prenotazione = ?::stato_prenotazione WHERE codice_prenotazione = ?";    //casting esplicito!
+    public boolean aggiornaStatoPrenotazione(String codicePrenotazione, String nuovoStato) {
+        String sql = "UPDATE prenotazioni SET stato_prenotazione = ?::stato_prenotazione WHERE codice_prenotazione = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, nuovoStato.toString());
+            stmt.setString(1, nuovoStato);
             stmt.setString(2, codicePrenotazione);
 
             int rowsAffected = stmt.executeUpdate();
@@ -163,26 +162,21 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
     @Override
     public boolean eliminaPrenotazione(String codicePrenotazione) {
-        // Prima eliminiamo i ticket associati alla prenotazione
         String sqlTickets = "DELETE FROM tickets WHERE codice_prenotazione = ?";
         String sqlPrenotazione = "DELETE FROM prenotazioni WHERE codice_prenotazione = ?";
 
         try {
-            // Iniziamo una transazione
             connection.setAutoCommit(false);
 
-            // Eliminiamo prima i tickets
             try (PreparedStatement stmtTickets = connection.prepareStatement(sqlTickets)) {
                 stmtTickets.setString(1, codicePrenotazione);
                 stmtTickets.executeUpdate();
             }
 
-            // Poi eliminiamo la prenotazione
             try (PreparedStatement stmtPrenotazione = connection.prepareStatement(sqlPrenotazione)) {
                 stmtPrenotazione.setString(1, codicePrenotazione);
                 int rowsAffected = stmtPrenotazione.executeUpdate();
 
-                // Confermiamo la transazione
                 connection.commit();
                 connection.setAutoCommit(true);
 
@@ -191,7 +185,6 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
         } catch (SQLException e) {
             try {
-                // Rollback in caso di errore
                 connection.rollback();
                 connection.setAutoCommit(true);
             } catch (SQLException rollbackEx) {
@@ -222,16 +215,16 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
         return false;
     }
 
-    // Metodo di utilità per creare un oggetto Prenotazione dal ResultSet
-    private Prenotazione creaPrenotazioneDalResultSet(ResultSet rs) throws SQLException {
-        String codicePrenotazione = rs.getString("codice_prenotazione");
-        String numeroVolo = rs.getString("numero_volo");
-        StatoPrenotazione stato = StatoPrenotazione.valueOf(rs.getString("stato_prenotazione")); // Cambiato da "stato"
-        int numeroPasseggeri = rs.getInt("numero_passeggeri");
-        String email = rs.getString("email");
+    // Metodo di utilità per creare un ArrayList dal ResultSet
+    private ArrayList<String> creaArrayListDalResultSet(ResultSet rs) throws SQLException {
+        ArrayList<String> datiPrenotazione = new ArrayList<>();
 
+        datiPrenotazione.add(rs.getString("codice_prenotazione"));
+        datiPrenotazione.add(rs.getString("email"));
+        datiPrenotazione.add(rs.getString("numero_volo"));
+        datiPrenotazione.add(rs.getString("stato_prenotazione"));
+        datiPrenotazione.add(String.valueOf(rs.getInt("numero_passeggeri")));
 
-        return new Prenotazione(codicePrenotazione, numeroVolo, stato, numeroPasseggeri, email);
+        return datiPrenotazione;
     }
-
 }

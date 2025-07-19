@@ -1,16 +1,17 @@
 package dao;
 
-import model.Ticket;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface TicketDAO {
 
-    boolean inserisciTicket(Ticket ticket);
-    Ticket getTicketPerCodicePrenotazioneEPosto(String codicePrenotazione, String postoAssegnato);
-    List<Ticket> getTicketsPerPrenotazione(String codicePrenotazione);
-    List<Ticket> getTicketsPerVolo(String numeroVolo);
-    List<Ticket> getTuttiTickets();
-    boolean aggiornaTicket(Ticket ticket);
+    boolean inserisciTicket(String codicePrenotazione, String nome, String cognome,
+                            String numeroDocumento, String dataNascita, String postoAssegnato);
+    ArrayList<String> getTicketPerCodicePrenotazioneEPosto(String codicePrenotazione, String postoAssegnato);
+    ArrayList<ArrayList<String>> getTicketsPerPrenotazione(String codicePrenotazione);
+    ArrayList<ArrayList<String>> getTicketsPerVolo(String numeroVolo);
+    ArrayList<ArrayList<String>> getTuttiTickets();
+    boolean aggiornaTicket(String codicePrenotazione, String postoAssegnato, String nome,
+                           String cognome, String numeroDocumento, String dataNascita);
     boolean eliminaTicket(String codicePrenotazione, String postoAssegnato);
     boolean eliminaTicketsPerPrenotazione(String codicePrenotazione);
 }

@@ -24,7 +24,7 @@ public class DialogModificaVolo extends JDialog {
     private JButton btnAnnulla;
     private JPanel topPanel;
     private JLabel dialogTitle;
-    private JComboBox cbStato;
+    private JComboBox<String> cbStato;
 
     private Controller controller;
     private String numeroVoloOriginale;
@@ -61,14 +61,13 @@ public class DialogModificaVolo extends JDialog {
     }
 
     private void setupComboBox() {
-        // Popola combo box stato usando il controller
+        // Popoliamo la combo box stato usando il controller!
         String[] statiDisponibili = controller.getStatiVoloDisponibili();
         cbStato.removeAllItems();
         for (String stato : statiDisponibili) {
             cbStato.addItem(stato);
         }
     }
-
 
     private void precompilaCampi(String[] datiVolo) {
         txtNumeroVolo.setText(datiVolo[0]);

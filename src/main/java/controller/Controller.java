@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -90,14 +89,26 @@ public class Controller {
      * @return true se il login è avvenuto con successo, false altrimenti
      */
     public boolean login(String emailUsername, String password) {
-        if (emailUsername == null || password == null ||
-                emailUsername.trim().isEmpty() || password.trim().isEmpty()) {
-            return false;
+        ArrayList<String> datiUtente = utenteDAO.getUtentePerCredenziali(emailUsername, password);
+
+        if (datiUtente != null) {
+            String username = datiUtente.get(0);
+            String email = datiUtente.get(1);
+            String pass = datiUtente.get(2);
+            boolean isAdmin = Boolean.parseBoolean(datiUtente.get(3));
+
+            if (isAdmin) {
+                utenteLoggato = new Amministratore(email, username, pass);
+            } else {
+                utenteLoggato = new UtenteGenerico(email, username, pass);
+            }
+
+            return true;
         }
 
-        utenteLoggato = utenteDAO.getUtentePerCredenziali(emailUsername, password);
-        return utenteLoggato != null;
+        return false;
     }
+
 
     /**
      * Effettua il logout dell'utente corrente
@@ -115,25 +126,14 @@ public class Controller {
      * @return true se la registrazione è avvenuta con successo, false altrimenti
      */
     public boolean registraUtente(String email, String username, String password, boolean isAdmin) {
-        if (email == null || username == null || password == null ||
-                email.trim().isEmpty() || username.trim().isEmpty() || password.trim().isEmpty()) {
-            return false;
-        }
-
         // Verifica se l'utente esiste già
         if (utenteDAO.esisteUtente(username, email)) {
             return false;
         }
 
-        // Crea l'utente appropriato
-        Utente nuovoUtente;
-        if (isAdmin) {
-            nuovoUtente = new Amministratore(email, username, password);
-        } else {
-            nuovoUtente = new UtenteGenerico(email, username, password);
-        }
+        // Inserisce l'utente usando solo dati primitivi!
+        return utenteDAO.inserisciUtente(email, username, password, isAdmin);
 
-        return utenteDAO.inserisciUtente(nuovoUtente);
     }
 
     /**
@@ -149,7 +149,7 @@ public class Controller {
      * @return true se l'utente è un amministratore, false altrimenti
      */
     public boolean isUtenteAdmin() {
-        return utenteLoggato != null && utenteLoggato instanceof Amministratore;
+        return utenteLoggato instanceof Amministratore;
     }
 
     /**
@@ -163,7 +163,7 @@ public class Controller {
         } else if (volo instanceof VoloInArrivo) {
             return "Arrivo";
         }
-        return "Sconosciuto";
+        return "--- Sconosciuto ---";       // I trattini rendono più visibile la "particolarità"
     }
 
     /**
@@ -181,8 +181,8 @@ public class Controller {
      * @return true se il volo è prenotabile, false altrimenti
      */
     public boolean isVoloPrenotabile(String numeroVolo) {
-        Volo volo = voloDAO.getVoloPerNumero(numeroVolo);
-        return volo != null && volo.getStato() == StatoVolo.PROGRAMMATO;
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+        return datiVolo != null && "PROGRAMMATO".equals(datiVolo.get(5));
     }
 
     /**
@@ -215,8 +215,59 @@ public class Controller {
      * @return Lista di voli
      */
     public ArrayList<Volo> getListaVoli() {
-        List<Volo> voli = voloDAO.getVoliDisponibili();
-        return new ArrayList<>(voli);
+        ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliDisponibili();
+        return convertiListaArrayListInVoli(datiVoli);
+    }
+
+    /**
+     * Converte la data da formato dd/mm/yyyy o dd-mm-yyyy a dd-MM-yyyy
+     */
+    private String convertiFormatoData(String data) {
+        try {
+            LocalDate dataConvertita;
+            if (data.contains("/")) {
+                dataConvertita = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            } else {
+                dataConvertita = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            }
+            return dataConvertita.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        } catch (Exception e) {
+            System.out.println("Errore nella conversione della data: " + data);
+            return data;            // Ritorna la data originale se non riesce a convertirla
+        }
+    }
+
+    private Volo convertiArrayListInVolo(ArrayList<String> datiVolo) {
+        if (datiVolo == null) {
+            return null;
+        }
+
+        try {
+            String numeroVolo = datiVolo.get(0);
+            String compagniaAerea = datiVolo.get(1);
+            String orarioPrevisto = datiVolo.get(2);
+            String data = datiVolo.get(3);
+            int ritardo = Integer.parseInt(datiVolo.get(4));
+            StatoVolo stato = StatoVolo.valueOf(datiVolo.get(5));
+            String partenza = datiVolo.get(6);
+            String destinazione = datiVolo.get(7);
+            String tipoVolo = datiVolo.get(9);
+
+            if ("PARTENZA".equals(tipoVolo)) {
+                Short gateImbarco = null;
+                if (datiVolo.get(8) != null && !datiVolo.get(8).equals("null")) {
+                    gateImbarco = Short.valueOf(datiVolo.get(8));
+                }
+                return new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto, data,
+                        ritardo, stato, destinazione, gateImbarco);
+            } else {
+                return new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto, data,
+                        ritardo, stato, partenza);
+            }
+        } catch (Exception e) {
+            System.out.println("Errore nella conversione volo: " + e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -229,25 +280,12 @@ public class Controller {
             return false;
         }
 
-        try {
-            StatoVolo statoVolo = StatoVolo.valueOf(stato.toUpperCase());
+        String tipoVolo = (gateImbarco != null) ? "PARTENZA" : "ARRIVO";
 
-            Volo nuovoVolo;
-            if ("Napoli".equalsIgnoreCase(partenza)) {
-                // Volo in partenza da Napoli
-                nuovoVolo = new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
-                        data, 0, statoVolo, destinazione, gateImbarco);
-            } else {
-                // Volo in arrivo a Napoli
-                nuovoVolo = new VoloInArrivo(numeroVolo, compagniaAerea, orarioPrevisto,
-                        data, 0, statoVolo, partenza);
-            }
-
-            return voloDAO.inserisciVolo(nuovoVolo);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return voloDAO.inserisciVolo(numeroVolo, compagniaAerea, orarioPrevisto, data, stato,
+                partenza, destinazione, gateImbarco, tipoVolo);
     }
+
 
     /**
      * Aggiorna il gate di imbarco di un volo in partenza (disponibile solo per amministratori)
@@ -263,15 +301,17 @@ public class Controller {
      * Crea una nuova prenotazione per un volo
      */
     public Prenotazione creaPrenotazione(String codiceVolo, int numeroPasseggeri, String email) {
-        if (utenteLoggato == null || !isVoloPrenotabile(codiceVolo)) {
-            return null;
-        }
-
         String codicePrenotazione = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String dataPrenotazione = LocalDate.now().toString();
 
-        return new Prenotazione(codicePrenotazione, codiceVolo, StatoPrenotazione.CONFERMATA,
-                                numeroPasseggeri, email);
+        boolean successo = prenotazioneDAO.inserisciPrenotazione(
+                codicePrenotazione, email, codiceVolo, "IN_ATTESA", numeroPasseggeri
+        );
+
+        if (successo) {
+            return new Prenotazione(codicePrenotazione, codiceVolo, StatoPrenotazione.IN_ATTESA,
+                    numeroPasseggeri, email);
+        }
+        return null;
     }
 
     /**
@@ -279,81 +319,101 @@ public class Controller {
      */
     public boolean aggiungiTicket(Prenotazione prenotazione, String nome, String cognome,
                                   String numeroDocumento, String dataNascita, String postoAssegnato) {
-        if (prenotazione == null) {
-            return false;
-        }
-
-        Ticket nuovoTicket = new Ticket(nome, cognome, numeroDocumento, dataNascita,
-                postoAssegnato, prenotazione.getCodicePrenotazione());
-
-        return ticketDAO.inserisciTicket(nuovoTicket);
+        return ticketDAO.inserisciTicket(prenotazione.getCodicePrenotazione(), nome, cognome,
+                numeroDocumento, dataNascita, postoAssegnato);
     }
 
     /**
      * Ottiene un volo per numero
      */
     public Volo getVoloPerNumero(String numeroVolo) {
-        return voloDAO.getVoloPerNumero(numeroVolo);
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+        return convertiArrayListInVolo(datiVolo);
     }
 
     /**
      * Ottiene tutti i voli per l'amministratore
      */
     public ArrayList<Volo> getTuttiIVoli() {
-        List<Volo> voli = voloDAO.getTuttiVoli();
-        return new ArrayList<>(voli);
+        ArrayList<ArrayList<String>> datiVoli = voloDAO.getTuttiVoli();
+        return convertiListaArrayListInVoli(datiVoli);
     }
 
     /**
      * Completa una prenotazione aggiungendo tutti i ticket necessari
      */
     public String completaPrenotazione(String codiceVolo, int numeroPasseggeri, String[][] datiPasseggeri) {
-        if (utenteLoggato == null || !isVoloPrenotabile(codiceVolo)) {
+        if (utenteLoggato == null) {
             return null;
         }
 
-        // Crea la prenotazione
-        Prenotazione nuovaPrenotazione = creaPrenotazione(codiceVolo, numeroPasseggeri, utenteLoggato.getEmail());
-        if (nuovaPrenotazione == null) {
+        // Viene creata la prenotazione
+        Prenotazione prenotazione = creaPrenotazione(codiceVolo, numeroPasseggeri, utenteLoggato.getEmail());
+
+        if (prenotazione == null) {
             return null;
         }
 
-        // Inserisci la prenotazione nel database
-        if (!prenotazioneDAO.inserisciPrenotazione(nuovaPrenotazione)) {
-            return null;
-        }
-
-        // Aggiungi i ticket
+        // Aggiunge tutti i ticket...
         for (int i = 0; i < numeroPasseggeri; i++) {
-            String nome = datiPasseggeri[i][0];
-            String cognome = datiPasseggeri[i][1];
-            String documento = datiPasseggeri[i][2];
-            String dataNascita = datiPasseggeri[i][3];
-            String posto = generaPostoCasuale();
+            String postoAssegnato = generaPostoCasuale();
 
-            if (!aggiungiTicket(nuovaPrenotazione, nome, cognome, documento, dataNascita, posto)) {
+            // Convertiamo la data nel formato che vuole il database!
+            String dataNascita = datiPasseggeri[i][3];
+            if (dataNascita.contains("/")) {
+                dataNascita = convertiFormatoData(dataNascita);
+            }
+
+            boolean ticketAggiunto = aggiungiTicket(
+                    prenotazione,
+                    datiPasseggeri[i][0],           //nome
+                    datiPasseggeri[i][1],           //cognome
+                    datiPasseggeri[i][2],           //numero documento
+                    dataNascita,                    //data di nascita
+                    postoAssegnato
+            );
+
+            if (!ticketAggiunto) {
                 return null;
             }
         }
 
-        return nuovaPrenotazione.getCodicePrenotazione();
+        return prenotazione.getCodicePrenotazione();
     }
 
     /**
-     * Valida il formato di una data
+     * Valida il formato della data (dd/mm/yyyy)
+     * Riusciamo a gestire anche il formato (dd-mm-yyyy) tramite un Try-Catch
      */
     public boolean isValidDateFormat(String data) {
+        if (data == null || data.trim().isEmpty()) {
+            return false;
+        }
+
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate.parse(data, formatter);
-            return true;
-        } catch (DateTimeParseException e) {
+            // Creiamo i pattern come "dd/mm/yyyy" e "dd-mm-yyyy"
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+            try {
+                LocalDate.parse(data, formatter1);
+                return true;
+            } catch (DateTimeParseException e1) {
+                try {
+                    LocalDate.parse(data, formatter2);
+                    return true;
+                } catch (DateTimeParseException e2) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
             return false;
         }
     }
 
     /**
      * Genera un posto casuale da A1 a T6
+     * Ci basiamo sulla logica ASCII per la generazione di un intero e il suo casting in char
      */
     private String generaPostoCasuale() {
         Random random = new Random();
@@ -366,19 +426,27 @@ public class Controller {
      * Ottiene i dettagli dei ticket di una prenotazione
      */
     public String[][] getTicketsPrenotazione(String codicePrenotazione) {
-        List<Ticket> tickets = ticketDAO.getTicketsPerPrenotazione(codicePrenotazione);
+        ArrayList<ArrayList<String>> datiTickets = ticketDAO.getTicketsPerPrenotazione(codicePrenotazione);
 
-        String[][] risultato = new String[tickets.size()][5];
-        for (int i = 0; i < tickets.size(); i++) {
-            Ticket ticket = tickets.get(i);
-            risultato[i][0] = ticket.getNome();
-            risultato[i][1] = ticket.getCognome();
-            risultato[i][2] = ticket.getNumeroDocumento();
-            risultato[i][3] = ticket.getDataNascita();
-            risultato[i][4] = ticket.getPostoAssegnato();
+        // Se dovessimo avere (improbabile!) un ticket "vuoto" allora ritorniamo un valore "vuoto" compatibile al tipo di ritorno del metodo
+        if (datiTickets.isEmpty()) {
+            return new String[0][0];
         }
 
-        return risultato;
+        String[][] tickets = new String[datiTickets.size()][6];
+
+        // "Popoliamo" il ticket da restituire per poi visualizzarlo
+        for (int i = 0; i < datiTickets.size(); i++) {
+            ArrayList<String> ticket = datiTickets.get(i);
+            tickets[i][5] = ticket.get(0);          // codice prenotazione
+            tickets[i][0] = ticket.get(1);          // nome
+            tickets[i][1] = ticket.get(2);          // cognome
+            tickets[i][2] = ticket.get(3);          // documento
+            tickets[i][3] = ticket.get(4);          // data nascita
+            tickets[i][4] = ticket.get(5);          // posto
+        }
+
+        return tickets;
     }
 
     /**
@@ -389,39 +457,44 @@ public class Controller {
             return new Object[0][0];
         }
 
-        List<Prenotazione> prenotazioni = prenotazioneDAO.getPrenotazioniPerUtente(utenteLoggato.getEmail());
+        // Attenzione! Bisogna restituire ESCLUSIVAMENTE le prenotazioni associate al relativo utente loggato... È molto importante!
+        ArrayList<ArrayList<String>> prenotazioni = prenotazioneDAO.getPrenotazioniPerUtente(utenteLoggato.getEmail());
+        Object[][] datiTabella = new Object[prenotazioni.size()][8];
 
-        Object[][] dati = new Object[prenotazioni.size()][8];
         for (int i = 0; i < prenotazioni.size(); i++) {
-            Prenotazione p = prenotazioni.get(i);
+            ArrayList<String> prenotazione = prenotazioni.get(i);
+            String numeroVolo = prenotazione.get(2);
+            ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
 
-            // Otteniamo i dettagli del volo
-            Volo volo = voloDAO.getVoloPerNumero(p.getCodiceVolo());
+            if (datiVolo != null) {
+                String partenza = datiVolo.get(6);
+                String destinazione = datiVolo.get(7);
+                String tratta = partenza + " → " + destinazione;
+                String statoVolo = datiVolo.get(5);
+                String orario = datiVolo.get(2);
+                int ritardo = Integer.parseInt(datiVolo.get(4));
+                String ritardoStr = ritardo > 0 ? ritardo + " min" : "Nessun ritardo";
 
-            String tratta = "";
-            String statoVolo = "";
-            String orario = "";
-            String ritardo = "";            // In caso di errore con il volo ( == null ), avremo stringhe vuote, il che è "accettabile" rispetto a valori sporchi o non corretti!
-
-            if (volo != null) {
-                tratta = volo.getPartenza() + " → " + volo.getDestinazione();
-                statoVolo = volo.getStato().toString();
-                orario = volo.getOrarioPrevisto();
-                ritardo = volo.getRitardo() > 0 ? "+" + volo.getRitardo() + " min" : "";        // Se non c'è ritardo, non visualizziamo dettagli in quelal casella!
+                datiTabella[i] = new Object[]{
+                        prenotazione.get(0),        //Codice prenotazione
+                        prenotazione.get(4),        //Numero passeggeri
+                        prenotazione.get(3),        //Stato prenotazione
+                        numeroVolo,                 //Codice volo
+                        tratta,                     //Tratta
+                        statoVolo,                  //Stato volo
+                        orario,                     //Orario partenza
+                        ritardoStr                  //Ritardo eventuale
+                };
+            } else {
+                // Vediamo cosa fare se il Volo non è stato trovato (Alternativa estrema per visualizzare qualcosa invece di ricevere errore)
+                datiTabella[i] = new Object[]{
+                        prenotazione.get(0), "N/A", prenotazione.get(3),
+                        numeroVolo, "N/A → N/A", "N/A", "N/A", "N/A"
+                };
             }
-
-            dati[i][0] = p.getCodicePrenotazione();        // Codice Prenotazione
-            dati[i][1] = p.getNumeroPasseggeri();          // Numero Passeggeri
-            dati[i][2] = p.getStato().toString();          // Stato Prenotazione
-            dati[i][3] = p.getCodiceVolo();                // Numero Volo
-            dati[i][4] = tratta;                           // Tratta
-            dati[i][5] = statoVolo;                        // Stato Volo
-            dati[i][6] = orario;                           // Orario
-            dati[i][7] = ritardo;                          // Ritardo
-
         }
 
-        return dati;
+        return datiTabella;
     }
 
     /**
@@ -431,8 +504,7 @@ public class Controller {
         if (utenteLoggato == null) {
             return 0;
         }
-
-        List<Prenotazione> prenotazioni = prenotazioneDAO.getPrenotazioniPerUtente(utenteLoggato.getEmail());
+        ArrayList<ArrayList<String>> prenotazioni = prenotazioneDAO.getPrenotazioniPerUtente(utenteLoggato.getEmail());
         return prenotazioni.size();
     }
 
@@ -440,135 +512,242 @@ public class Controller {
      * Ottiene i dettagli di una prenotazione per codice
      */
     public String[] getDettagliPrenotazione(String codicePrenotazione) {
-
-        // Otteniamo i dettagli della prenotazione (e verifichiamo che esista)
-        Prenotazione prenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
-        if (prenotazione == null) {
+        ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
+        if (datiPrenotazione == null) {
             return null;
         }
 
-        // Stessa cosa per il volo, otteniamo i dettagli e verifichiamo l'esistenza
-        Volo volo = voloDAO.getVoloPerNumero(prenotazione.getCodiceVolo());
-        String tratta = "";
-        String dataVolo = "";
-        if (volo != null) {
-            tratta = volo.getPartenza() + " → " + volo.getDestinazione();
-            dataVolo = volo.getData();
+        String numeroVolo = datiPrenotazione.get(2);
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+
+        if (datiVolo == null) {
+            return new String[]{
+                    datiPrenotazione.get(0),        //[0] codice prenotazione
+                    numeroVolo,
+                    "N/A",
+                    "N/A → N/A",
+                    datiPrenotazione.get(3),        //[4] stato prenotazione
+                    datiPrenotazione.get(4)         //[5] numero passeggeri
+            };
         }
 
+        String partenza = datiVolo.get(6);
+        String destinazione = datiVolo.get(7);
+        String data = datiVolo.get(3);
+        String tratta = partenza + " → " + destinazione;
 
-        return new String[] {
-                prenotazione.getCodicePrenotazione(),
-                prenotazione.getCodiceVolo(),
-                dataVolo,
-                tratta,
-                prenotazione.getStato().toString(),
-                String.valueOf(prenotazione.getNumeroPasseggeri())
+        return new String[]{
+                datiPrenotazione.get(0),        //[0] codice prenotazione
+                numeroVolo,                     //[1] numero volo
+                data,                           //[2] data
+                tratta,                         //[3] tratta
+                datiPrenotazione.get(3),        //[4] stato prenotazione
+                datiPrenotazione.get(4)         //[5] numero passeggeri
         };
     }
 
     /**
-     * Ottiene una prenotazione per codice
+     * Ottiene una prenotazione specifica tramite il codice
      */
     public Prenotazione getPrenotazionePerCodice(String codicePrenotazione) {
-        return prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
+        ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
+
+        if (datiPrenotazione == null || datiPrenotazione.isEmpty()) {
+            return null;
+        }
+
+        return convertiArrayListInPrenotazione(datiPrenotazione);
     }
 
     /**
      * Ottiene i dettagli di una prenotazione per la visualizzazione nel dialog
      */
     public String[] getDettagliPrenotazioneDialog(Object prenotazione) {
-        if (prenotazione instanceof Prenotazione) {
-            Prenotazione p = (Prenotazione) prenotazione;
-            return new String[] {
-                    p.getCodicePrenotazione(),
-                    p.getCodiceVolo(),
-                    p.getStato().toString(),
-                    String.valueOf(p.getNumeroPasseggeri()),
-                    p.getEmail()
+
+        // Verifichiamo sempre se l'oggetto passato non sia "null"!
+        if (prenotazione == null) {
+            return null;
+        }
+
+        // La prima verifica può risultare superflua (caso IMPROBABILE) ma è sempre meglio pensare al caso peggiore...
+        String codicePrenotazione;
+        if (prenotazione instanceof String) {
+            codicePrenotazione = (String) prenotazione;
+        } else if (prenotazione instanceof Prenotazione) {
+            codicePrenotazione = ((Prenotazione) prenotazione).getCodicePrenotazione();
+        } else {
+            return null;
+        }
+
+        // Richiamiamo il metodo del DAO per evitare l'import della classe del model
+        ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
+        if (datiPrenotazione == null) {
+            return null;
+        }
+
+        String numeroVolo = datiPrenotazione.get(2);
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+
+        if (datiVolo == null) {
+            return new String[]{
+                    codicePrenotazione,
+                    numeroVolo,
+                    "N/A",
+                    "N/A",
+                    datiPrenotazione.get(3)             // è lo stato della prenotazione
             };
         }
-        return null;
+
+        // Formattiamo i dati cosi da visualizzarli (potremmo evitare di assegnare nuove variabili, ma così è più leggibile)
+        String partenza = datiVolo.get(6);
+        String destinazione = datiVolo.get(7);
+        String data = datiVolo.get(3);
+        String tratta = partenza + " → " + destinazione;
+
+        return new String[]{
+                codicePrenotazione,             //[0] codice
+                numeroVolo,                     //[1] volo
+                data,                           //[2] data
+                tratta,                         //[3] tratta
+                datiPrenotazione.get(3)         //[4] stato prenotazione
+        };
     }
+
 
     /**
      * Ottiene la lista dei ticket di una prenotazione formattata per la visualizzazione
      */
     public String[] getTicketsFormattati(Object prenotazione) {
-        if (prenotazione instanceof Prenotazione) {
-            Prenotazione p = (Prenotazione) prenotazione;
-            List<Ticket> tickets = ticketDAO.getTicketsPerPrenotazione(p.getCodicePrenotazione());
 
-            String[] risultato = new String[tickets.size()];
-            for (int i = 0; i < tickets.size(); i++) {
-                Ticket ticket = tickets.get(i);
-                risultato[i] = ticket.getNome() + " " + ticket.getCognome() + " - Posto: " + ticket.getPostoAssegnato();
-            }
-            return risultato;
+        String codicePrenotazione;
+
+        // La prima verifica può risultare superflua (caso IMPROBABILE) ma è sempre meglio pensare al caso peggiore...
+        if (prenotazione instanceof String) {
+            codicePrenotazione = (String) prenotazione;
+        } else if (prenotazione instanceof Prenotazione) {
+            codicePrenotazione = ((Prenotazione) prenotazione).getCodicePrenotazione();
+        } else {
+            return new String[0];
         }
-        return new String[0];
+
+        // Come prima, questo approccio ci permette di non importare le classi del package model
+        ArrayList<ArrayList<String>> datiTickets = ticketDAO.getTicketsPerPrenotazione(codicePrenotazione);
+
+        if (datiTickets.isEmpty()) {
+            return new String[0];
+        }
+
+        String[] ticketsFormattati = new String[datiTickets.size()];
+
+        // Effettuo l'operazione per ciascun ticket presente nella prenotazione!
+        for (int i = 0; i < datiTickets.size(); i++) {
+            ArrayList<String> ticket = datiTickets.get(i);
+            // Formato: "Nome Cognome - Documento: X - Posto: Y"
+            ticketsFormattati[i] = String.format("%s %s - Documento: %s - Posto: %s",
+                    ticket.get(1),      // nome
+                    ticket.get(2),      // cognome
+                    ticket.get(3),      // documento
+                    ticket.get(5)       // posto
+            );
+        }
+
+        return ticketsFormattati;
     }
+
+
 
     /**
      * Ottiene un ticket specifico da una prenotazione per indice
      */
     public Object getTicketPerIndice(Object prenotazione, int indice) {
-        if (prenotazione instanceof Prenotazione) {
-            Prenotazione p = (Prenotazione) prenotazione;
-            List<Ticket> tickets = ticketDAO.getTicketsPerPrenotazione(p.getCodicePrenotazione());
 
-            if (indice >= 0 && indice < tickets.size()) {
-                return tickets.get(indice);
-            }
+        // Avremmo potuto dichiarare il metodo con il tipo "Ticket", però visti alcuni errori di compilazione
+        // Abbiamo dovuto generalizzare prima il tipo, e successivamente effettuare i controlli
+        // In questo modo possiamo gestire anche i vari casi "improbabili"
+
+        String codicePrenotazione;
+        if (prenotazione instanceof String) {
+            codicePrenotazione = (String) prenotazione;
+        } else if (prenotazione instanceof Prenotazione) {
+            codicePrenotazione = ((Prenotazione) prenotazione).getCodicePrenotazione();
+        } else {
+            return null;
         }
-        return null;
+
+        ArrayList<ArrayList<String>> datiTickets = ticketDAO.getTicketsPerPrenotazione(codicePrenotazione);
+
+        if (indice < 0 || indice >= datiTickets.size()) {
+            return null;
+        }
+
+        ArrayList<String> datiTicket = datiTickets.get(indice);
+        return convertiArrayListInTicket(datiTicket);
     }
+
 
     /**
-     * Elimina una prenotazione dell'utente loggato
+     * Elimina una prenotazione
      */
     public boolean eliminaPrenotazione(Object prenotazione) {
-        if (utenteLoggato == null || !(prenotazione instanceof Prenotazione)) {
+        if (!isUtenteAdmin() && utenteLoggato == null) {
             return false;
         }
 
-        Prenotazione p = (Prenotazione) prenotazione;
-
-        // Prima elimina i ticket
-        if (!ticketDAO.eliminaTicketsPerPrenotazione(p.getCodicePrenotazione())) {
+        String codicePrenotazione;
+        if (prenotazione instanceof String) {
+            codicePrenotazione = (String) prenotazione;
+        } else if (prenotazione instanceof Prenotazione) {
+            codicePrenotazione = ((Prenotazione) prenotazione).getCodicePrenotazione();
+        } else {
             return false;
         }
 
-        // Poi elimina la prenotazione
-        return prenotazioneDAO.eliminaPrenotazione(p.getCodicePrenotazione());
+        // Prima eliminiamo tutti i tickets associati
+        ticketDAO.eliminaTicketsPerPrenotazione(codicePrenotazione);
+
+        // E solo dopo (importante) eliminiamo la prenotazione
+        return prenotazioneDAO.eliminaPrenotazione(codicePrenotazione);
+
+        // NB.: Se per caso l'eliminazione di un ticket dovesse fallire, interromperemo l'operazione
+        //      Quindi eliminando prima i ticket e poi la prenotazione, noi non avremo problemi con la prenotazione!
     }
+
 
     /**
      * Aggiorna i dati di un ticket
      */
-    public boolean aggiornaTicket(Object ticket, String nome, String cognome,
-                                  String numeroDocumento, String dataNascita, String postoAssegnato) {
-        if (!(ticket instanceof Ticket)) {
+    public boolean aggiornaTicket(Object ticket, String nuovoNome, String nuovoCognome,
+                                  String nuovoDocumento, String nuovaDataNascita, String postoAttuale) {
+
+        // Il controllo è abbastanza superfluo, è improbabile, ma come al solito meglio ipotizzare il "peggiore dei casi".
+        if (ticket == null) {
             return false;
         }
 
         Ticket t = (Ticket) ticket;
-        t.setNome(nome);
-        t.setCognome(cognome);
-        t.setNumeroDocumento(numeroDocumento);
-        t.setDataNascita(dataNascita);
-        // Il posto assegnato non si può cambiare facilmente per vincoli di unicità
 
-        return ticketDAO.aggiornaTicket(t);
+        return ticketDAO.aggiornaTicket(
+                t.getCodicePrenotazione(),
+                postoAttuale,
+                nuovoNome,
+                nuovoCognome,
+                nuovoDocumento,
+                nuovaDataNascita
+        );
     }
+
 
     /**
      * Ottiene i dettagli di un ticket per la visualizzazione nel dialog di modifica
      */
     public String[] getDettagliTicket(Object ticket) {
+        if (ticket == null) {
+            return null;
+        }
+
         if (ticket instanceof Ticket) {
             Ticket t = (Ticket) ticket;
-            return new String[] {
+            return new String[]{
                     t.getNome(),
                     t.getCognome(),
                     t.getNumeroDocumento(),
@@ -576,29 +755,24 @@ public class Controller {
                     t.getPostoAssegnato()
             };
         }
+
         return null;
     }
+
 
     /**
      * Ottiene i dati di un volo come array di stringhe per la GUI
      */
     public String[] getDatiVolo(String numeroVolo) {
-        Volo volo = voloDAO.getVoloPerNumero(numeroVolo);
-        if (volo == null) {
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+
+        if (datiVolo == null) {
             return null;
         }
 
-        return new String[] {
-                volo.getNumeroVolo(),
-                volo.getCompagniaAerea(),
-                volo.getOrarioPrevisto(),
-                volo.getData(),
-                String.valueOf(volo.getRitardo()),
-                volo.getStato().toString(),
-                volo.getPartenza(),
-                volo.getDestinazione()
-        };
+        return datiVolo.toArray(new String[0]);
     }
+
 
     /**
      * Aggiorna tutti i dati di un volo (disponibile solo per amministratori)
@@ -611,37 +785,36 @@ public class Controller {
             return false;
         }
 
-        try {
-            Volo volo = voloDAO.getVoloPerNumero(numeroVoloOriginale);
-            if (volo == null) {
-                return false;
+        // Ora bisogna determinare il gate. Controlliamo se è un volo in partenza
+        // Se non è un volo in partenza, allora non ci interessa!
+        Short gate = null;
+        if (nuovaPartenza.equalsIgnoreCase("Napoli")) {
+            // Recuperiamo il gate esistente se presente
+            ArrayList<String> datiVoloEsistente = voloDAO.getVoloPerNumero(numeroVoloOriginale);
+            if (datiVoloEsistente != null && datiVoloEsistente.get(8) != null) {
+                try {
+                    gate = Short.parseShort(datiVoloEsistente.get(8));
+                } catch (NumberFormatException e) {
+                    gate = null;
+                }
             }
-
-            // Aggiorna i dati del volo
-            volo.setCompagniaAerea(nuovaCompagnia);
-            volo.setOrarioPrevisto(nuovoOrario);
-            volo.setData(nuovaData);
-            volo.setRitardo(nuovoRitardo);
-            volo.setStato(StatoVolo.valueOf(nuovoStato.toUpperCase()));
-            volo.setPartenza(nuovaPartenza);
-            volo.setDestinazione(nuovaDestinazione);
-
-            return voloDAO.aggiornaVolo(volo);
-        } catch (Exception e) {
-            return false;
         }
+
+        return voloDAO.aggiornaVolo(nuovoNumeroVolo, nuovaCompagnia, nuovoOrario,
+                nuovaData, nuovoStato, nuovaPartenza, nuovaDestinazione, gate, nuovoRitardo);
     }
 
     /**
      * Ottiene il gate di un volo come stringa
      */
     public String getGateVoloStringa(String numeroVolo) {
-        Volo volo = voloDAO.getVoloPerNumero(numeroVolo);
-        if (volo instanceof VoloInPartenza) {
-            Short gate = ((VoloInPartenza) volo).getGateImbarco();
-            return gate != null ? gate.toString() : "N/A";
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+
+        if (datiVolo == null || datiVolo.get(8) == null || "null".equals(datiVolo.get(8))) {
+            return "N/A";
         }
-        return "N/A";
+
+        return datiVolo.get(8);
     }
 
     // Metodi per gestire gli Stati del Volo
@@ -691,80 +864,102 @@ public class Controller {
     }
 
     /**
-     * Ottiene i voli che partono da una specifica città per visualizzazione in tabella
+     * Ottiene tutti i voli che partono da una specifica città
+     * (indipendentemente dal tipo di volo - partenza o arrivo)
      */
-    public Object[][] getVoliInPartenza(String citta) {
-        List<Volo> voli = voloDAO.getTuttiVoli();
-        List<Volo> voliPartenza = new ArrayList<>();
+    public Object[][] getVoliInPartenza(String cittaPartenza) {
+        ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliPerCittaPartenza(cittaPartenza);
 
-        for (Volo volo : voli) {
-            if (volo instanceof VoloInPartenza && citta.equalsIgnoreCase(volo.getPartenza())) {
-                voliPartenza.add(volo);
+        if (datiVoli.isEmpty()) {
+            return new Object[0][0];
+        }
+
+        Object[][] risultati = new Object[datiVoli.size()][8];
+
+        for (int i = 0; i < datiVoli.size(); i++) {
+            ArrayList<String> datiVolo = datiVoli.get(i);
+
+            // Formatto l'orario con eventuale ritardo
+            String orarioCompleto = datiVolo.get(2); // orario previsto
+            int ritardo = Integer.parseInt(datiVolo.get(4));
+            if (ritardo > 0) {
+                orarioCompleto += " (+" + ritardo + " min)";
             }
+
+            risultati[i][0] = datiVolo.get(0);      //numero volo
+            risultati[i][1] = datiVolo.get(1);      //compagnia aerea
+            risultati[i][2] = datiVolo.get(6);      //partenza
+            risultati[i][3] = datiVolo.get(7);      //destinazione
+            risultati[i][4] = datiVolo.get(3);      //data
+            risultati[i][5] = orarioCompleto;       //orario con ritardo
+            risultati[i][6] = datiVolo.get(5);      //stato
+            risultati[i][7] = datiVolo.get(9);      //tipo volo
         }
 
-        Object[][] dati = new Object[voliPartenza.size()][7];
-        for (int i = 0; i < voliPartenza.size(); i++) {
-            Volo volo = voliPartenza.get(i);
-            dati[i][0] = volo.getNumeroVolo();
-            dati[i][1] = volo.getCompagniaAerea();
-            dati[i][2] = volo.getOrarioPrevisto();
-            dati[i][3] = volo.getData();
-            dati[i][4] = volo.getStato().toString();
-            dati[i][5] = volo.getDestinazione();
-            dati[i][6] = getGateVoloStringa(volo.getNumeroVolo());
-        }
-
-        return dati;
+        return risultati;
     }
 
     /**
-     * Ottiene i voli che arrivano verso una specifica città per visualizzazione in tabella
+     * Ottiene tutti i voli che arrivano in una specifica città
+     * (indipendentemente dal tipo di volo - partenza o arrivo)
      */
-    public Object[][] getVoliInArrivo(String citta) {
-        List<Volo> voli = voloDAO.getTuttiVoli();
-        List<Volo> voliArrivo = new ArrayList<>();
+    public Object[][] getVoliInArrivo(String cittaDestinazione) {
+        ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliPerCittaDestinazione(cittaDestinazione);
 
-        for (Volo volo : voli) {
-            if (volo instanceof VoloInArrivo && citta.equalsIgnoreCase(volo.getDestinazione())) {
-                voliArrivo.add(volo);
+        // Effettuiamo sempre questi controlli!
+        if (datiVoli.isEmpty()) {
+            return new Object[0][0];
+        }
+
+        Object[][] risultati = new Object[datiVoli.size()][8];
+
+        for (int i = 0; i < datiVoli.size(); i++) {
+            ArrayList<String> datiVolo = datiVoli.get(i);
+
+            // Formatto l'orario con eventuale ritardo
+            String orarioCompleto = datiVolo.get(2);        //orario previsto
+            int ritardo = Integer.parseInt(datiVolo.get(4));
+            if (ritardo > 0) {
+                orarioCompleto += " (+" + ritardo + " min)";
             }
+
+            risultati[i][0] = datiVolo.get(0);      //numero volo
+            risultati[i][1] = datiVolo.get(1);      //compagnia aerea
+            risultati[i][2] = datiVolo.get(6);      //partenza
+            risultati[i][3] = datiVolo.get(7);      //destinazione
+            risultati[i][4] = datiVolo.get(3);      //data
+            risultati[i][5] = orarioCompleto;       //orario con ritardo
+            risultati[i][6] = datiVolo.get(5);      //stato
+            risultati[i][7] = datiVolo.get(9);      //tipo volo
         }
 
-        Object[][] dati = new Object[voliArrivo.size()][6];
-        for (int i = 0; i < voliArrivo.size(); i++) {
-            Volo volo = voliArrivo.get(i);
-            dati[i][0] = volo.getNumeroVolo();
-            dati[i][1] = volo.getCompagniaAerea();
-            dati[i][2] = volo.getOrarioPrevisto();
-            dati[i][3] = volo.getData();
-            dati[i][4] = volo.getStato().toString();
-            dati[i][5] = volo.getPartenza();
-        }
-
-        return dati;
+        return risultati;
     }
 
     /**
-     * Conta i voli in partenza da una specifica città
+     * Conta i voli che partono da una specifica città
      */
-    public int contaVoliInPartenza(String citta) {
-        return getVoliInPartenza(citta).length;
+    public int contaVoliInPartenza(String cittaPartenza) {
+        ArrayList<ArrayList<String>> voli = voloDAO.getVoliPerCittaPartenza(cittaPartenza);
+        return voli.size();
     }
 
     /**
-     * Conta i voli in arrivo verso una specifica città
+     * Conta i voli che arrivano in una specifica città
      */
-    public int contaVoliInArrivo(String citta) {
-        return getVoliInArrivo(citta).length;
+    public int contaVoliInArrivo(String cittaDestinazione) {
+        ArrayList<ArrayList<String>> voli = voloDAO.getVoliPerCittaDestinazione(cittaDestinazione);
+        return voli.size();
     }
+
 
     /**
      * Ottiene le colonne per la tabella dei voli in partenza
      */
     public String[] getColonneVoliPartenza() {
-        return new String[] {
-                "Numero Volo", "Compagnia", "Orario", "Data", "Stato", "Destinazione", "Gate"
+        return new String[]{
+                "Numero Volo", "Compagnia", "Partenza", "Destinazione",
+                "Data", "Orario", "Stato", "Tipo"
         };
     }
 
@@ -772,30 +967,42 @@ public class Controller {
      * Ottiene le colonne per la tabella dei voli in arrivo
      */
     public String[] getColonneVoliArrivo() {
-        return new String[] {
-                "Numero Volo", "Compagnia", "Orario", "Data", "Stato", "Provenienza"
+        return new String[]{
+                "Numero Volo", "Compagnia", "Partenza", "Destinazione",
+                "Data", "Orario", "Stato", "Tipo"
         };
     }
 
     /**
-     * Ottiene la tratta di un volo
+     * Ottiene la tratta di un volo (partenza -> destinazione)
      */
-    public String getTrattaDelVolo(String codiceVolo) {
-        Volo volo = voloDAO.getVoloPerNumero(codiceVolo);
-        if (volo == null) {
+    public String getTrattaDelVolo(String numeroVolo) {
+        ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+
+        if (datiVolo == null) {
             return "N/A";
         }
-        return volo.getPartenza() + " → " + volo.getDestinazione();
+
+        String partenza = datiVolo.get(6);
+        String destinazione = datiVolo.get(7);
+        String tipoVolo = datiVolo.get(9);
+
+        if ("PARTENZA".equals(tipoVolo)) {
+            return "Napoli → " + destinazione;
+        } else {
+            return partenza + " → Napoli";
+        }
     }
 
-    // Metodi aggiuntivi che potrebbero essere utili
 
     /**
      * Ottiene tutti i voli disponibili utilizzando DAO
      */
-    public List<Volo> getVoliDisponibili() {
-        return voloDAO.getVoliDisponibili();
+    public ArrayList<Volo> getVoliDisponibili() {
+        ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliDisponibili();
+        return convertiListaArrayListInVoli(datiVoli);
     }
+
 
     /**
      * Login utente specifico per retrocompatibilità
@@ -824,20 +1031,110 @@ public class Controller {
     /**
      * Ottiene tutti gli utenti (solo per amministratori)
      */
-    public List<Utente> getTuttiUtenti() {
+    public ArrayList<Utente> getTuttiUtenti() {
         if (!isUtenteAdmin()) {
             return new ArrayList<>();
         }
-        return utenteDAO.getTuttiUtenti();
+
+        ArrayList<ArrayList<String>> datiUtenti = utenteDAO.getTuttiUtenti();
+        ArrayList<Utente> utenti = new ArrayList<>();
+
+        for (ArrayList<String> datiUtente : datiUtenti) {
+            Utente utente = convertiArrayListInUtente(datiUtente);
+            if (utente != null) {
+                utenti.add(utente);
+            }
+        }
+
+        return utenti;
     }
 
     /**
      * Ottiene tutte le prenotazioni (solo per amministratori)
      */
-    public List<Prenotazione> getTuttePrenotazioni() {
+    public ArrayList<Prenotazione> getTuttePrenotazioni() {
         if (!isUtenteAdmin()) {
             return new ArrayList<>();
         }
-        return prenotazioneDAO.getTuttePrenotazioni();
+
+        ArrayList<ArrayList<String>> datiPrenotazioni = prenotazioneDAO.getTuttePrenotazioni();
+        ArrayList<Prenotazione> prenotazioni = new ArrayList<>();
+
+        for (ArrayList<String> datiPrenotazione : datiPrenotazioni) {
+            Prenotazione prenotazione = convertiArrayListInPrenotazione(datiPrenotazione);
+            if (prenotazione != null) {
+                prenotazioni.add(prenotazione);
+            }
+        }
+
+        return prenotazioni;
     }
+
+
+
+    // Metodi di conversione che abbiamo utilizzato per rispettare il modello del pattern importo (BCE + DAO come da lezione)
+    // Questo è stato necessario per evitare l'importazione delle classi del package "model"
+    private Ticket convertiArrayListInTicket(ArrayList<String> datiTicket) {
+        try {
+            String codicePrenotazione = datiTicket.get(0);
+            String nome = datiTicket.get(1);
+            String cognome = datiTicket.get(2);
+            String numeroDocumento = datiTicket.get(3);
+            String dataNascita = datiTicket.get(4);
+            String postoAssegnato = datiTicket.get(5);
+
+            return new Ticket(codicePrenotazione, nome, cognome, numeroDocumento, dataNascita, postoAssegnato);
+        } catch (Exception e) {
+            System.out.println("Errore nella conversione ticket: " + e.getMessage());
+            return null;
+        }
+    }
+    private Prenotazione convertiArrayListInPrenotazione(ArrayList<String> datiPrenotazione) {
+        try {
+            String codicePrenotazione = datiPrenotazione.get(0);
+            String email = datiPrenotazione.get(1);
+            String numeroVolo = datiPrenotazione.get(2);
+            StatoPrenotazione stato = StatoPrenotazione.valueOf(datiPrenotazione.get(3));
+            int numeroPasseggeri = Integer.parseInt(datiPrenotazione.get(4));
+
+            return new Prenotazione(codicePrenotazione, numeroVolo, stato, numeroPasseggeri, email);
+        } catch (Exception e) {
+            System.out.println("Errore nella conversione prenotazione: " + e.getMessage());
+            return null;
+        }
+    }
+    private ArrayList<Volo> convertiListaArrayListInVoli(ArrayList<ArrayList<String>> datiVoli) {
+        ArrayList<Volo> voli = new ArrayList<>();
+
+        for (ArrayList<String> datiVolo : datiVoli) {
+            Volo volo = convertiArrayListInVolo(datiVolo);
+            if (volo != null) {
+                voli.add(volo);
+            }
+        }
+
+        return voli;
+    }
+    private Utente convertiArrayListInUtente(ArrayList<String> datiUtente) {
+        try {
+            String username = datiUtente.get(0);
+            String email = datiUtente.get(1);
+            String password = datiUtente.get(2);
+            boolean isAdmin = Boolean.parseBoolean(datiUtente.get(3));
+
+            if (isAdmin) {
+                return new Amministratore(email, username, password);
+            } else {
+                return new UtenteGenerico(email, username, password);
+            }
+        } catch (Exception e) {
+            System.out.println("Errore nella conversione utente: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+
+
+
 }

@@ -291,14 +291,13 @@ public class VoliUser {
         DialogDatiPasseggero dialog = new DialogDatiPasseggero(FrameVoli, numeroPasseggero, totalePasseggeri);
         dialog.setVisible(true);
 
-        // Verifica esplicita se l'utente ha confermato
+        // Verifica esplicita (vediamo se l'utente ha confermato la prenotazione oppure ha deciso di annullarla!)
         if (dialog.isConfermato()) {
             return dialog.getDatiPasseggero();
         } else {
-            return null; // Operazione annullata
+            return null;        // Operazione annullata
         }
     }
-
 
     /**
      * Mostra la conferma finale della prenotazione

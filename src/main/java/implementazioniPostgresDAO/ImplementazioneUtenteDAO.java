@@ -2,13 +2,10 @@ package implementazioniPostgresDAO;
 
 import dao.UtenteDAO;
 import database.ConnessioneDatabase;
-import model.Utente;
-import model.UtenteGenerico;
-import model.Amministratore;
+// NESSUN IMPORT DAL MODEL!
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ImplementazioneUtenteDAO implements UtenteDAO {
 
@@ -24,14 +21,14 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public boolean inserisciUtente(Utente utente) {
+    public boolean inserisciUtente(String email, String username, String password, boolean isAdmin) {
         String sql = "INSERT INTO utenti (username, email, password, is_admin) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, utente.getUsername());
-            stmt.setString(2, utente.getEmail());
-            stmt.setString(3, utente.getPassword());
-            stmt.setBoolean(4, utente instanceof Amministratore);
+            stmt.setString(1, username);
+            stmt.setString(2, email);
+            stmt.setString(3, password);
+            stmt.setBoolean(4, isAdmin);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -43,7 +40,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public Utente getUtentePerCredenziali(String emailUsername, String password) {
+    public ArrayList<String> getUtentePerCredenziali(String emailUsername, String password) {
         String sql = "SELECT * FROM utenti WHERE (username = ? OR email = ?) AND password = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -54,7 +51,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return creaUtentedalResultSet(rs);
+                return creaArrayListDalResultSet(rs);
             }
 
         } catch (SQLException e) {
@@ -65,7 +62,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public Utente getUtentePerUsername(String username) {
+    public ArrayList<String> getUtentePerUsername(String username) {
         String sql = "SELECT * FROM utenti WHERE username = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -74,7 +71,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return creaUtentedalResultSet(rs);
+                return creaArrayListDalResultSet(rs);
             }
 
         } catch (SQLException e) {
@@ -85,7 +82,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public Utente getUtentePerEmail(String email) {
+    public ArrayList<String> getUtentePerEmail(String email) {
         String sql = "SELECT * FROM utenti WHERE email = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -94,7 +91,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return creaUtentedalResultSet(rs);
+                return creaArrayListDalResultSet(rs);
             }
 
         } catch (SQLException e) {
@@ -126,14 +123,14 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public boolean aggiornaUtente(Utente utente) {
+    public boolean aggiornaUtente(String username, String email, String password, boolean isAdmin) {
         String sql = "UPDATE utenti SET email = ?, password = ?, is_admin = ? WHERE username = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, utente.getEmail());
-            stmt.setString(2, utente.getPassword());
-            stmt.setBoolean(3, utente instanceof Amministratore);
-            stmt.setString(4, utente.getUsername());
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+            stmt.setBoolean(3, isAdmin);
+            stmt.setString(4, username);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
@@ -161,15 +158,15 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public List<Utente> getTuttiUtenti() {
-        List<Utente> utenti = new ArrayList<>();
+    public ArrayList<ArrayList<String>> getTuttiUtenti() {
+        ArrayList<ArrayList<String>> utenti = new ArrayList<>();
         String sql = "SELECT * FROM utenti ORDER BY username";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                utenti.add(creaUtentedalResultSet(rs));
+                utenti.add(creaArrayListDalResultSet(rs));
             }
 
         } catch (SQLException e) {
@@ -179,16 +176,15 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
         return utenti;
     }
 
-    // Metodo di utilità per creare un oggetto Utente dal ResultSet
-    private Utente creaUtentedalResultSet(ResultSet rs) throws SQLException {
-        String username = rs.getString("username");
-        String email = rs.getString("email");
-        String password = rs.getString("password");
-        boolean isAdmin = rs.getBoolean("is_admin");
+    // Metodo di utilità per creare un ArrayList dal ResultSet
+    private ArrayList<String> creaArrayListDalResultSet(ResultSet rs) throws SQLException {
+        ArrayList<String> datiUtente = new ArrayList<>();
 
-        if (isAdmin)
-            return new Amministratore(email, username, password);
-        else
-            return new UtenteGenerico(email, username, password);
+        datiUtente.add(rs.getString("username"));       // 0
+        datiUtente.add(rs.getString("email"));          // 1
+        datiUtente.add(rs.getString("password"));       // 2
+        datiUtente.add(String.valueOf(rs.getBoolean("is_admin"))); // 3
+
+        return datiUtente;
     }
 }
