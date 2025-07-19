@@ -1065,6 +1065,16 @@ public class Controller {
         return voli;
     }
 
+    /**
+     * Verifica se un volo richiede evidenziazione visiva
+     * Implementazione ripresa da una documentazione di un utente di reddit, tramite la propria repository github
+     */
+    public boolean voloRichiedeEvidenziazione(Volo volo) {
+        return volo.getStato() == StatoVolo.CANCELLATO ||
+                volo.getStato() == StatoVolo.IN_RITARDO;
+    }
+
+
 
 
 
