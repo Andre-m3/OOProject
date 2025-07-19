@@ -96,9 +96,9 @@
             <constraints/>
             <properties>
               <horizontalAlignment value="2"/>
-              <maximumSize width="625" height="40"/>
-              <minimumSize width="625" height="40"/>
-              <preferredSize width="625" height="40"/>
+              <maximumSize width="485" height="40"/>
+              <minimumSize width="485" height="40"/>
+              <preferredSize width="485" height="40"/>
               <text value=""/>
             </properties>
           </component>
@@ -128,6 +128,16 @@
               <text value="Modifica Volo"/>
               <verticalAlignment value="0"/>
               <verticalTextPosition value="0"/>
+            </properties>
+          </component>
+          <component id="81530" class="javax.swing.JButton" binding="btnDeleteFlight">
+            <constraints/>
+            <properties>
+              <font name="JetBrains Mono Medium" size="14" style="0"/>
+              <maximumSize width="130" height="40"/>
+              <minimumSize width="130" height="40"/>
+              <preferredSize width="130" height="40"/>
+              <text value="Elimina Volo"/>
             </properties>
           </component>
         </children>

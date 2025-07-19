@@ -48,9 +48,9 @@
               <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
-              <maximumSize width="450" height="100"/>
-              <minimumSize width="450" height="100"/>
-              <preferredSize width="450" height="100"/>
+              <maximumSize width="450" height="90"/>
+              <minimumSize width="450" height="90"/>
+              <preferredSize width="450" height="90"/>
             </properties>
             <border type="none"/>
             <children>
@@ -90,9 +90,9 @@
               <gridbag weightx="0.0" weighty="0.0"/>
             </constraints>
             <properties>
-              <maximumSize width="450" height="100"/>
-              <minimumSize width="450" height="100"/>
-              <preferredSize width="450" height="100"/>
+              <maximumSize width="450" height="85"/>
+              <minimumSize width="450" height="85"/>
+              <preferredSize width="450" height="85"/>
             </properties>
             <border type="none"/>
             <children>
@@ -100,6 +100,7 @@
                 <constraints/>
                 <properties>
                   <font name="JetBrains Mono Medium" size="14" style="0"/>
+                  <horizontalTextPosition value="11"/>
                   <text value="Ricerca per Città di Destinazione"/>
                 </properties>
               </component>
@@ -122,6 +123,31 @@
                   <minimumSize width="80" height="40"/>
                   <preferredSize width="80" height="40"/>
                   <text value="Cerca"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="b36d5" binding="homePanel" layout-manager="FlowLayout" hgap="5" vgap="10" flow-align="1">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <maximumSize width="300" height="55"/>
+              <minimumSize width="300" height="50"/>
+              <preferredSize width="300" height="55"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="5249e" class="javax.swing.JButton" binding="btnHomepage">
+                <constraints/>
+                <properties>
+                  <font name="JetBrains Mono Medium" size="12" style="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <maximumSize width="100" height="40"/>
+                  <minimumSize width="100" height="40"/>
+                  <preferredSize width="100" height="40"/>
+                  <text value="Homepage"/>
                 </properties>
               </component>
             </children>

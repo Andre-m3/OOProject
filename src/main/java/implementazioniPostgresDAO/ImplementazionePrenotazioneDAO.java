@@ -123,44 +123,6 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
     }
 
     @Override
-    public boolean aggiornaPrenotazione(String codicePrenotazione, String email, String numeroVolo,
-                                        String stato, int numeroPasseggeri) {
-        String sql = "UPDATE prenotazioni SET email = ?, numero_volo = ?, stato_prenotazione = ?::stato_prenotazione, numero_passeggeri = ? WHERE codice_prenotazione = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, email);
-            stmt.setString(2, numeroVolo);
-            stmt.setString(3, stato);
-            stmt.setInt(4, numeroPasseggeri);
-            stmt.setString(5, codicePrenotazione);
-
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento prenotazione: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean aggiornaStatoPrenotazione(String codicePrenotazione, String nuovoStato) {
-        String sql = "UPDATE prenotazioni SET stato_prenotazione = ?::stato_prenotazione WHERE codice_prenotazione = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, nuovoStato);
-            stmt.setString(2, codicePrenotazione);
-
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento stato prenotazione: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
     public boolean eliminaPrenotazione(String codicePrenotazione) {
         String sqlTickets = "DELETE FROM tickets WHERE codice_prenotazione = ?";
         String sqlPrenotazione = "DELETE FROM prenotazioni WHERE codice_prenotazione = ?";
@@ -193,26 +155,6 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             System.out.println("Errore durante l'eliminazione prenotazione: " + e.getMessage());
             return false;
         }
-    }
-
-    @Override
-    public boolean esistePrenotazione(String codicePrenotazione) {
-        String sql = "SELECT COUNT(*) FROM prenotazioni WHERE codice_prenotazione = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, codicePrenotazione);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante la verifica esistenza prenotazione: " + e.getMessage());
-        }
-
-        return false;
     }
 
     // Metodo di utilità per creare un ArrayList dal ResultSet

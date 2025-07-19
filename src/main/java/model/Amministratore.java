@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class Amministratore extends Utente {
     public Amministratore(String email, String username, String password) {
         super(email, username, password);

@@ -482,6 +482,86 @@ public class Controller {
     }
 
     /**
+     * Elimina un volo dal sistema (disponibile solo per amministratori)
+     * @param numeroVolo Il numero del volo da eliminare
+     * @return true se l'eliminazione è riuscita, false altrimenti
+     */
+    public boolean eliminaVolo(String numeroVolo) {
+        if (utenteLoggato == null || !isUtenteAdmin()) {
+            return false;
+        }
+
+        try {
+            // Verifica se il volo esiste
+            if (voloDAO.getVoloPerNumero(numeroVolo) == null) {
+                return false;
+            }
+
+            // Verifica se ci sono prenotazioni attive per questo volo
+            var prenotazioni = prenotazioneDAO.getPrenotazioniPerVolo(numeroVolo);
+            if (prenotazioni != null && !prenotazioni.isEmpty()) {
+                // Se ci sono prenotazioni attive, non permettiamo l'eliminazione
+                return false;
+            }
+
+            // Procedi con l'eliminazione
+            return voloDAO.eliminaVolo(numeroVolo);
+
+        } catch (Exception e) {
+            System.out.println("Errore durante l'eliminazione del volo: " + e.getMessage());
+            return false;
+        }
+    }
+
+//    /**
+//     * Ottiene i dettagli di un volo per la visualizzazione nel dialog di eliminazione
+//     * @param numeroVolo Il numero del volo
+//     * @return Array con i dettagli del volo [numeroVolo, compagnia, orario, data, ritardo, stato, partenza, destinazione]
+//     */
+//    public String[] getDettagliVoloPerEliminazione(String numeroVolo) {
+//        try {
+//            ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
+//
+//            if (datiVolo == null || datiVolo.isEmpty()) {
+//                return null;
+//            }
+//
+//            // Converti l'ArrayList in un array di stringhe
+//            return datiVolo.toArray(new String[0]);
+//
+//        } catch (Exception e) {
+//            System.out.println("Errore nel recupero dettagli volo per eliminazione: " + e.getMessage());
+//            return null;
+//        }
+//    }
+
+    /**
+     * Verifica se un volo può essere eliminato (nessuna prenotazione attiva)
+     * @param numeroVolo Il numero del volo
+     * @return true se il volo può essere eliminato, false altrimenti
+     */
+    public boolean puoEliminareVolo(String numeroVolo) {
+        if (utenteLoggato == null || !isUtenteAdmin()) {
+            return false;
+        }
+
+        try {
+            // Verifica se il volo esiste
+            if (voloDAO.getVoloPerNumero(numeroVolo) == null) {
+                return false;
+            }
+
+            // Controlla se ci sono prenotazioni per questo volo
+            var prenotazioni = prenotazioneDAO.getPrenotazioniPerVolo(numeroVolo);
+            return prenotazioni == null || prenotazioni.isEmpty();
+
+        } catch (Exception e) {
+            System.out.println("Errore nella verifica possibilità eliminazione volo: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Ottiene i dettagli dei ticket di una prenotazione
      */
     public String[][] getTicketsPrenotazione(String codicePrenotazione) {
@@ -497,12 +577,12 @@ public class Controller {
         // "Popoliamo" il ticket da restituire per poi visualizzarlo
         for (int i = 0; i < datiTickets.size(); i++) {
             ArrayList<String> ticket = datiTickets.get(i);
-            tickets[i][5] = ticket.get(0);          // codice prenotazione
-            tickets[i][0] = ticket.get(1);          // nome
-            tickets[i][1] = ticket.get(2);          // cognome
-            tickets[i][2] = ticket.get(3);          // documento
-            tickets[i][3] = ticket.get(4);          // data nascita
-            tickets[i][4] = ticket.get(5);          // posto
+            // Ticket.get(0) equivale al codice prenotazione, che in questo caso non ci serve!
+            tickets[i][0] = ticket.get(0);          // nome
+            tickets[i][1] = ticket.get(1);          // cognome
+            tickets[i][2] = ticket.get(2);          // documento
+            tickets[i][3] = ticket.get(3);          // data nascita
+            tickets[i][4] = ticket.get(4);          // posto
         }
 
         return tickets;
@@ -672,7 +752,6 @@ public class Controller {
         };
     }
 
-
     /**
      * Ottiene la lista dei ticket di una prenotazione formattata per la visualizzazione
      */
@@ -712,8 +791,6 @@ public class Controller {
 
         return ticketsFormattati;
     }
-
-
 
     /**
      * Ottiene un ticket specifico da una prenotazione per indice

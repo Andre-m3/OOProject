@@ -118,7 +118,7 @@ public class LandingPageLogin {
                         new UserDashboard(dashboardFrame);
                     }
                 } else {
-                    // In caso di Login fallito per utente inesistente, mostriamo un popUp di errore!!
+                    // In caso di Login fallito per utente inesistente, mostriamo un popUp di errore!
                     JOptionPane.showMessageDialog(FrameLogin,
                             "Username o password non validi!",
                             "Errore di login",

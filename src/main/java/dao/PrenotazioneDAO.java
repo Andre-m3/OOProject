@@ -10,9 +10,5 @@ public interface PrenotazioneDAO {
     ArrayList<ArrayList<String>> getPrenotazioniPerUtente(String email);
     ArrayList<ArrayList<String>> getPrenotazioniPerVolo(String numeroVolo);
     ArrayList<ArrayList<String>> getTuttePrenotazioni();
-    boolean aggiornaPrenotazione(String codicePrenotazione, String email, String numeroVolo,
-                                 String stato, int numeroPasseggeri);
-    boolean aggiornaStatoPrenotazione(String codicePrenotazione, String nuovoStato);
     boolean eliminaPrenotazione(String codicePrenotazione);
-    boolean esistePrenotazione(String codicePrenotazione);
 }

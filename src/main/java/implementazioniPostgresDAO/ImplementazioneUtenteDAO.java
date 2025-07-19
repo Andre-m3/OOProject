@@ -123,25 +123,6 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
     }
 
     @Override
-    public boolean aggiornaUtente(String username, String email, String password, boolean isAdmin) {
-        String sql = "UPDATE utenti SET email = ?, password = ?, is_admin = ? WHERE username = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, email);
-            stmt.setString(2, password);
-            stmt.setBoolean(3, isAdmin);
-            stmt.setString(4, username);
-
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento utente: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
     public boolean eliminaUtente(String username) {
         String sql = "DELETE FROM utenti WHERE username = ?";
 

@@ -25,6 +25,7 @@ public class VoliAdmin {
     private JButton btnUpdateFlight;
     private JLabel spacerBypass;
     private JButton btnUpdateGate;
+    private JButton btnDeleteFlight;
 
     private DefaultTableModel tableModel;       // Nel codice impostiamo anche la tabella di visualizzazione dei voli, commentata di seguito!
 
@@ -103,8 +104,21 @@ public class VoliAdmin {
             }
         });
 
-
-
+        // Listener per il pulsante "Elimina Volo" - aggiungi dopo gli altri listener
+        btnDeleteFlight.addActionListener(e -> {
+            int selectedRow = tabellaVoli.getSelectedRow();
+            if (selectedRow >= 0) {
+                String numeroVolo = (String) tableModel.getValueAt(selectedRow, 0);
+                if (!"N/A".equals(numeroVolo)) {
+                    eliminaVoloSelezionato(numeroVolo);
+                }
+            } else {
+                JOptionPane.showMessageDialog(FrameFlightlist,
+                        "Seleziona un volo dalla tabella per eliminarlo.",
+                        "Nessun volo selezionato",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
     }
 
@@ -140,6 +154,15 @@ public class VoliAdmin {
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         btnHomepage.setOpaque(true);
 
+        // Pulsante "Elimina Volo"
+        btnDeleteFlight.setBackground(sfondoLeggermenteScuro);
+        btnDeleteFlight.setForeground(new Color(78, 78, 78));
+        btnDeleteFlight.setFocusPainted(false);
+        btnDeleteFlight.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(193, 193, 193), 2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        btnDeleteFlight.setOpaque(true);
+
     }
 
     // Metodo per la configurazione della tabella di visualizzazione dei voli (per un admin)
@@ -171,6 +194,7 @@ public class VoliAdmin {
             tableModel.addRow(new Object[]{"N/A", "Nessun volo", "presente", "nel sistema", "", "", "", "", ""});
             btnUpdateFlight.setEnabled(false);      // In tal caso, non permettiamo all'amministratore di cliccare il pulsante "Modifica Volo"
             btnUpdateGate.setEnabled(false);        // Stesso discorso per il pulsante "Aggiorna Gate"
+            btnDeleteFlight.setEnabled(false);      // Stesso discorso per DeleteFlight
         } else {
             for (var volo : voli) {                 // L'utilizzo di var ci permette di non avere problemi, siccome che non importiamo la classe volo, essendo classe del package model!
                 String orarioCompleto = volo.getOrarioPrevisto();
@@ -203,19 +227,62 @@ public class VoliAdmin {
             }
             btnUpdateFlight.setEnabled(true);
             btnUpdateGate.setEnabled(true);
+            btnDeleteFlight.setEnabled(true);
         }
     }
 
+    /**
+     * Versione semplificata per l'eliminazione del volo
+     *
+     * @param numeroVolo Il numero del volo da eliminare
+     */
+    private void eliminaVoloSelezionato(String numeroVolo) {
+        // Verifica se il volo può essere eliminato
+        if (!controller.puoEliminareVolo(numeroVolo)) {
+            JOptionPane.showMessageDialog(FrameFlightlist,
+                    "Impossibile eliminare il volo " + numeroVolo + ":\n" +
+                            "Potrebbero esserci prenotazioni attive per questo volo.",
+                    "Eliminazione non consentita",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        // Dialog di conferma semplificato
+        String messaggioConferma = String.format(
+                "⚠️ ATTENZIONE ⚠️\n\n" +
+                        "Stai per eliminare definitivamente il volo:\n\n" +
+                        "- %s\n\n" +
+                        "Questa operazione NON può essere annullata!\n\n" +
+                        "Sei sicuro di voler procedere?",
+                numeroVolo
+        );
 
+        int conferma = JOptionPane.showConfirmDialog(
+                FrameFlightlist,
+                messaggioConferma,
+                "Conferma eliminazione volo",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
 
+        if (conferma == JOptionPane.YES_OPTION) {
+            // Procedi con l'eliminazione
+            boolean successo = controller.eliminaVolo(numeroVolo);
 
-
-
-
-
-
-
+            if (successo) {
+                JOptionPane.showMessageDialog(FrameFlightlist,
+                        "✅ Volo " + numeroVolo + " eliminato con successo!",
+                        "Eliminazione completata",
+                        JOptionPane.INFORMATION_MESSAGE);
+                loadVoliAdmin();
+            } else {
+                JOptionPane.showMessageDialog(FrameFlightlist,
+                        "❌ Errore durante l'eliminazione del volo " + numeroVolo,
+                        "Errore eliminazione",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
 
     {
@@ -297,9 +364,9 @@ public class VoliAdmin {
         panel1.add(bottomPanel);
         spacerBypass = new JLabel();
         spacerBypass.setHorizontalAlignment(2);
-        spacerBypass.setMaximumSize(new Dimension(625, 40));
-        spacerBypass.setMinimumSize(new Dimension(625, 40));
-        spacerBypass.setPreferredSize(new Dimension(625, 40));
+        spacerBypass.setMaximumSize(new Dimension(485, 40));
+        spacerBypass.setMinimumSize(new Dimension(485, 40));
+        spacerBypass.setPreferredSize(new Dimension(485, 40));
         spacerBypass.setText("");
         bottomPanel.add(spacerBypass);
         btnUpdateGate = new JButton();
@@ -326,6 +393,14 @@ public class VoliAdmin {
         btnUpdateFlight.setVerticalAlignment(0);
         btnUpdateFlight.setVerticalTextPosition(0);
         bottomPanel.add(btnUpdateFlight);
+        btnDeleteFlight = new JButton();
+        Font btnDeleteFlightFont = this.$$$getFont$$$("JetBrains Mono Medium", Font.PLAIN, 14, btnDeleteFlight.getFont());
+        if (btnDeleteFlightFont != null) btnDeleteFlight.setFont(btnDeleteFlightFont);
+        btnDeleteFlight.setMaximumSize(new Dimension(130, 40));
+        btnDeleteFlight.setMinimumSize(new Dimension(130, 40));
+        btnDeleteFlight.setPreferredSize(new Dimension(130, 40));
+        btnDeleteFlight.setText("Elimina Volo");
+        bottomPanel.add(btnDeleteFlight);
     }
 
     /**

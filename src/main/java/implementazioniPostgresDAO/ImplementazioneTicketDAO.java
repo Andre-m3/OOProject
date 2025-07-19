@@ -48,27 +48,6 @@ public class ImplementazioneTicketDAO implements TicketDAO {
     }
 
     @Override
-    public ArrayList<String> getTicketPerCodicePrenotazioneEPosto(String codicePrenotazione, String postoAssegnato) {
-        String sql = "SELECT * FROM tickets WHERE codice_prenotazione = ? AND posto_assegnato = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, codicePrenotazione);
-            stmt.setString(2, postoAssegnato);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return creaArrayListDalResultSet(rs);
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante la ricerca ticket per prenotazione e posto: " + e.getMessage());
-        }
-
-        return null;
-    }
-
-    @Override
     public ArrayList<ArrayList<String>> getTicketsPerPrenotazione(String codicePrenotazione) {
         ArrayList<ArrayList<String>> tickets = new ArrayList<>();
         String sql = "SELECT * FROM tickets WHERE codice_prenotazione = ? ORDER BY posto_assegnato";
@@ -89,45 +68,6 @@ public class ImplementazioneTicketDAO implements TicketDAO {
         return tickets;
     }
 
-    @Override
-    public ArrayList<ArrayList<String>> getTicketsPerVolo(String numeroVolo) {
-        ArrayList<ArrayList<String>> tickets = new ArrayList<>();
-        String sql = "SELECT t.* FROM tickets t JOIN prenotazioni p ON t.codice_prenotazione = p.codice_prenotazione WHERE p.numero_volo = ? ORDER BY t.posto_assegnato";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, numeroVolo);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                tickets.add(creaArrayListDalResultSet(rs));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante il recupero tickets per volo: " + e.getMessage());
-        }
-
-        return tickets;
-    }
-
-    @Override
-    public ArrayList<ArrayList<String>> getTuttiTickets() {
-        ArrayList<ArrayList<String>> tickets = new ArrayList<>();
-        String sql = "SELECT * FROM tickets ORDER BY codice_prenotazione, posto_assegnato";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                tickets.add(creaArrayListDalResultSet(rs));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante il recupero di tutti i tickets: " + e.getMessage());
-        }
-
-        return tickets;
-    }
 
     @Override
     public boolean aggiornaTicket(String codicePrenotazione, String postoAssegnato, String nome,
@@ -150,23 +90,6 @@ public class ImplementazioneTicketDAO implements TicketDAO {
 
         } catch (SQLException e) {
             System.out.println("Errore durante l'aggiornamento ticket: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean eliminaTicket(String codicePrenotazione, String postoAssegnato) {
-        String sql = "DELETE FROM tickets WHERE codice_prenotazione = ? AND posto_assegnato = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, codicePrenotazione);
-            stmt.setString(2, postoAssegnato);
-
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante l'eliminazione ticket: " + e.getMessage());
             return false;
         }
     }
@@ -210,8 +133,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
     }
 
 
-
-    // Metodi di utilità
+    // Metodo di utilità
     private LocalDate convertiDataNascita(String dataString) {
         try {
             DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -226,10 +148,6 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             System.out.println("Errore nella conversione della data: " + dataString);
             return LocalDate.now();
         }
-    }
-    private String formatDataNascita(LocalDate data) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return data.format(formatter);
     }
 
 }

@@ -122,27 +122,6 @@ public class ImplementazioneVoloDAO implements VoloDAO {
     }
 
     @Override
-    public ArrayList<ArrayList<String>> getVoliPerStato(String stato) {
-        ArrayList<ArrayList<String>> voli = new ArrayList<>();
-        String sql = "SELECT * FROM voli WHERE stato = ? ORDER BY data_volo, orario_previsto";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, stato);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                voli.add(creaArrayListDalResultSet(rs));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante il recupero voli per stato: " + e.getMessage());
-        }
-
-        return voli;
-    }
-
-    @Override
     public boolean aggiornaVolo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
                                 String data, String stato, String partenza, String destinazione,
                                 Short gateImbarco, int ritardo) {
@@ -235,26 +214,6 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             System.out.println("Errore durante l'eliminazione volo: " + e.getMessage());
             return false;
         }
-    }
-
-    @Override
-    public boolean esisteVolo(String numeroVolo) {
-        String sql = "SELECT COUNT(*) FROM voli WHERE numero_volo = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, numeroVolo);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Errore durante la verifica esistenza volo: " + e.getMessage());
-        }
-
-        return false;
     }
 
     private ArrayList<String> creaArrayListDalResultSet(ResultSet rs) throws SQLException {
