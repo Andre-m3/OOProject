@@ -187,32 +187,49 @@ public class ImplementazioneTicketDAO implements TicketDAO {
         }
     }
 
-    // Metodi di utilità
     private ArrayList<String> creaArrayListDalResultSet(ResultSet rs) throws SQLException {
         ArrayList<String> datiTicket = new ArrayList<>();
 
-        datiTicket.add(rs.getString("codice_prenotazione"));    // 0
-        datiTicket.add(rs.getString("nome"));                   // 1
-        datiTicket.add(rs.getString("cognome"));                // 2
-        datiTicket.add(rs.getString("numero_documento"));       // 3
-        datiTicket.add(formatDataPerModello(rs.getDate("data_nascita").toLocalDate())); // 4
-        datiTicket.add(rs.getString("posto_assegnato"));        // 5
+        datiTicket.add(rs.getString("nome"));
+        datiTicket.add(rs.getString("cognome"));
+        datiTicket.add(rs.getString("numero_documento"));
+
+        Date dataNascitaDB = rs.getDate("data_nascita");
+        if (dataNascitaDB != null) {
+            LocalDate dataLocalDate = dataNascitaDB.toLocalDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            datiTicket.add(dataLocalDate.format(formatter));
+        } else {
+            datiTicket.add("");
+        }
+
+        datiTicket.add(rs.getString("posto_assegnato"));
+        datiTicket.add(rs.getString("codice_prenotazione"));
 
         return datiTicket;
     }
 
+
+
+    // Metodi di utilità
     private LocalDate convertiDataNascita(String dataString) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            return LocalDate.parse(dataString, formatter);
+            DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+            try {
+                return LocalDate.parse(dataString, formatter1);
+            } catch (Exception e) {
+                return LocalDate.parse(dataString, formatter2);
+            }
         } catch (Exception e) {
             System.out.println("Errore nella conversione della data: " + dataString);
             return LocalDate.now();
         }
     }
-
-    private String formatDataPerModello(LocalDate data) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private String formatDataNascita(LocalDate data) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return data.format(formatter);
     }
+
 }

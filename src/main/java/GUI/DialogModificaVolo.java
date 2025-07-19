@@ -70,6 +70,11 @@ public class DialogModificaVolo extends JDialog {
     }
 
     private void precompilaCampi(String[] datiVolo) {
+
+        // Siccome il Numero Volo è chiave primaria della nostra base di dati, lo rendiamo non modificabile!
+        txtNumeroVolo.setEditable(false);
+        txtNumeroVolo.setBackground(Color.LIGHT_GRAY);      // Cambiamo il colore di sfondo per far capire all'utente che non è modificabile
+
         txtNumeroVolo.setText(datiVolo[0]);
         txtCompagnia.setText(datiVolo[1]);
         txtOrario.setText(datiVolo[2]);
@@ -89,7 +94,7 @@ public class DialogModificaVolo extends JDialog {
 
     private void salvaModifiche() {
         // Aggiorniamo i dati del volo
-        String nuovoNumeroVolo = txtNumeroVolo.getText().trim();
+        // String nuovoNumeroVolo = txtNumeroVolo.getText().trim(); // Non è più necessario, ora abbiamo capito che il numero volo non è modificabile
         String nuovaCompagnia = txtCompagnia.getText().trim();
         String nuovoOrario = txtOrario.getText().trim();
         String nuovaData = txtData.getText().trim();
@@ -98,11 +103,26 @@ public class DialogModificaVolo extends JDialog {
         String nuovaPartenza = txtPartenza.getText().trim();
         String nuovaDestinazione = txtDestinazione.getText().trim();
 
+        // Ricordiamo che vengono gestiti solo i voli da/verso Napoli!
+        if (!validaCitta(nuovaPartenza, nuovaDestinazione)) {
+            return;         // Il metodo validaCitta mostra già il messaggio di errore
+        }
+
+        // Prima di continuare validiamo anche gli altri campi
+        if (!validaCampi(nuovaCompagnia, nuovoOrario, nuovaData, nuovoStato, nuovaPartenza, nuovaDestinazione)) {
+            return;         // I metodi di validazione mostrano già i messaggi di errore
+        }
+
         // Aggiorniamo i valori tramite il controller
         boolean success = controller.aggiornaVolo(
-                numeroVoloOriginale, nuovoNumeroVolo, nuovaCompagnia,
-                nuovoOrario, nuovaData, nuovoRitardo, nuovoStato,
-                nuovaPartenza, nuovaDestinazione
+                numeroVoloOriginale,
+                nuovaCompagnia,
+                nuovoOrario,
+                nuovaData,
+                nuovoRitardo,
+                nuovoStato,
+                nuovaPartenza,
+                nuovaDestinazione
         );
 
         if (success) {
@@ -126,6 +146,75 @@ public class DialogModificaVolo extends JDialog {
         }
 
     }
+    private boolean validaCitta(String partenza, String destinazione) {
+        if (!partenza.equalsIgnoreCase("Napoli") && !destinazione.equalsIgnoreCase("Napoli")) {
+            JOptionPane.showMessageDialog(this,
+                    "Errore: Almeno una tra partenza e destinazione deve essere 'Napoli'!\n" +
+                            "L'aeroporto gestisce solo voli in partenza da Napoli o in arrivo a Napoli.",
+                    "Errore di Validazione",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (partenza.equalsIgnoreCase(destinazione)) {
+            JOptionPane.showMessageDialog(this,
+                    "Errore: La città di partenza e destinazione non possono essere uguali!",
+                    "Errore di Validazione",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+    private boolean validaCampi(String compagnia, String orario, String data, String stato, String partenza, String destinazione) {
+        // Controlla che i campi non siano vuoti
+        if (compagnia.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Il campo 'Compagnia' non può essere vuoto!",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (orario.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Il campo 'Orario' non può essere vuoto!",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (data.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Il campo 'Data' non può essere vuoto!",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (partenza.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Il campo 'Partenza' non può essere vuoto!",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (destinazione.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Il campo 'Destinazione' non può essere vuoto!",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Valida formato orario (HH:MM)
+        if (!orario.matches("^([01]?[0-9]|2[0-3]):[0-5][0-9]$")) {
+            JOptionPane.showMessageDialog(this, "Formato orario non valido! Utilizzare il formato HH:MM (es: 14:30)",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Valida formato data utilizzando il controller
+        if (!controller.isValidDateFormat(data)) {
+            JOptionPane.showMessageDialog(this, "Formato data non valido! Utilizzare il formato dd-MM-yyyy (es: 25-12-2024)",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
 
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer

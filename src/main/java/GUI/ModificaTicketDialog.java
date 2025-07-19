@@ -99,10 +99,10 @@ public class ModificaTicketDialog extends JDialog {
         String[] dettagli = controller.getDettagliTicket(ticket);
 
         if (dettagli != null) {
-            nomeField.setText(dettagli[0]);      // nome
-            cognomeField.setText(dettagli[1]);   // cognome
-            documentoField.setText(dettagli[2]); // documento
-            dataNascitaField.setText(dettagli[3]); // data nascita
+            nomeField.setText(dettagli[0]);             // nome
+            cognomeField.setText(dettagli[1]);          // cognome
+            dataNascitaField.setText(dettagli[2]);      // data nascita
+            documentoField.setText(dettagli[3]);        // documento
             // dettagli[4] è il posto assegnato, il quale non è modificabile...
 
         }
@@ -206,11 +206,10 @@ public class ModificaTicketDialog extends JDialog {
             return false;
         }
 
-
         return !nomeField.getText().trim().equals(dettagliOriginali[0]) ||
                 !cognomeField.getText().trim().equals(dettagliOriginali[1]) ||
-                !documentoField.getText().trim().equals(dettagliOriginali[2]) ||
-                !dataNascitaField.getText().trim().equals(dettagliOriginali[3]);
+                !dataNascitaField.getText().trim().equals(dettagliOriginali[2]) ||
+                !documentoField.getText().trim().equals(dettagliOriginali[3]);
     }
 
 

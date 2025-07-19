@@ -6,8 +6,6 @@ public class Prenotazione {
 
     // Costante che definisce il numero massimo di passeggeri per prenotazione
     public static final int MAX_PASSEGGERI = 9;
-    // Contatore statico per generare codici prenotazione progressivi
-    private static int contatoreCodici = 20000;
 
     private String codicePrenotazione;
     private String codiceVolo;
@@ -57,12 +55,6 @@ public class Prenotazione {
     }
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    // Metodo statico MOMENTANEO per generare un nuovo codice prenotazione (in assenza di un db)
-    public static String generaNuovoCodice() {
-        contatoreCodici++;
-        return "P" + contatoreCodici;
     }
 
     @Override
