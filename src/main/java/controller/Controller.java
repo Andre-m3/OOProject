@@ -16,6 +16,8 @@ import java.util.Random;
  */
 public class Controller {
 
+    private Random random = new Random();           // Oggetto riutilizzabile imposto da SonarQube
+    private static final String NAPOLI = "Napoli";  // Costante statica imposta da SonarQube
     private static Controller instance = null;      // istanza Singleton
     private Utente utenteLoggato;                   // Utente corrente
 
@@ -294,7 +296,7 @@ public class Controller {
         Volo nuovoVolo;
         String tipoVolo;
 
-        if (partenza.equalsIgnoreCase("Napoli")) {
+        if (partenza.equalsIgnoreCase(NAPOLI)) {
             nuovoVolo = new VoloInPartenza(numeroVolo, compagniaAerea, orarioPrevisto,
                     dataConvertita, 0, statoVolo, destinazione, gateImbarco);
         } else {
@@ -504,8 +506,8 @@ public class Controller {
      * Ci basiamo sulla logica ASCII per la generazione di un intero e il suo casting in char
      */
     private String generaPostoCasuale() {
-        Random random = new Random();
-        char lettera = (char) ('A' + random.nextInt(20)); // A-T
+
+        char lettera = (char) ('A' + this.random.nextInt(20)); // A-T
         int numero = random.nextInt(6) + 1; // 1-6
         return String.valueOf(lettera) + numero;
     }
@@ -973,7 +975,7 @@ public class Controller {
         }
 
         // Validazione extra. Verifichiamo che almeno una città sia Napoli, e che non lo siano entrambe
-        if (!nuovaPartenza.equalsIgnoreCase("Napoli") && !nuovaDestinazione.equalsIgnoreCase("Napoli")) {
+        if (!nuovaPartenza.equalsIgnoreCase(NAPOLI) && !nuovaDestinazione.equalsIgnoreCase(NAPOLI)) {
             System.out.println("Errore: Almeno una tra partenza e destinazione deve essere 'Napoli'");
             return false;
         }
@@ -990,7 +992,7 @@ public class Controller {
         // Ora bisogna determinare il gate. Controlliamo se è un volo in partenza
         // Se non è un volo in partenza, allora non ci interessa!
         Short gate = null;
-        if (nuovaPartenza.equalsIgnoreCase("Napoli") &&
+        if (nuovaPartenza.equalsIgnoreCase(NAPOLI) &&
                 datiVoloEsistente.get(8) != null &&
                 !datiVoloEsistente.get(8).equals("null")) {
             try {
