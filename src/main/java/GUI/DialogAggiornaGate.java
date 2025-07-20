@@ -8,6 +8,9 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
+/**
+ * The type Dialog aggiorna gate.
+ */
 public class DialogAggiornaGate extends JDialog {
     private JPanel panel1;
     private JPanel mainPanel;
@@ -23,6 +26,13 @@ public class DialogAggiornaGate extends JDialog {
     // Altrimenti la tabella (in questo caso di "VoliAdmin") non visualizzerebbe (subito) i nuovi dati impostati in seguito alla modifica/aggiornamento del volo/gate
     private Runnable onSaveCallback;
 
+    /**
+     * Instantiates a new Dialog aggiorna gate.
+     *
+     * @param parent         the parent
+     * @param numeroVolo     the numero volo
+     * @param onSaveCallback the on save callback
+     */
     public DialogAggiornaGate(JFrame parent, String numeroVolo, Runnable onSaveCallback) {
         super(parent, "Aggiorna Gate - Volo: " + numeroVolo, true);
 
@@ -203,6 +213,9 @@ public class DialogAggiornaGate extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

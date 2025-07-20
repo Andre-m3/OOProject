@@ -14,6 +14,9 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Locale;
 
+/**
+ * The type Area privata.
+ */
 public class AreaPrivata {
     private JFrame FrameAreaPersonale;
     private Controller controller;
@@ -33,6 +36,11 @@ public class AreaPrivata {
     private JButton btnModificaPrenotazione;
     private JTable tabellaPrenotazioni;
 
+    /**
+     * Instantiates a new Area privata.
+     *
+     * @param frameDash the frame dash
+     */
     public AreaPrivata(JFrame frameDash) {
 
         controller = Controller.getInstance();
@@ -374,6 +382,9 @@ public class AreaPrivata {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

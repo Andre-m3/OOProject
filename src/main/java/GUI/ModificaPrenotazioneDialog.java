@@ -11,6 +11,9 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
+/**
+ * The type Modifica prenotazione dialog.
+ */
 public class ModificaPrenotazioneDialog extends JDialog {
     private JPanel contentPane;
     private JLabel codiceLabel;
@@ -33,6 +36,12 @@ public class ModificaPrenotazioneDialog extends JDialog {
     private Object prenotazione;
     private DefaultListModel<String> ticketsListModel;
 
+    /**
+     * Instantiates a new Modifica prenotazione dialog.
+     *
+     * @param parent       the parent
+     * @param prenotazione the prenotazione
+     */
     public ModificaPrenotazioneDialog(JFrame parent, Object prenotazione) {
         super(parent, "Modifica Prenotazione", true);
 
@@ -300,6 +309,9 @@ public class ModificaPrenotazioneDialog extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

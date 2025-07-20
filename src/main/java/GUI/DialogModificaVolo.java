@@ -9,6 +9,9 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
+/**
+ * The type Dialog modifica volo.
+ */
 public class DialogModificaVolo extends JDialog {
     private JPanel panel1;
     private JPanel mainPanel;
@@ -33,6 +36,13 @@ public class DialogModificaVolo extends JDialog {
     // Altrimenti la tabella (in questo caso di "VoliAdmin") non visualizzerebbe i nuovi dati impostati in seguito alla modifica/aggiornamento del volo/gate
     private Runnable onSaveCallback;
 
+    /**
+     * Instantiates a new Dialog modifica volo.
+     *
+     * @param parent         the parent
+     * @param numeroVolo     the numero volo
+     * @param onSaveCallback the on save callback
+     */
     public DialogModificaVolo(JFrame parent, String numeroVolo, Runnable onSaveCallback) {
         super(parent, "Modifica Volo: " + numeroVolo, true);
 
@@ -483,6 +493,9 @@ public class DialogModificaVolo extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

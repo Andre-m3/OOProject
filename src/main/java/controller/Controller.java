@@ -29,50 +29,54 @@ public class Controller {
      * Costruttore privato per il pattern Singleton
      */
     private Controller() {
-        // Inizializza utenti di default nel database se non esistono
-        // inizializzaUtentiDefault();
-        // Inizializza voli di default nel database se non esistono
-        // inizializzaVoliDefault();
+        /*Inizializza utenti di default nel database se non esistono
+        inizializzaUtentiDefault();*/
+        /*Inizializza voli di default nel database se non esistono
+        inizializzaVoliDefault();*/
     }
+
+    // Metodi di test iniziali, non più necessari. Non sono stati eliminati per scopo illustrativo.
+    // Fanno capire come viene creata un'istanza di un oggetto di tipo Utente (Generico o Admin), e Voli (Arrivo o Partenza)
 
     /**
      * Inizializza utenti di default nel database
      */
-//    private void inizializzaUtentiDefault() {
-//        // Verifica se gli utenti esistono già
-//        if (utenteDAO.getUtentePerUsername("user") == null) {
-//            UtenteGenerico utente = new UtenteGenerico("user@example.com", "user", "password123");
-//            utenteDAO.inserisciUtente(utente);
-//        }
-//
-//        if (utenteDAO.getUtentePerUsername("admin") == null) {
-//            Amministratore admin = new Amministratore("admin@example.com", "admin", "admin123");
-//            utenteDAO.inserisciUtente(admin);
-//        }
-//    }
+    /*private void inizializzaUtentiDefault() {
+        // Verifica se gli utenti esistono già
+        if (utenteDAO.getUtentePerUsername("user") == null) {
+            UtenteGenerico utente = new UtenteGenerico("user@example.com", "user", "password123");
+            utenteDAO.inserisciUtente(utente);
+        }
+
+        if (utenteDAO.getUtentePerUsername("admin") == null) {
+            Amministratore admin = new Amministratore("admin@example.com", "admin", "admin123");
+            utenteDAO.inserisciUtente(admin);
+        }
+    }*/
 
     /**
      * Inizializza voli di default nel database
      */
-//    private void inizializzaVoliDefault() {
-//        // Verifica se i voli esistono già
-//        if (voloDAO.getVoloPerNumero("AZ123") == null) {
-//            // Voli in partenza da Napoli
-//            voloDAO.inserisciVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, StatoVolo.ATTERRATO, "Milano", (short) 5));
-//            voloDAO.inserisciVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, StatoVolo.IN_RITARDO, "Roma", (short) 12));
-//            voloDAO.inserisciVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, StatoVolo.PROGRAMMATO, "Monaco", (short) 3));
-//            voloDAO.inserisciVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, StatoVolo.IN_RITARDO, "Londra", (short) 8));
-//
-//            // Voli in arrivo a Napoli
-//            voloDAO.inserisciVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, StatoVolo.PROGRAMMATO, "Dubai"));
-//            voloDAO.inserisciVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, StatoVolo.IN_RITARDO, "Parigi"));
-//            voloDAO.inserisciVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, StatoVolo.PROGRAMMATO, "Amsterdam"));
-//        }
-//    }
+    /*private void inizializzaVoliDefault() {
+        // Verifica se i voli esistono già
+        if (voloDAO.getVoloPerNumero("AZ123") == null) {
+            // Voli in partenza da Napoli
+            voloDAO.inserisciVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, StatoVolo.ATTERRATO, "Milano", (short) 5));
+            voloDAO.inserisciVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, StatoVolo.IN_RITARDO, "Roma", (short) 12));
+            voloDAO.inserisciVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, StatoVolo.PROGRAMMATO, "Monaco", (short) 3));
+            voloDAO.inserisciVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, StatoVolo.IN_RITARDO, "Londra", (short) 8));
+
+            // Voli in arrivo a Napoli
+            voloDAO.inserisciVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, StatoVolo.PROGRAMMATO, "Dubai"));
+            voloDAO.inserisciVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, StatoVolo.IN_RITARDO, "Parigi"));
+            voloDAO.inserisciVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, StatoVolo.PROGRAMMATO, "Amsterdam"));
+        }
+    }*/
 
     /**
      * Restituisce l'istanza singleton del controller
-     * @return L'istanza del controller
+     *
+     * @return L 'istanza del controller
      */
     public static Controller getInstance() {
         if (instance == null) {
@@ -83,8 +87,9 @@ public class Controller {
 
     /**
      * Effettua il login di un utente
+     *
      * @param emailUsername Username dell'utente
-     * @param password Password dell'utente
+     * @param password      Password dell'utente
      * @return true se il login è avvenuto con successo, false altrimenti
      */
     public boolean login(String emailUsername, String password) {
@@ -108,7 +113,6 @@ public class Controller {
         return false;
     }
 
-
     /**
      * Effettua il logout dell'utente corrente
      */
@@ -118,10 +122,11 @@ public class Controller {
 
     /**
      * Registra un nuovo utente
-     * @param email Email del nuovo utente
+     *
+     * @param email    Email del nuovo utente
      * @param username Username del nuovo utente
      * @param password Password del nuovo utente
-     * @param isAdmin true se l'utente è un amministratore, false altrimenti
+     * @param isAdmin  true se l'utente è un amministratore, false altrimenti
      * @return true se la registrazione è avvenuta con successo, false altrimenti
      */
     public boolean registraUtente(String email, String username, String password, boolean isAdmin) {
@@ -137,7 +142,8 @@ public class Controller {
 
     /**
      * Restituisce l'utente attualmente loggato
-     * @return L'utente loggato o null se nessun utente è loggato
+     *
+     * @return L 'utente loggato o null se nessun utente è loggato
      */
     public Utente getUtenteLoggato() {
         return utenteLoggato;
@@ -145,6 +151,7 @@ public class Controller {
 
     /**
      * Verifica se l'utente loggato è un amministratore
+     *
      * @return true se l'utente è un amministratore, false altrimenti
      */
     public boolean isUtenteAdmin() {
@@ -153,6 +160,7 @@ public class Controller {
 
     /**
      * Determina il tipo di un volo (Partenza/Arrivo) in base alla sua istanza
+     *
      * @param volo Il volo da controllare
      * @return "Partenza" se è un volo in partenza, "Arrivo" se è in arrivo
      */
@@ -167,6 +175,7 @@ public class Controller {
 
     /**
      * Verifica se un volo è in partenza
+     *
      * @param volo Il volo da controllare
      * @return true se è un volo in partenza
      */
@@ -176,6 +185,7 @@ public class Controller {
 
     /**
      * Verifica se un volo è prenotabile
+     *
      * @param numeroVolo Il numero del volo
      * @return true se il volo è prenotabile, false altrimenti
      */
@@ -186,6 +196,7 @@ public class Controller {
 
     /**
      * Ottiene il gate di imbarco per un volo in partenza
+     *
      * @param volo Il volo
      * @return Il gate di imbarco o null se non disponibile
      */
@@ -194,28 +205,6 @@ public class Controller {
             return ((VoloInPartenza) volo).getGateImbarco();
         }
         return null;
-    }
-
-    /**
-     * Aggiorna il gate di imbarco per un volo in partenza
-     * @param volo Il volo
-     * @param nuovoGate Il nuovo gate
-     * @return true se l'aggiornamento è riuscito
-     */
-    public boolean setGateImbarco(Volo volo, Short nuovoGate) {
-        if (volo instanceof VoloInPartenza && isUtenteAdmin()) {
-            return voloDAO.aggiornaGateImbarco(volo.getNumeroVolo(), nuovoGate);
-        }
-        return false;
-    }
-
-    /**
-     * Restituisce la lista di tutti i voli disponibili
-     * @return Lista di voli
-     */
-    public ArrayList<Volo> getListaVoli() {
-        ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliDisponibili();
-        return convertiListaArrayListInVoli(datiVoli);
     }
 
     /**
@@ -271,6 +260,16 @@ public class Controller {
 
     /**
      * Inserisce un nuovo volo (disponibile solo per amministratori)
+     *
+     * @param numeroVolo     the numero volo
+     * @param compagniaAerea the compagnia aerea
+     * @param orarioPrevisto the orario previsto
+     * @param data           the data
+     * @param stato          the stato
+     * @param partenza       the partenza
+     * @param destinazione   the destinazione
+     * @param gateImbarco    the gate imbarco
+     * @return the boolean
      */
     public boolean inserisciVolo(String numeroVolo, String compagniaAerea, String orarioPrevisto,
                                  String data, String stato, String partenza, String destinazione,
@@ -311,6 +310,10 @@ public class Controller {
 
     /**
      * Aggiorna il gate di imbarco di un volo in partenza (disponibile solo per amministratori)
+     *
+     * @param numeroVolo the numero volo
+     * @param nuovoGate  the nuovo gate
+     * @return the boolean
      */
     public boolean aggiornaGateImbarco(String numeroVolo, Short nuovoGate) {
         if (!isUtenteAdmin()) {
@@ -321,6 +324,11 @@ public class Controller {
 
     /**
      * Crea una nuova prenotazione per un volo
+     *
+     * @param codiceVolo       the codice volo
+     * @param numeroPasseggeri the numero passeggeri
+     * @param email            the email
+     * @return the prenotazione
      */
     public Prenotazione creaPrenotazione(String codiceVolo, int numeroPasseggeri, String email) {
 
@@ -375,6 +383,14 @@ public class Controller {
 
     /**
      * Aggiunge un ticket a una prenotazione esistente
+     *
+     * @param prenotazione    the prenotazione
+     * @param nome            the nome
+     * @param cognome         the cognome
+     * @param numeroDocumento the numero documento
+     * @param dataNascita     the data nascita
+     * @param postoAssegnato  the posto assegnato
+     * @return the boolean
      */
     public boolean aggiungiTicket(Prenotazione prenotazione, String nome, String cognome,
                                   String numeroDocumento, String dataNascita, String postoAssegnato) {
@@ -384,6 +400,9 @@ public class Controller {
 
     /**
      * Ottiene un volo per numero
+     *
+     * @param numeroVolo the numero volo
+     * @return the volo per numero
      */
     public Volo getVoloPerNumero(String numeroVolo) {
         ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
@@ -392,6 +411,8 @@ public class Controller {
 
     /**
      * Ottiene tutti i voli per l'amministratore
+     *
+     * @return the tutti i voli
      */
     public ArrayList<Volo> getTuttiIVoli() {
         ArrayList<ArrayList<String>> datiVoli = voloDAO.getTuttiVoli();
@@ -400,6 +421,11 @@ public class Controller {
 
     /**
      * Completa una prenotazione aggiungendo tutti i ticket necessari
+     *
+     * @param codiceVolo       the codice volo
+     * @param numeroPasseggeri the numero passeggeri
+     * @param datiPasseggeri   the dati passeggeri
+     * @return the string
      */
     public String completaPrenotazione(String codiceVolo, int numeroPasseggeri, String[][] datiPasseggeri) {
         if (utenteLoggato == null) {
@@ -443,6 +469,9 @@ public class Controller {
     /**
      * Valida il formato della data (dd/mm/yyyy)
      * Riusciamo a gestire anche il formato (dd-mm-yyyy) tramite un Try-Catch
+     *
+     * @param data the data
+     * @return the boolean
      */
     public boolean isValidDateFormat(String data) {
         if (data == null || data.trim().isEmpty()) {
@@ -483,6 +512,7 @@ public class Controller {
 
     /**
      * Elimina un volo dal sistema (disponibile solo per amministratori)
+     *
      * @param numeroVolo Il numero del volo da eliminare
      * @return true se l'eliminazione è riuscita, false altrimenti
      */
@@ -513,30 +543,9 @@ public class Controller {
         }
     }
 
-//    /**
-//     * Ottiene i dettagli di un volo per la visualizzazione nel dialog di eliminazione
-//     * @param numeroVolo Il numero del volo
-//     * @return Array con i dettagli del volo [numeroVolo, compagnia, orario, data, ritardo, stato, partenza, destinazione]
-//     */
-//    public String[] getDettagliVoloPerEliminazione(String numeroVolo) {
-//        try {
-//            ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
-//
-//            if (datiVolo == null || datiVolo.isEmpty()) {
-//                return null;
-//            }
-//
-//            // Converti l'ArrayList in un array di stringhe
-//            return datiVolo.toArray(new String[0]);
-//
-//        } catch (Exception e) {
-//            System.out.println("Errore nel recupero dettagli volo per eliminazione: " + e.getMessage());
-//            return null;
-//        }
-//    }
-
     /**
      * Verifica se un volo può essere eliminato (nessuna prenotazione attiva)
+     *
      * @param numeroVolo Il numero del volo
      * @return true se il volo può essere eliminato, false altrimenti
      */
@@ -563,6 +572,9 @@ public class Controller {
 
     /**
      * Ottiene i dettagli dei ticket di una prenotazione
+     *
+     * @param codicePrenotazione the codice prenotazione
+     * @return the string [ ] [ ]
      */
     public String[][] getTicketsPrenotazione(String codicePrenotazione) {
         ArrayList<ArrayList<String>> datiTickets = ticketDAO.getTicketsPerPrenotazione(codicePrenotazione);
@@ -590,6 +602,8 @@ public class Controller {
 
     /**
      * Ottiene i dati delle prenotazioni dell'utente loggato per la visualizzazione in tabella
+     *
+     * @return the object [ ] [ ]
      */
     public Object[][] getDatiPrenotazioniUtente() {
         if (utenteLoggato == null) {
@@ -638,6 +652,8 @@ public class Controller {
 
     /**
      * Ottiene il numero di prenotazioni dell'utente loggato
+     *
+     * @return the numero prenotazioni utente
      */
     public int getNumeroPrenotazioniUtente() {
         if (utenteLoggato == null) {
@@ -649,6 +665,9 @@ public class Controller {
 
     /**
      * Ottiene i dettagli di una prenotazione per codice
+     *
+     * @param codicePrenotazione the codice prenotazione
+     * @return the string [ ]
      */
     public String[] getDettagliPrenotazione(String codicePrenotazione) {
         ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
@@ -687,6 +706,9 @@ public class Controller {
 
     /**
      * Ottiene una prenotazione specifica tramite il codice
+     *
+     * @param codicePrenotazione the codice prenotazione
+     * @return the prenotazione per codice
      */
     public Prenotazione getPrenotazionePerCodice(String codicePrenotazione) {
         ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
@@ -700,6 +722,9 @@ public class Controller {
 
     /**
      * Ottiene i dettagli di una prenotazione per la visualizzazione nel dialog
+     *
+     * @param prenotazione the prenotazione
+     * @return the string [ ]
      */
     public String[] getDettagliPrenotazioneDialog(Object prenotazione) {
 
@@ -754,6 +779,9 @@ public class Controller {
 
     /**
      * Ottiene la lista dei ticket di una prenotazione formattata per la visualizzazione
+     *
+     * @param prenotazione the prenotazione
+     * @return the string [ ]
      */
     public String[] getTicketsFormattati(Object prenotazione) {
 
@@ -794,6 +822,10 @@ public class Controller {
 
     /**
      * Ottiene un ticket specifico da una prenotazione per indice
+     *
+     * @param prenotazione the prenotazione
+     * @param indice       the indice
+     * @return the ticket per indice
      */
     public Object getTicketPerIndice(Object prenotazione, int indice) {
 
@@ -820,9 +852,11 @@ public class Controller {
         return convertiArrayListInTicket(datiTicket);
     }
 
-
     /**
      * Elimina una prenotazione
+     *
+     * @param prenotazione the prenotazione
+     * @return the boolean
      */
     public boolean eliminaPrenotazione(Object prenotazione) {
         if (!isUtenteAdmin() && utenteLoggato == null) {
@@ -848,9 +882,16 @@ public class Controller {
         //      Quindi eliminando prima i ticket e poi la prenotazione, noi non avremo problemi con la prenotazione!
     }
 
-
     /**
      * Aggiorna i dati di un ticket
+     *
+     * @param ticket           the ticket
+     * @param nuovoNome        the nuovo nome
+     * @param nuovoCognome     the nuovo cognome
+     * @param nuovoDocumento   the nuovo documento
+     * @param nuovaDataNascita the nuova data nascita
+     * @param postoAttuale     the posto attuale
+     * @return the boolean
      */
     public boolean aggiornaTicket(Object ticket, String nuovoNome, String nuovoCognome,
                                   String nuovoDocumento, String nuovaDataNascita, String postoAttuale) {
@@ -875,6 +916,9 @@ public class Controller {
 
     /**
      * Ottiene i dettagli di un ticket per la visualizzazione nel dialog di modifica
+     *
+     * @param ticket the ticket
+     * @return the string [ ]
      */
     public String[] getDettagliTicket(Object ticket) {
         if (ticket == null) {
@@ -892,9 +936,11 @@ public class Controller {
             };
     }
 
-
     /**
      * Ottiene i dati di un volo come array di stringhe per la GUI
+     *
+     * @param numeroVolo the numero volo
+     * @return the string [ ]
      */
     public String[] getDatiVolo(String numeroVolo) {
         ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
@@ -906,9 +952,18 @@ public class Controller {
         return datiVolo.toArray(new String[0]);
     }
 
-
     /**
      * Aggiorna tutti i dati di un volo (disponibile solo per amministratori)
+     *
+     * @param numeroVoloOriginale the numero volo originale
+     * @param nuovaCompagnia      the nuova compagnia
+     * @param nuovoOrario         the nuovo orario
+     * @param nuovaData           the nuova data
+     * @param nuovoRitardo        the nuovo ritardo
+     * @param nuovoStato          the nuovo stato
+     * @param nuovaPartenza       the nuova partenza
+     * @param nuovaDestinazione   the nuova destinazione
+     * @return the boolean
      */
     public boolean aggiornaVolo(String numeroVoloOriginale, String nuovaCompagnia,
                                 String nuovoOrario, String nuovaData, int nuovoRitardo,
@@ -951,6 +1006,9 @@ public class Controller {
 
     /**
      * Ottiene il gate di un volo come stringa
+     *
+     * @param numeroVolo the numero volo
+     * @return the gate volo stringa
      */
     public String getGateVoloStringa(String numeroVolo) {
         ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
@@ -962,6 +1020,12 @@ public class Controller {
         return datiVolo.get(8);
     }
 
+    /**
+     * Get stati volo disponibili string [ ].
+     *
+     * @return the string [ ]
+     */
+
     // Metodi per gestire gli Stati del Volo
     public String[] getStatiVoloDisponibili() {
         StatoVolo[] stati = StatoVolo.values();
@@ -972,6 +1036,12 @@ public class Controller {
         return risultato;
     }
 
+    /**
+     * Is stato volo valido boolean.
+     *
+     * @param stato the stato
+     * @return the boolean
+     */
     public boolean isStatoVoloValido(String stato) {
         try {
             StatoVolo.valueOf(stato.toUpperCase());
@@ -988,6 +1058,9 @@ public class Controller {
     /**
      * Ottiene tutti i voli che partono da una specifica città
      * (indipendentemente dal tipo di volo - partenza o arrivo)
+     *
+     * @param cittaPartenza the citta partenza
+     * @return the object [ ] [ ]
      */
     public Object[][] getVoliInPartenza(String cittaPartenza) {
         ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliPerCittaPartenza(cittaPartenza);
@@ -1024,6 +1097,9 @@ public class Controller {
     /**
      * Ottiene tutti i voli che arrivano in una specifica città
      * (indipendentemente dal tipo di volo - partenza o arrivo)
+     *
+     * @param cittaDestinazione the citta destinazione
+     * @return the object [ ] [ ]
      */
     public Object[][] getVoliInArrivo(String cittaDestinazione) {
         ArrayList<ArrayList<String>> datiVoli = voloDAO.getVoliPerCittaDestinazione(cittaDestinazione);
@@ -1060,6 +1136,9 @@ public class Controller {
 
     /**
      * Conta i voli che partono da una specifica città
+     *
+     * @param cittaPartenza the citta partenza
+     * @return the int
      */
     public int contaVoliInPartenza(String cittaPartenza) {
         ArrayList<ArrayList<String>> voli = voloDAO.getVoliPerCittaPartenza(cittaPartenza);
@@ -1068,6 +1147,9 @@ public class Controller {
 
     /**
      * Conta i voli che arrivano in una specifica città
+     *
+     * @param cittaDestinazione the citta destinazione
+     * @return the int
      */
     public int contaVoliInArrivo(String cittaDestinazione) {
         ArrayList<ArrayList<String>> voli = voloDAO.getVoliPerCittaDestinazione(cittaDestinazione);
@@ -1077,6 +1159,8 @@ public class Controller {
 
     /**
      * Ottiene le colonne per la tabella dei voli in partenza
+     *
+     * @return the string [ ]
      */
     public String[] getColonneVoliPartenza() {
         return new String[]{
@@ -1087,6 +1171,8 @@ public class Controller {
 
     /**
      * Ottiene le colonne per la tabella dei voli in arrivo
+     *
+     * @return the string [ ]
      */
     public String[] getColonneVoliArrivo() {
         return new String[]{
@@ -1140,15 +1226,6 @@ public class Controller {
         }
 
         return voli;
-    }
-
-    /**
-     * Verifica se un volo richiede evidenziazione visiva
-     * Implementazione ripresa da una documentazione di un utente di reddit, tramite la propria repository github
-     */
-    public boolean voloRichiedeEvidenziazione(Volo volo) {
-        return volo.getStato() == StatoVolo.CANCELLATO ||
-                volo.getStato() == StatoVolo.IN_RITARDO;
     }
 
 

@@ -12,6 +12,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
 
+/**
+ * The type Area privata admin.
+ */
 public class AreaPrivataAdmin {
     private JFrame FrameAreaAdmin;
     private Controller controller;
@@ -26,6 +29,11 @@ public class AreaPrivataAdmin {
     private JButton btnHomepage;
     private JButton btnModificaDati;
 
+    /**
+     * Instantiates a new Area privata admin.
+     *
+     * @param frameDash the frame dash
+     */
     public AreaPrivataAdmin(JFrame frameDash) {
 
         controller = Controller.getInstance();
@@ -231,6 +239,9 @@ public class AreaPrivataAdmin {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

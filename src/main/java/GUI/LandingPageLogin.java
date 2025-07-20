@@ -12,6 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Locale;
 
+/**
+ * The type Landing page login.
+ */
 public class LandingPageLogin {
     private static JFrame FrameLogin;
     private Controller controller;
@@ -29,10 +32,18 @@ public class LandingPageLogin {
     private JPanel bottomPanel;
     private JLabel registerField;
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
         showLoginPage();
     }
 
+    /**
+     * Show login page.
+     */
     public static void showLoginPage() {
         FrameLogin = new JFrame("Login");
         FrameLogin.setContentPane(new LandingPageLogin().panel1);
@@ -45,6 +56,9 @@ public class LandingPageLogin {
         FrameLogin.setResizable(false);
     }
 
+    /**
+     * Instantiates a new Landing page login.
+     */
     public LandingPageLogin() {
         controller = Controller.getInstance();     // Utilizziamo il pattern discusso in Controller per ottenere la sua istanza! Non creiamo nuove istanze!
 
@@ -299,6 +313,9 @@ public class LandingPageLogin {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

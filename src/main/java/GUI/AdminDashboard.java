@@ -7,6 +7,9 @@ import java.awt.*;
 import java.util.Locale;
 import controller.Controller;
 
+/**
+ * The type Admin dashboard.
+ */
 public class AdminDashboard {
     private JFrame FrameAdmin;
     private Controller controller;
@@ -20,6 +23,11 @@ public class AdminDashboard {
     private JButton btnLogout;
     private JLabel subText;
 
+    /**
+     * Instantiates a new Admin dashboard.
+     *
+     * @param frame the frame
+     */
     public AdminDashboard(JFrame frame) {
 
         controller = Controller.getInstance();
@@ -250,6 +258,9 @@ public class AdminDashboard {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

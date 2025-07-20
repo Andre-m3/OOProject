@@ -1,68 +1,81 @@
 package model;
 
-import java.util.ArrayList;
-
+/**
+ * The type Utente.
+ */
 public class Utente {
 
-    // NB: Non possono esistere due utenti con la stessa username o email!
+    // NB: Non possono esistere due utenti con la stessa username o email! Nella nostra Base di Dati abbiamo come PK l'attributo "email"
     private String email;
     private String username;
     private String password;
 
-    // Costruttore di Utente
+    /**
+     * Instantiates a new Utente.
+     *
+     * @param email    the email
+     * @param username the username
+     * @param password the password
+     */
+// Costruttore di Utente
     public Utente(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
     }
 
+    /**
+     * Gets email.
+     *
+     * @return the email
+     */
     public String getEmail() {
         return email;
     }
+
+    /**
+     * Sets email.
+     *
+     * @param email the email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Gets username.
+     *
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
+
+    /**
+     * Sets username.
+     *
+     * @param username the username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
      * Ottiene la password dell'utente (solo per controlli interni)
+     *
      * @return La password dell'utente
      */
     public String getPassword() {
         return password;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     /**
-     * Verifica se la password inserita corrisponde alla password dell'utente
-     * @param passwordToCheck La password da verificare
-     * @return true se la password è corretta, false altrimenti
+     * Sets password.
+     *
+     * @param password the password
      */
-    public boolean verificaPassword(String passwordToCheck) {
-        return this.password.equals(passwordToCheck);
-    }
-
-
-    public void visualizzaVoli() {
-        System.out.println("\n=== Elenco Voli Registrati ===");
-        ArrayList<Volo> listaVoli = Volo.getListaVoli();
-
-        if (listaVoli.isEmpty()) {
-            System.out.println("Non ci sono voli registrati nel sistema.");
-            return;         // Così terminiamo l'esecuzione del metodo. Non usiamo System.exit(0) perché terminerebbe l'intera JVM
-        }
-
-        for (Volo volo : listaVoli) {
-            System.out.println(volo.toString());
-        }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

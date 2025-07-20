@@ -13,6 +13,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
 
+/**
+ * The type Opzioni ricerca.
+ */
 public class OpzioniRicerca {
     private JFrame FrameUser;
     private JPanel panel1;
@@ -32,6 +35,11 @@ public class OpzioniRicerca {
     private Controller controller;
     private DefaultTableModel tableModel;
 
+    /**
+     * Instantiates a new Opzioni ricerca.
+     *
+     * @param frame the frame
+     */
     public OpzioniRicerca(JFrame frame) {
 
         controller = Controller.getInstance();
@@ -419,6 +427,9 @@ public class OpzioniRicerca {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

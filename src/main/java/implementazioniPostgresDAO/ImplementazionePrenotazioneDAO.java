@@ -2,15 +2,22 @@ package implementazioniPostgresDAO;
 
 import dao.PrenotazioneDAO;
 import database.ConnessioneDatabase;
-// NESSUN IMPORT DAL MODEL!
+// NESSUN IMPORT DAL PACKAGE "MODEL"!
+// Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * The type Implementazione prenotazione dao.
+ */
 public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
     private Connection connection;
 
+    /**
+     * Instantiates a new Implementazione prenotazione dao.
+     */
     public ImplementazionePrenotazioneDAO() {
         try {
             connection = ConnessioneDatabase.getInstance().connection;

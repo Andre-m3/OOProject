@@ -11,6 +11,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
 
+/**
+ * The type Voli admin.
+ */
 public class VoliAdmin {
     private JFrame FrameFlightlist;
     private Controller controller;
@@ -29,6 +32,11 @@ public class VoliAdmin {
 
     private DefaultTableModel tableModel;       // Nel codice impostiamo anche la tabella di visualizzazione dei voli, commentata di seguito!
 
+    /**
+     * Instantiates a new Voli admin.
+     *
+     * @param frameDash the frame dash
+     */
     public VoliAdmin(JFrame frameDash) {
         controller = Controller.getInstance();
         FrameFlightlist = new JFrame();
@@ -426,6 +434,9 @@ public class VoliAdmin {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

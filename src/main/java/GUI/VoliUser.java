@@ -12,6 +12,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
 
+/**
+ * The type Voli user.
+ */
 public class VoliUser {
     private JFrame FrameVoli;
     private Controller controller;
@@ -28,6 +31,11 @@ public class VoliUser {
 
     private DefaultTableModel tableModel;           // Nel codice impostiamo anche la tabella di visualizzazione dei voli, commentata di seguito!
 
+    /**
+     * Instantiates a new Voli user.
+     *
+     * @param frameDash the frame dash
+     */
     public VoliUser(JFrame frameDash) {
         controller = Controller.getInstance();
         FrameVoli = new JFrame();
@@ -516,6 +524,9 @@ public class VoliUser {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

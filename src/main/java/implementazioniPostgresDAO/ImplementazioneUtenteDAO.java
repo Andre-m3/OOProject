@@ -2,15 +2,22 @@ package implementazioniPostgresDAO;
 
 import dao.UtenteDAO;
 import database.ConnessioneDatabase;
-// NESSUN IMPORT DAL MODEL!
+// NESSUN IMPORT DAL PACKAGE "MODEL"!
+// Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * The type Implementazione utente dao.
+ */
 public class ImplementazioneUtenteDAO implements UtenteDAO {
 
     private Connection connection;
 
+    /**
+     * Instantiates a new Implementazione utente dao.
+     */
     public ImplementazioneUtenteDAO() {
         try {
             connection = ConnessioneDatabase.getInstance().connection;

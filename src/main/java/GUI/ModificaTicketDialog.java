@@ -11,6 +11,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Locale;
 
+/**
+ * The type Modifica ticket dialog.
+ */
 public class ModificaTicketDialog extends JDialog {
     private JPanel contentPane;
     private JTextField nomeField;
@@ -24,6 +27,12 @@ public class ModificaTicketDialog extends JDialog {
     private Object ticket;
     private boolean modificaEffettuata;
 
+    /**
+     * Instantiates a new Modifica ticket dialog.
+     *
+     * @param parent the parent
+     * @param ticket the ticket
+     */
     public ModificaTicketDialog(JDialog parent, Object ticket) {
         super(parent, "Modifica Ticket", true);
 
@@ -213,6 +222,11 @@ public class ModificaTicketDialog extends JDialog {
     }
 
 
+    /**
+     * Is modifica effettuata boolean.
+     *
+     * @return the boolean
+     */
     public boolean isModificaEffettuata() {
         return modificaEffettuata;
     }
@@ -353,6 +367,9 @@ public class ModificaTicketDialog extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

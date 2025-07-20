@@ -8,6 +8,9 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
+/**
+ * The type Dialog inserisci volo.
+ */
 public class DialogInserisciVolo extends JDialog {
     private JPanel panel1;
     private JPanel topPanel;
@@ -42,6 +45,12 @@ public class DialogInserisciVolo extends JDialog {
     private Runnable onSaveCallback;        // L'abbiamo commentato in modo equivalente in altri dialog implementati allo stesso modo
 
 
+    /**
+     * Instantiates a new Dialog inserisci volo.
+     *
+     * @param parent         the parent
+     * @param onSaveCallback the on save callback
+     */
     public DialogInserisciVolo(JFrame parent, Runnable onSaveCallback) {
         super(parent, "Inserisci Nuovo Volo", true);
 
@@ -539,6 +548,9 @@ public class DialogInserisciVolo extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

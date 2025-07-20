@@ -13,6 +13,9 @@ import java.awt.event.MouseEvent;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+/**
+ * The type Register.
+ */
 public class Register {
     private JFrame FrameRegister;
     private Controller controller;
@@ -34,6 +37,11 @@ public class Register {
     private JCheckBox adminCheck;
     private JTextField usernameField;
 
+    /**
+     * Instantiates a new Register.
+     *
+     * @param frame the frame
+     */
     public Register(JFrame frame) {
         controller = Controller.getInstance();
         FrameRegister = frame;              // Analogo -> AdminDashboard & UserDashboard
@@ -128,6 +136,9 @@ public class Register {
 
     }
 
+    /**
+     * Instantiates a new Register.
+     */
     public Register() {
         controller = Controller.getInstance();
         setupButtons();
@@ -388,6 +399,9 @@ public class Register {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

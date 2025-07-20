@@ -9,6 +9,9 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
+/**
+ * The type Ticket dialog.
+ */
 public class TicketDialog extends JDialog {
     private JFrame Tickets;
     private Controller controller;
@@ -23,6 +26,12 @@ public class TicketDialog extends JDialog {
     private JLabel spacerBypass;
     private String codicePrenotazione;
 
+    /**
+     * Instantiates a new Ticket dialog.
+     *
+     * @param parent             the parent
+     * @param codicePrenotazione the codice prenotazione
+     */
     public TicketDialog(JFrame parent, String codicePrenotazione) {
         // Come titolo aggiungiamo il codice della relativa prenotazione interessata!
         super(parent, "Tickets della Prenotazione: " + codicePrenotazione, true);
@@ -168,6 +177,9 @@ public class TicketDialog extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

@@ -2,17 +2,24 @@ package implementazioniPostgresDAO;
 
 import dao.TicketDAO;
 import database.ConnessioneDatabase;
-// NESSUN IMPORT DAL MODEL!
+// NESSUN IMPORT DAL PACKAGE "MODEL"!
+// Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * The type Implementazione ticket dao.
+ */
 public class ImplementazioneTicketDAO implements TicketDAO {
 
     private Connection connection;
 
+    /**
+     * Instantiates a new Implementazione ticket dao.
+     */
     public ImplementazioneTicketDAO() {
         try {
             connection = ConnessioneDatabase.getInstance().connection;

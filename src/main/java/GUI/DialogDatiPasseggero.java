@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Locale;
 
+/**
+ * The type Dialog dati passeggero.
+ */
 public class DialogDatiPasseggero extends JDialog {
     private JPanel panel1;
     private JPanel topPanel;
@@ -25,6 +28,13 @@ public class DialogDatiPasseggero extends JDialog {
     private String[] datiPasseggero = null;
     private boolean confermatoOK = false;
 
+    /**
+     * Instantiates a new Dialog dati passeggero.
+     *
+     * @param parent           the parent
+     * @param numeroPasseggero the numero passeggero
+     * @param totalePasseggeri the totale passeggeri
+     */
     public DialogDatiPasseggero(JFrame parent, int numeroPasseggero, int totalePasseggeri) {
         super(parent, true); // Dialog modale
         setContentPane(panel1);
@@ -325,6 +335,9 @@ public class DialogDatiPasseggero extends JDialog {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

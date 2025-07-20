@@ -7,6 +7,9 @@ import java.awt.*;
 import java.util.Locale;
 import controller.Controller;
 
+/**
+ * The type User dashboard.
+ */
 public class UserDashboard {
     private JFrame FrameUser;
     private JPanel buttonPanel;
@@ -19,6 +22,11 @@ public class UserDashboard {
     private JPanel panel1;
     private Controller controller;
 
+    /**
+     * Instantiates a new User dashboard.
+     *
+     * @param frame the frame
+     */
     public UserDashboard(JFrame frame) {
 
         controller = Controller.getInstance();
@@ -258,6 +266,9 @@ public class UserDashboard {
     }
 
     /**
+     * $$$ get root component $$$ j component.
+     *
+     * @return the j component
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {

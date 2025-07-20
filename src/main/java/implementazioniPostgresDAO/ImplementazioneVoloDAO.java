@@ -2,16 +2,24 @@ package implementazioniPostgresDAO;
 
 import dao.VoloDAO;
 import database.ConnessioneDatabase;
+// NESSUN IMPORT DAL PACKAGE "MODEL"!
+// Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * The type Implementazione volo dao.
+ */
 public class ImplementazioneVoloDAO implements VoloDAO {
 
     private Connection connection;
 
+    /**
+     * Instantiates a new Implementazione volo dao.
+     */
     public ImplementazioneVoloDAO() {
         try {
             connection = ConnessioneDatabase.getInstance().connection;
