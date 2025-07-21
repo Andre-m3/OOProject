@@ -3,6 +3,26 @@ Un'applicazione Java sviluppata seguendo i principi della programmazione orienta
 
 ## Panoramica
 Questo progetto implementa un'applicazione desktop in Java che utilizza un'architettura BCE + DAO (Boundary-Control-Entity + DAO) per la gestione dei dati tramite database PostgreSQL.
+Il sistema sviluppato consente la gestione generale (su più livelli) dell'aeroporto di Napoli. Nello specifico abbiamo Amministratori e Utenti Generici:
+
+### Amministratore
+- Inserimento di nuovi voli
+- Visualizzazione dei voli esistenti (sia passati che futuri)
+  -  Modifica dei dati di qualsiasi volo
+  -  Modifica del gate associato al volo, solo per voli in partenza
+  -  Eliminazione di un qualsiasi volo
+- Accesso alla propria Area Personale
+
+### Utente Generico
+- Ricerca specifica dei voli per Città di Partenza e Città di Arrivo
+- Visualizzazione di tutti i voli, con messa in risalto di voli in ritardo o cancellati
+  - Prenotazione Volo, con relativo inserimento dei dati dei passeggeri (fino a 9)
+- Accesso alla propria Area Personale
+- Visualizzazione delle proprie prenotazioni (tramite Area Personale)
+  - Visualizzazione dei tickets associati alla propria prenotazione
+  - Modifica del ticket di un passeggero presente nella prenotazione
+  - Eliminazione del ticket di un passeggero presente nella prenotazione
+  - Eliminazione dell'intera prenotazione
 
 ## Caratteristiche Principali
 - **Interfaccia Grafica**: GUI intuitiva "User-Friendly" per l'interazione utente, ridotta al minimo indispensabile
@@ -26,7 +46,7 @@ Questo progetto implementa un'applicazione desktop in Java che utilizza un'archi
 ## Come utilizzare il programma
 1. **Avvio dell'Applicazione**: Esegui il programma seguendo le istruzioni sopra
 2. **Login/Registrazione Utente**: Effettua il login con le tue credenziali, o crea un nuovo account
-3. **Interfaccia Grafica**: Utilizza la GUI Dashboard (relativa al tuo livello di accesso) per navigare tra le funzionalità
+3. **Interfaccia Grafica**: Utilizza la GUI Dashboard (relativa al tuo livello di accesso / privilegi) per navigare tra le funzionalità
 4. **Gestione Dati**: L'applicazione si connette automaticamente al database PostgreSQL configurato
 5. **Operazioni C-R-U-D**: Esegui operazioni di Create, Read, Update, Delete tramite l'interfaccia apposita
 
@@ -38,5 +58,5 @@ Assicurati che il database PostgreSQL sia configurato correttamente:
 - **Username/Password**: Credenziali fornite privatamente!
 
 ## Autori del Progetto
-Antonio Andrea Montella - N86005652
-Adriano Montella        - N86005823
+- Antonio Andrea Montella [N86005652]
+- Adriano Montella [N86005823]
