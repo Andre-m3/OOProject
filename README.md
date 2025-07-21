@@ -27,8 +27,9 @@ Il sistema sviluppato consente la gestione generale (su più livelli) dell'aerop
 ## Caratteristiche Principali
 - **Interfaccia Grafica**: GUI intuitiva "User-Friendly" per l'interazione utente, ridotta al minimo indispensabile
 - **Database Integration**: Connessione e gestione dati tramite Database, implementato nel DBMS Postrgres
-- **Architettura Utilizzata**: Separazione logica e responsabilità tra gui, controller e classi del model
+- **Architettura Utilizzata**: Separazione logica e responsabilità tra gui, controller e classi del model.
 - **Pattern DAO**: Implementazione del "Data Access Object" pattern (acronimo di DAO)
+  - **Nota Bene:** L'architettura imposta è stata rigorosamente rispettata in tutti gli aspetti. NON sono presenti import che viòlino la separazione delle responsabilità!
 - **Object-Oriented Design**: Struttura modulare di facile manutenzione, che preserva le 3 principali proprietà (Incapsulamento, Ereditarietà, Polimorfismo)
 
 ## Tecnologie Utilizzate
