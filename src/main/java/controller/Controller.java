@@ -812,10 +812,10 @@ public class Controller {
             ArrayList<String> ticket = datiTickets.get(i);
             // Formato: "Nome Cognome - Documento: X - Posto: Y"
             ticketsFormattati[i] = String.format("%s %s - Documento: %s - Posto: %s",
-                    ticket.get(1),      // nome
-                    ticket.get(2),      // cognome
-                    ticket.get(3),      // documento
-                    ticket.get(5)       // posto
+                    ticket.get(0),      // nome
+                    ticket.get(1),      // cognome
+                    ticket.get(2),      // documento
+                    ticket.get(4)       // posto
             );
         }
 
