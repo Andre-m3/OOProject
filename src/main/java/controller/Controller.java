@@ -810,12 +810,13 @@ public class Controller {
         // Effettuo l'operazione per ciascun ticket presente nella prenotazione!
         for (int i = 0; i < datiTickets.size(); i++) {
             ArrayList<String> ticket = datiTickets.get(i);
-            // Formato: "Nome Cognome - Documento: X - Posto: Y"
-            ticketsFormattati[i] = String.format("%s %s - Documento: %s - Posto: %s",
+
+            // Formato: "Nome Cognome - Posto: Y - Documento: X"
+            ticketsFormattati[i] = String.format("%s %s - Posto: %s - Documento: %s",
                     ticket.get(0),      // nome
                     ticket.get(1),      // cognome
-                    ticket.get(2),      // documento
-                    ticket.get(4)       // posto
+                    ticket.get(4),      // posto
+                    ticket.get(2)       // documento
             );
         }
 
