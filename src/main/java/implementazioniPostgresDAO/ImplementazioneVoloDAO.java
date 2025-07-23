@@ -5,6 +5,8 @@ import database.ConnessioneDatabase;
 // NESSUN IMPORT DAL PACKAGE "MODEL"!
 // Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
+// Utilizziamo un logger per gestire gli output a schermo secondo quanto consigliato da Sonarqube
+import java.util.logging.Logger;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 public class ImplementazioneVoloDAO implements VoloDAO {
 
     private Connection connection;
+    Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * Instantiates a new Implementazione volo dao.
@@ -24,7 +27,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
         try {
             connection = ConnessioneDatabase.getInstance().connection;
         } catch (SQLException e) {
-            System.out.println("Errore durante la connessione al database: " + e.getMessage());
+            logger.warning("Errore durante la connessione al database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -66,7 +69,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'inserimento volo: " + e.getMessage());
+            logger.warning("Errore durante l'inserimento volo: " + e.getMessage());
             return false;
         }
     }
@@ -85,7 +88,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante la ricerca volo per numero: " + e.getMessage());
+            logger.warning("Errore durante la ricerca volo per numero: " + e.getMessage());
         }
 
         return null;
@@ -104,7 +107,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero di tutti i voli: " + e.getMessage());
+            logger.warning("Errore durante il recupero di tutti i voli: " + e.getMessage());
         }
 
         return voli;
@@ -123,7 +126,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero voli disponibili: " + e.getMessage());
+            logger.warning("Errore durante il recupero voli disponibili: " + e.getMessage());
         }
 
         return voli;
@@ -165,7 +168,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento volo: " + e.getMessage());
+            logger.warning("Errore durante l'aggiornamento volo: " + e.getMessage());
             return false;
         }
     }
@@ -182,7 +185,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento stato volo: " + e.getMessage());
+            logger.warning("Errore durante l'aggiornamento stato volo: " + e.getMessage());
             return false;
         }
     }
@@ -203,7 +206,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento gate imbarco: " + e.getMessage());
+            logger.warning("Errore durante l'aggiornamento gate imbarco: " + e.getMessage());
             return false;
         }
     }
@@ -219,7 +222,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'eliminazione volo: " + e.getMessage());
+            logger.warning("Errore durante l'eliminazione volo: " + e.getMessage());
             return false;
         }
     }
@@ -274,7 +277,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero voli per città di partenza: " + e.getMessage());
+            logger.warning("Errore durante il recupero voli per città di partenza: " + e.getMessage());
         }
 
         return voli;
@@ -295,7 +298,7 @@ public class ImplementazioneVoloDAO implements VoloDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero voli per città di destinazione: " + e.getMessage());
+            logger.warning("Errore durante il recupero voli per città di destinazione: " + e.getMessage());
         }
 
         return voli;

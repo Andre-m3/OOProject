@@ -5,6 +5,8 @@ import database.ConnessioneDatabase;
 // NESSUN IMPORT DAL PACKAGE "MODEL"!
 // Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
+// Utilizziamo un logger per gestire gli output a schermo secondo quanto consigliato da Sonarqube
+import java.util.logging.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class ImplementazioneUtenteDAO implements UtenteDAO {
 
     private Connection connection;
+    Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * Instantiates a new Implementazione utente dao.
@@ -22,7 +25,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
         try {
             connection = ConnessioneDatabase.getInstance().connection;
         } catch (SQLException e) {
-            System.out.println("Errore durante la connessione al database: " + e.getMessage());
+            logger.warning("Errore durante la connessione al database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -41,7 +44,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'inserimento utente: " + e.getMessage());
+            logger.warning("Errore durante l'inserimento utente: " + e.getMessage());
             return false;
         }
     }
@@ -62,7 +65,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante la ricerca utente per credenziali: " + e.getMessage());
+            logger.warning("Errore durante la ricerca utente per credenziali: " + e.getMessage());
         }
 
         return null;
@@ -82,7 +85,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante la ricerca utente per username: " + e.getMessage());
+            logger.warning("Errore durante la ricerca utente per username: " + e.getMessage());
         }
 
         return null;
@@ -102,7 +105,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante la ricerca utente per email: " + e.getMessage());
+            logger.warning("Errore durante la ricerca utente per email: " + e.getMessage());
         }
 
         return null;
@@ -123,7 +126,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante la verifica esistenza utente: " + e.getMessage());
+            logger.warning("Errore durante la verifica esistenza utente: " + e.getMessage());
         }
 
         return false;
@@ -140,7 +143,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'eliminazione utente: " + e.getMessage());
+            logger.warning("Errore durante l'eliminazione utente: " + e.getMessage());
             return false;
         }
     }
@@ -158,7 +161,7 @@ public class ImplementazioneUtenteDAO implements UtenteDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero di tutti gli utenti: " + e.getMessage());
+            logger.warning("Errore durante il recupero di tutti gli utenti: " + e.getMessage());
         }
 
         return utenti;

@@ -1,5 +1,8 @@
 package database;
 
+// Utilizziamo un logger per gestire gli output a schermo secondo quanto consigliato da Sonarqube
+import java.util.logging.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,6 +11,9 @@ import java.sql.SQLException;
  * The type Connessione database.
  */
 public class ConnessioneDatabase {
+
+    // logger!
+    Logger logger = Logger.getLogger(getClass().getName());
 
     // ATTRIBUTI
     private static ConnessioneDatabase instance;
@@ -27,7 +33,7 @@ public class ConnessioneDatabase {
             connection = DriverManager.getConnection(url, nome, password);
 
         } catch (ClassNotFoundException ex) {
-            System.out.println("Database Connection Creation Failed : " + ex.getMessage());
+            logger.warning("Database Connection Creation Failed : " + ex.getMessage());
             ex.printStackTrace();
         }
 
@@ -36,6 +42,8 @@ public class ConnessioneDatabase {
 
     /**
      * Gets instance.
+     * Il pattern singleton ci causa un errore se correggiamo la segnalazione di SonarQube
+     * Pertanto è stato scelto di non effettuare alcuna modifica (errore segnalato "lieve", quindi va bene così)
      *
      * @return the instance
      * @throws SQLException the sql exception

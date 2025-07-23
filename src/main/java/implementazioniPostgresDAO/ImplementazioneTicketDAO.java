@@ -5,6 +5,8 @@ import database.ConnessioneDatabase;
 // NESSUN IMPORT DAL PACKAGE "MODEL"!
 // Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
+// Utilizziamo un logger per gestire gli output a schermo secondo quanto consigliato da Sonarqube
+import java.util.logging.Logger;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 public class ImplementazioneTicketDAO implements TicketDAO {
 
     private Connection connection;
+    Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * Instantiates a new Implementazione ticket dao.
@@ -24,7 +27,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
         try {
             connection = ConnessioneDatabase.getInstance().connection;
         } catch (SQLException e) {
-            System.out.println("Errore durante la connessione al database: " + e.getMessage());
+            logger.warning("Errore durante la connessione al database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -49,7 +52,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'inserimento ticket: " + e.getMessage());
+            logger.warning("Errore durante l'inserimento ticket: " + e.getMessage());
             return false;
         }
     }
@@ -69,7 +72,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero tickets per prenotazione: " + e.getMessage());
+            logger.warning("Errore durante il recupero tickets per prenotazione: " + e.getMessage());
         }
 
         return tickets;
@@ -96,7 +99,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'aggiornamento ticket: " + e.getMessage());
+            logger.warning("Errore durante l'aggiornamento ticket: " + e.getMessage());
             return false;
         }
     }
@@ -112,7 +115,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'eliminazione tickets per prenotazione: " + e.getMessage());
+            logger.warning("Errore durante l'eliminazione tickets per prenotazione: " + e.getMessage());
             return false;
         }
     }
@@ -152,7 +155,7 @@ public class ImplementazioneTicketDAO implements TicketDAO {
                 return LocalDate.parse(dataString, formatter2);
             }
         } catch (Exception e) {
-            System.out.println("Errore nella conversione della data: " + dataString);
+            logger.warning("Errore nella conversione della data: " + dataString);
             return LocalDate.now();
         }
     }

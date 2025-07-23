@@ -4,6 +4,9 @@ import implementazioniPostgresDAO.*;
 import model.*;
 import dao.*;
 
+// SonarQube suggerisce l'utilizzo dei Logger per sostituire eventuali System.out!
+import java.util.logging.Logger;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -16,10 +19,20 @@ import java.util.Random;
  */
 public class Controller {
 
-    private Random random = new Random();           // Oggetto riutilizzabile imposto da SonarQube
-    private static final String NAPOLI = "Napoli";  // Costante statica imposta da SonarQube
-    private static Controller instance = null;      // istanza Singleton
-    private Utente utenteLoggato;                   // Utente corrente
+    private Random random = new Random();                   // Oggetto riutilizzabile imposto da SonarQube
+    Logger logger = Logger.getLogger(getClass().getName()); // Logger per sostituire tutti i System.out (come suggerito da SonarQube)
+
+    // Altre modifiche apportate al fine di soddisfare i consigli di SonarQube (duplicazione di "dd-MM-yyyy")
+    private static final DateTimeFormatter FORMATTER_SLASH = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FORMATTER_DASH = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final String NAPOLI = "Napoli";
+    private static final String TIPO_VOLO_PARTENZA = "Partenza";
+
+    // NB.: SonarQube suggerisce inoltre la rimozione del nome generico di un eccezione (nei nostri casi 'e', 'e1'), e l'utilizzo di un unnamed operator '_'
+    //      Questo però provoca errori di compilazione dovuti a versioni utilizzate nel progetto, quindi non implementabile.
+
+    private static Controller instance = null;              // istanza Singleton
+    private Utente utenteLoggato;                           // Utente corrente
 
     // DAO per l'accesso ai dati
     private VoloDAO voloDAO = new ImplementazioneVoloDAO();
@@ -30,50 +43,7 @@ public class Controller {
     /**
      * Costruttore privato per il pattern Singleton
      */
-    private Controller() {
-        /*Inizializza utenti di default nel database se non esistono
-        inizializzaUtentiDefault();*/
-        /*Inizializza voli di default nel database se non esistono
-        inizializzaVoliDefault();*/
-    }
-
-    // Metodi di test iniziali, non più necessari. Non sono stati eliminati per scopo illustrativo.
-    // Fanno capire come viene creata un'istanza di un oggetto di tipo Utente (Generico o Admin), e Voli (Arrivo o Partenza)
-
-    /**
-     * Inizializza utenti di default nel database
-     */
-    /*private void inizializzaUtentiDefault() {
-        // Verifica se gli utenti esistono già
-        if (utenteDAO.getUtentePerUsername("user") == null) {
-            UtenteGenerico utente = new UtenteGenerico("user@example.com", "user", "password123");
-            utenteDAO.inserisciUtente(utente);
-        }
-
-        if (utenteDAO.getUtentePerUsername("admin") == null) {
-            Amministratore admin = new Amministratore("admin@example.com", "admin", "admin123");
-            utenteDAO.inserisciUtente(admin);
-        }
-    }*/
-
-    /**
-     * Inizializza voli di default nel database
-     */
-    /*private void inizializzaVoliDefault() {
-        // Verifica se i voli esistono già
-        if (voloDAO.getVoloPerNumero("AZ123") == null) {
-            // Voli in partenza da Napoli
-            voloDAO.inserisciVolo(new VoloInPartenza("AZ123", "Alitalia", "14:30", "29-04-2025", 0, StatoVolo.ATTERRATO, "Milano", (short) 5));
-            voloDAO.inserisciVolo(new VoloInPartenza("FR456", "Ryanair", "16:45", "15-07-2025", 10, StatoVolo.IN_RITARDO, "Roma", (short) 12));
-            voloDAO.inserisciVolo(new VoloInPartenza("LH789", "Lufthansa", "09:15", "19-08-2025", 0, StatoVolo.PROGRAMMATO, "Monaco", (short) 3));
-            voloDAO.inserisciVolo(new VoloInPartenza("BA321", "British Airways", "11:20", "16-07-2025", 45, StatoVolo.IN_RITARDO, "Londra", (short) 8));
-
-            // Voli in arrivo a Napoli
-            voloDAO.inserisciVolo(new VoloInArrivo("EK654", "Emirates", "18:30", "30-07-2025", 0, StatoVolo.PROGRAMMATO, "Dubai"));
-            voloDAO.inserisciVolo(new VoloInArrivo("AF987", "Air France", "20:15", "21-07-2025", 32, StatoVolo.IN_RITARDO, "Parigi"));
-            voloDAO.inserisciVolo(new VoloInArrivo("KL432", "KLM", "13:45", "03-08-2025", 0, StatoVolo.PROGRAMMATO, "Amsterdam"));
-        }
-    }*/
+    private Controller() {}
 
     /**
      * Restituisce l'istanza singleton del controller
@@ -168,7 +138,7 @@ public class Controller {
      */
     public String getTipoVolo(Volo volo) {
         if (volo instanceof VoloInPartenza) {
-            return "Partenza";
+            return TIPO_VOLO_PARTENZA;
         } else if (volo instanceof VoloInArrivo) {
             return "Arrivo";
         }
@@ -216,14 +186,14 @@ public class Controller {
         try {
             LocalDate dataConvertita;
             if (data.contains("/")) {
-                dataConvertita = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                dataConvertita = LocalDate.parse(data, FORMATTER_SLASH);
             } else {
-                dataConvertita = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+                dataConvertita = LocalDate.parse(data, FORMATTER_DASH);
             }
-            return dataConvertita.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        } catch (Exception e) {
-            System.out.println("Errore nella conversione della data: " + data);
-            return data;            // Ritorna la data originale se non riesce a convertirla
+            return dataConvertita.format(FORMATTER_DASH);
+        } catch (DateTimeParseException e) {
+            logger.info("Errore nella conversione della data: " + data);
+            return data;            // Restituisce la data originale se non riesce a convertirla
         }
     }
 
@@ -255,7 +225,7 @@ public class Controller {
                         ritardo, stato, partenza);
             }
         } catch (Exception e) {
-            System.out.println("Errore nella conversione volo: " + e.getMessage());
+            logger.info("Errore nella conversione volo: " + e.getMessage());
             return null;
         }
     }
@@ -378,7 +348,7 @@ public class Controller {
             return "P" + numeroSuccessivo;
 
         } catch (Exception e) {
-            System.out.println("Errore nella generazione del codice: " + e.getMessage());
+            logger.info("Errore nella generazione del codice: " + e.getMessage());
             return "P" + (20000 + (int)(Math.random() * 9999)); // Fallback
         }
     }
@@ -488,11 +458,11 @@ public class Controller {
             try {
                 LocalDate.parse(data, formatter1);
                 return true;
-            } catch (DateTimeParseException e1) {
+            } catch (DateTimeParseException e) {
                 try {
                     LocalDate.parse(data, formatter2);
                     return true;
-                } catch (DateTimeParseException e2) {
+                } catch (DateTimeParseException e1) {
                     return false;
                 }
             }
@@ -540,7 +510,7 @@ public class Controller {
             return voloDAO.eliminaVolo(numeroVolo);
 
         } catch (Exception e) {
-            System.out.println("Errore durante l'eliminazione del volo: " + e.getMessage());
+            logger.info("Errore durante l'eliminazione del volo: " + e.getMessage());
             return false;
         }
     }
@@ -567,7 +537,7 @@ public class Controller {
             return prenotazioni == null || prenotazioni.isEmpty();
 
         } catch (Exception e) {
-            System.out.println("Errore nella verifica possibilità eliminazione volo: " + e.getMessage());
+            logger.info("Errore nella verifica possibilità eliminazione volo: " + e.getMessage());
             return false;
         }
     }
@@ -674,7 +644,7 @@ public class Controller {
     public String[] getDettagliPrenotazione(String codicePrenotazione) {
         ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
         if (datiPrenotazione == null) {
-            return null;
+            return new String[0];       //null
         }
 
         String numeroVolo = datiPrenotazione.get(2);
@@ -732,7 +702,7 @@ public class Controller {
 
         // Verifichiamo sempre se l'oggetto passato non sia "null"!
         if (prenotazione == null) {
-            return null;
+            return new String[0];       //null
         }
 
         // La prima verifica può risultare superflua (caso IMPROBABILE) ma è sempre meglio pensare al caso peggiore...
@@ -742,13 +712,13 @@ public class Controller {
         } else if (prenotazione instanceof Prenotazione) {
             codicePrenotazione = ((Prenotazione) prenotazione).getCodicePrenotazione();
         } else {
-            return null;
+            return new String[0];       //null
         }
 
         // Richiamiamo il metodo del DAO per evitare l'import della classe del model
         ArrayList<String> datiPrenotazione = prenotazioneDAO.getPrenotazionePerCodice(codicePrenotazione);
         if (datiPrenotazione == null) {
-            return null;
+            return new String[0];       //null
         }
 
         String numeroVolo = datiPrenotazione.get(2);
@@ -925,7 +895,7 @@ public class Controller {
      */
     public String[] getDettagliTicket(Object ticket) {
         if (ticket == null) {
-            return null;
+            return new String[0];       //null
         }
 
         Ticket t = (Ticket) ticket;
@@ -949,7 +919,7 @@ public class Controller {
         ArrayList<String> datiVolo = voloDAO.getVoloPerNumero(numeroVolo);
 
         if (datiVolo == null) {
-            return null;
+            return new String[0];       //null
         }
 
         return datiVolo.toArray(new String[0]);
@@ -977,11 +947,11 @@ public class Controller {
 
         // Validazione extra. Verifichiamo che almeno una città sia Napoli, e che non lo siano entrambe
         if (!nuovaPartenza.equalsIgnoreCase(NAPOLI) && !nuovaDestinazione.equalsIgnoreCase(NAPOLI)) {
-            System.out.println("Errore: Almeno una tra partenza e destinazione deve essere 'Napoli'");
+            logger.info("Errore: Almeno una tra partenza e destinazione deve essere 'Napoli'");
             return false;
         }
         if (nuovaPartenza.equalsIgnoreCase(nuovaDestinazione)) {
-            System.out.println("Errore: Partenza e destinazione non possono essere uguali");
+            logger.info("Errore: Partenza e destinazione non possono essere uguali");
             return false;
         }
 
@@ -1167,7 +1137,7 @@ public class Controller {
      */
     public String[] getColonneVoliPartenza() {
         return new String[]{
-                "Numero Volo", "Compagnia", "Partenza", "Destinazione",
+                "Numero Volo", "Compagnia", TIPO_VOLO_PARTENZA, "Destinazione",
                 "Data", "Orario", "Stato", "Tipo"
         };
     }
@@ -1179,7 +1149,7 @@ public class Controller {
      */
     public String[] getColonneVoliArrivo() {
         return new String[]{
-                "Numero Volo", "Compagnia", "Partenza", "Destinazione",
+                "Numero Volo", "Compagnia", TIPO_VOLO_PARTENZA, "Destinazione",
                 "Data", "Orario", "Stato", "Tipo"
         };
     }
@@ -1200,7 +1170,7 @@ public class Controller {
             return new Ticket(nome, cognome, numeroDocumento, dataNascita, postoAssegnato, codicePrenotazione);
 
         } catch (Exception e) {
-            System.out.println("Errore nella conversione ticket: " + e.getMessage());
+            logger.info("Errore nella conversione ticket: " + e.getMessage());
             return null;
         }
     }
@@ -1214,7 +1184,7 @@ public class Controller {
 
             return new Prenotazione(codicePrenotazione, numeroVolo, stato, numeroPasseggeri, email);
         } catch (Exception e) {
-            System.out.println("Errore nella conversione prenotazione: " + e.getMessage());
+            logger.info("Errore nella conversione prenotazione: " + e.getMessage());
             return null;
         }
     }

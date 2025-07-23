@@ -5,6 +5,8 @@ import database.ConnessioneDatabase;
 // NESSUN IMPORT DAL PACKAGE "MODEL"!
 // Rispettiamo il pattern imposto in lezione "BCE + Dao"
 
+// Utilizziamo un logger per gestire gli output a schermo secondo quanto consigliato da Sonarqube
+import java.util.logging.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
 
     private Connection connection;
+    Logger logger = Logger.getLogger(getClass().getName());
 
     /**
      * Instantiates a new Implementazione prenotazione dao.
@@ -22,7 +25,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
         try {
             connection = ConnessioneDatabase.getInstance().connection;
         } catch (SQLException e) {
-            System.out.println("Errore durante la connessione al database: " + e.getMessage());
+            logger.warning("Errore durante la connessione al database: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -43,7 +46,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             return rowsAffected > 0;
 
         } catch (SQLException e) {
-            System.out.println("Errore durante l'inserimento prenotazione: " + e.getMessage());
+            logger.warning("Errore durante l'inserimento prenotazione: " + e.getMessage());
             return false;
         }
     }
@@ -62,7 +65,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante la ricerca prenotazione per codice: " + e.getMessage());
+            logger.warning("Errore durante la ricerca prenotazione per codice: " + e.getMessage());
         }
 
         return null;
@@ -83,7 +86,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero prenotazioni per utente: " + e.getMessage());
+            logger.warning("Errore durante il recupero prenotazioni per utente: " + e.getMessage());
         }
 
         return prenotazioni;
@@ -104,7 +107,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero prenotazioni per volo: " + e.getMessage());
+            logger.warning("Errore durante il recupero prenotazioni per volo: " + e.getMessage());
         }
 
         return prenotazioni;
@@ -123,7 +126,7 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Errore durante il recupero di tutte le prenotazioni: " + e.getMessage());
+            logger.warning("Errore durante il recupero di tutte le prenotazioni: " + e.getMessage());
         }
 
         return prenotazioni;
@@ -157,9 +160,9 @@ public class ImplementazionePrenotazioneDAO implements PrenotazioneDAO {
                 connection.rollback();
                 connection.setAutoCommit(true);
             } catch (SQLException rollbackEx) {
-                System.out.println("Errore durante il rollback: " + rollbackEx.getMessage());
+                logger.warning("Errore durante il rollback: " + rollbackEx.getMessage());
             }
-            System.out.println("Errore durante l'eliminazione prenotazione: " + e.getMessage());
+            logger.warning("Errore durante l'eliminazione prenotazione: " + e.getMessage());
             return false;
         }
     }
