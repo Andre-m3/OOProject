@@ -344,7 +344,7 @@ public class Controller {
             }
 
             // Conta semplicemente le prenotazioni esistenti! Numero progressivo...
-            int numeroSuccessivo = 20001 + tuttePrenotazioni.size();
+            int numeroSuccessivo = 20005 + tuttePrenotazioni.size();
             return "P" + numeroSuccessivo;
 
         } catch (Exception e) {
