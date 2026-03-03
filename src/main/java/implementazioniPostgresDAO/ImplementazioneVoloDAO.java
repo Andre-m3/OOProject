@@ -232,7 +232,12 @@ public class ImplementazioneVoloDAO implements VoloDAO {
 
         datiVolo.add(rs.getString("numero_volo"));
         datiVolo.add(rs.getString("compagnia_aerea"));
-        datiVolo.add(rs.getTime("orario_previsto").toString());
+
+        // Correzione fatta per un errore relativo al DB. Ignoro la revisione del codice per praticità, visto che ho gia presentato OOP.
+        String orarioCompleto = rs.getTime("orario_previsto").toString(); // cosi restituisco "HH:MM:SS"
+        String orarioSenzaSecondi = orarioCompleto.substring(0, 5);       // prende i primi 5 caratteri
+        datiVolo.add(orarioSenzaSecondi);
+
         datiVolo.add(formatDataPerModello(rs.getDate("data_volo").toLocalDate()));
         datiVolo.add(String.valueOf(rs.getInt("ritardo")));
         datiVolo.add(rs.getString("stato"));
